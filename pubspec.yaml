@@ -61,6 +61,11 @@ flutter:
 
   assets:
     - assets/images/Ring_Badge.png
+    - assets/images/Ring_Badge48.png
+    - assets/images/Ring_Badge3x.png
+
+
+
       
 
   # An image asset can refer to one or more resolution-specific "variants", see

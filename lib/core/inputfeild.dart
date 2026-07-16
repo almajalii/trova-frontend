@@ -35,17 +35,17 @@ class _InputFieldState extends State<InputField> {
       style: TextStyle(color: colors.onSurface, fontSize: 15),
       decoration: InputDecoration(
         hintText: widget.hintText,
-        hintStyle: TextStyle(color: colors.onSurfaceVariant, fontSize: 15),
+        hintStyle: TextStyle(color: colors.surfaceBright, fontSize: 15,fontWeight: FontWeight.w500),
         filled: true,
-        fillColor: colors.surfaceContainerHighest,
+        fillColor: colors.surface,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: colors.surfaceBright, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: colors.surfaceBright, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
