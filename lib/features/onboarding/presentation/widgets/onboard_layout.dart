@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trova/core/app_title.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
@@ -29,7 +30,7 @@ class OnboardLayout extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(
+          SvgPicture.asset(
             page.imagePath,
             height: 280,
             fit: BoxFit.contain,

@@ -60,8 +60,14 @@ class _OnboardScreenState extends State<OnboardScreen> {
 
               return PageView.builder(
                 controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
                 itemCount: totalPages,
+                onPageChanged: (index) {
+                  if (index != state.currentIndex) {
+                    context.read<OnboardBloc>().add(
+                          OnboardingIndexChanged(index: index),
+                        );
+                  }
+                },
                 itemBuilder: (context, index) {
                   final isLastPage = index == state.items.length;
 

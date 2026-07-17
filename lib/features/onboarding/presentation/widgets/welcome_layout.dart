@@ -3,7 +3,6 @@ import 'package:trova/core/app_title.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
 import 'package:trova/core/responsive_utils.dart';
-import 'package:trova/features/onboarding/presentation/widgets/dot_inidcator.dart';
 
 class WelcomeLayout extends StatelessWidget {
   final int itemCount;
@@ -31,18 +30,12 @@ class WelcomeLayout extends StatelessWidget {
           Container(
             width: 140,
             height: 140,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: colors.surfaceContainerHighest,
-            ),
+            decoration: BoxDecoration(shape: BoxShape.circle, color: colors.surfaceContainerHighest),
             child: Center(
               child: Container(
                 width: 100,
                 height: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colors.primary,
-                ),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: colors.primary),
                 child: Icon(Icons.check, color: colors.onPrimary, size: 44),
               ),
             ),
@@ -65,15 +58,6 @@ class WelcomeLayout extends StatelessWidget {
             textSize: 15,
             textColor: colors.onSurfaceVariant,
             textAlign: TextAlign.center,
-          ),
-
-          SizedBox(height: context.vertical),
-
-          DotsIndicator(
-            itemCount: itemCount,
-            currentIndex: currentIndex,
-            activeColor: colors.primary,
-            inactiveColor: colors.surfaceContainerHighest,
           ),
 
           SizedBox(height: context.vertical),

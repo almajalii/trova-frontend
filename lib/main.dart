@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:trova/core/di/service_locator.dart';
 import 'package:trova/core/routes.dart';
 import 'package:trova/core/theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setupLocator();
   runApp(const MyApp());
 }
 

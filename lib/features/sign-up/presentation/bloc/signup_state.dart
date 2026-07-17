@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:trova/core/models/auth_result.dart';
 
 abstract class SignupState extends Equatable {
   const SignupState();
@@ -15,7 +16,11 @@ class SignupLoading extends SignupState {
 }
 
 class SignupSuccess extends SignupState {
-  const SignupSuccess();
+  final AuthResult result;
+  const SignupSuccess({required this.result});
+
+  @override
+  List<Object?> get props => [result];
 }
 
 class SignupError extends SignupState {

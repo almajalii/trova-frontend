@@ -1,14 +1,40 @@
+import 'package:dio/dio.dart';
+import 'package:trova/core/models/auth_result.dart';
+import 'package:trova/core/network/api_exception.dart';
+import 'package:trova/core/storage/token_storage.dart';
 import 'package:trova/features/sign-up/logic/signup_model.dart';
 
 class SignupService {
-  Future<bool> submitSignup(SignupData data) async {
-    await Future.delayed(const Duration(seconds: 1)); // simulate network call
+  final Dio dio;
+  final TokenStorage tokenStorage;
 
+  SignupService({required this.dio, required this.tokenStorage});
+
+  Future<AuthResult> submitSignup(SignupData data) async {
     if (data.password != data.confirmPassword) {
-      throw Exception('Passwords do not match');
+      throw ApiException('Passwords do not match');
     }
 
-    // Static success for now — replace with real API call tomorrow.
-    return true;
+    try {
+      final response = await dio.post(
+        '/auth/register',
+        data: {
+          'name': data.name,
+          'email': data.workEmail,
+          'password': data.password,
+          'confirmPassword': data.confirmPassword,
+        },
+      );
+
+      final result = AuthResult.fromJson(response.data['data'] as Map<String, dynamic>);
+
+      // Registration logs the user in immediately (backend returns a token),
+      // so persist it the same way login does.
+      await tokenStorage.saveToken(result.token);
+
+      return result;
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
   }
 }

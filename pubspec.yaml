@@ -2,7 +2,7 @@ name: trova
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -20,7 +20,6 @@ version: 1.0.0+1
 
 environment:
   sdk: ^3.12.0
-  
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -38,8 +37,13 @@ dependencies:
   flutter_bloc: ^9.1.1
   shared_preferences: ^2.2.2
   form_builder_validators: ^11.0.0
-
-  
+  get_it: ^8.0.3
+  dio: ^5.7.0
+  flutter_secure_storage: ^9.2.2
+  local_auth: ^2.3.0
+  camera: ^0.12.0+1
+  google_mlkit_text_recognition: ^0.15.0
+  flutter_svg: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -60,13 +64,13 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/Ring_Badge.png
-    - assets/images/Ring_Badge48.png
-    - assets/images/Ring_Badge3x.png
-
-
-
-      
+    - assets/images/auth/Ring_Badge1.svg
+    - assets/images/auth/Ring_Badge2.svg
+    - assets/images/auth/Ring_Badge3.svg
+    - assets/images/auth/Ring_Badge4.svg
+    - assets/images/auth/Mail_Badge.svg
+    - assets/images/auth/Sanad.svg
+    - assets/images/auth/Scan_Icon.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

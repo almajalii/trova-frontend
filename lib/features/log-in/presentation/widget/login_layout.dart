@@ -16,6 +16,7 @@ class LoginLayout extends StatelessWidget {
   final VoidCallback onSignupTap;
   final VoidCallback onForgotPasswordTap;
   final VoidCallback onBiometricTap;
+  final bool showBiometricOption;
 
   const LoginLayout({
     super.key,
@@ -28,6 +29,7 @@ class LoginLayout extends StatelessWidget {
     required this.onSignupTap,
     required this.onForgotPasswordTap,
     required this.onBiometricTap,
+    required this.showBiometricOption,
   });
 
   @override
@@ -141,37 +143,35 @@ class LoginLayout extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
-                Row(
-                  children: [
-                    Expanded(child: Divider(color: colors.surfaceContainerHighest)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: AppText(
-                        text: 'or',
-                        textSize: 13,
-                        textColor: colors.onSurfaceVariant,
+                if (showBiometricOption) ...[
+                  Row(
+                    children: [
+                      Expanded(child: Divider(color: colors.surfaceContainerHighest)),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: AppText(text: 'or', textSize: 13, textColor: colors.onSurfaceVariant),
                       ),
-                    ),
-                    Expanded(child: Divider(color: colors.surfaceContainerHighest)),
-                  ],
-                ),
+                      Expanded(child: Divider(color: colors.surfaceContainerHighest)),
+                    ],
+                  ),
 
-                const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                Button(
-                  text: 'Sign in with Face ID / Touch ID',
-                  buttonColor: colors.surface,
-                  textColor: colors.primary,
-                  borderColor: colors.primary,
-                  borderRadius: 12,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  elevation: 0,
-                  buttonWidth: double.infinity,
-                  buttonHeight: context.buttonSizeH,
-                  iconPath: 'assets/icons/biometric.png',
-                  onPressed: onBiometricTap,
-                ),
+                  Button(
+                    text: 'Sign in with Face ID / Touch ID',
+                    buttonColor: colors.surface,
+                    textColor: colors.primary,
+                    borderColor: colors.primary,
+                    borderRadius: 12,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    elevation: 0,
+                    buttonWidth: double.infinity,
+                    buttonHeight: context.buttonSizeH,
+                    svgIconPath: 'assets/images/auth/Scan_Icon.svg',
+                    onPressed: onBiometricTap,
+                  ),
+                ],
 
                 SizedBox(height: context.vertical),
 
@@ -179,11 +179,7 @@ class LoginLayout extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AppText(
-                        text: "Don't have an account? ",
-                        textSize: 14,
-                        textColor: colors.onSurfaceVariant,
-                      ),
+                      AppText(text: "Don't have an account? ", textSize: 14, textColor: colors.onSurfaceVariant),
                       GestureDetector(
                         onTap: onSignupTap,
                         child: AppText(

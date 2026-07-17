@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:trova/core/app_text.dart';
 
 class Button extends StatelessWidget {
@@ -10,6 +11,7 @@ class Button extends StatelessWidget {
   final String text;
   final double elevation;
   final String? iconPath;
+  final String? svgIconPath;
   final VoidCallback? onPressed;
   final double buttonWidth;
   final double buttonHeight;
@@ -24,25 +26,21 @@ class Button extends StatelessWidget {
     required this.fontSize,
     required this.text,
     this.iconPath,
+    this.svgIconPath,
     required this.buttonWidth,
     required this.buttonHeight,
     required this.fontWeight,
     required this.elevation,
     this.isText = false,
     this.onPressed,
-    this.borderColor, // NEW
+    this.borderColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    final label = AppText(
-      text: text,
-      fontWeight: fontWeight,
-      textSize: fontSize,
-      textColor: textColor,
-    );
+    final label = AppText(text: text, fontWeight: fontWeight, textSize: fontSize, textColor: textColor);
 
     if (isText) {
       return GestureDetector(onTap: onPressed, child: label);
@@ -62,18 +60,17 @@ class Button extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(borderRadius),
-              border: borderColor != null
-                  ? Border.all(color: borderColor!, width: 1.5)
-                  : null,
+              border: borderColor != null ? Border.all(color: borderColor!, width: 1.5) : null,
             ),
-            child: iconPath != null
+            child: svgIconPath != null
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(iconPath!, width: 18, height: 18),
-                      const SizedBox(width: 8),
-                      label,
-                    ],
+                    children: [SvgPicture.asset(svgIconPath!, width: 18, height: 18), const SizedBox(width: 8), label],
+                  )
+                : iconPath != null
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [Image.asset(iconPath!, width: 18, height: 18), const SizedBox(width: 8), label],
                   )
                 : Center(child: label),
           ),

@@ -1,14 +1,33 @@
+import 'package:dio/dio.dart';
+import 'package:trova/core/models/auth_result.dart';
+import 'package:trova/core/network/api_exception.dart';
+import 'package:trova/core/storage/token_storage.dart';
 import 'package:trova/features/log-in/logic/login_model.dart';
 
 class LoginService {
-  Future<bool> submitLogin(LoginData data) async {
-    await Future.delayed(const Duration(seconds: 1)); // simulate network call
+  final Dio dio;
+  final TokenStorage tokenStorage;
 
-    if (data.email.isEmpty || data.password.isEmpty) {
-      throw Exception('Invalid credentials');
+  LoginService({required this.dio, required this.tokenStorage});
+
+  Future<AuthResult> submitLogin(LoginData data) async {
+    try {
+      final response = await dio.post(
+        '/auth/login',
+        data: {
+          'email': data.email,
+          'password': data.password,
+        },
+      );
+
+      final result = AuthResult.fromJson(response.data['data'] as Map<String, dynamic>);
+
+      // Persist the token immediately so subsequent authenticated calls work.
+      await tokenStorage.saveToken(result.token);
+
+      return result;
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
     }
-
-    // Static success for now — replace with real API call tomorrow.
-    return true;
   }
 }

@@ -24,5 +24,12 @@ class OnboardBloc extends Bloc<OnboardEvent, OnboardState> {
         currentIndex: event.currentPage + 1,
       ));
     });
+    on<OnboardingIndexChanged>((event, emit) {
+      final items = onboardService.onboardData;
+      emit(OnboardingSuccess(
+        items: items,
+        currentIndex: event.index,
+      ));
+    });
   }
 }

@@ -19,8 +19,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           confirmPassword: event.confirmPassword,
         );
 
-        await signupService.submitSignup(data);
-        emit(const SignupSuccess());
+        final result = await signupService.submitSignup(data);
+        emit(SignupSuccess(result: result));
       } catch (e) {
         emit(SignupError(message: e.toString()));
       }

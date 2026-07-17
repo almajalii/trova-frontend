@@ -18,3 +18,11 @@ class OnboardingNext extends OnboardEvent {
   @override
   List<Object?> get props => [currentPage];
 }
+
+class OnboardingIndexChanged extends OnboardEvent {
+  final int index;
+  const OnboardingIndexChanged({required this.index});
+
+  @override
+  List<Object?> get props => [index];
+}
