@@ -146,10 +146,7 @@ class SignupLayout extends StatelessWidget {
                   isPassword: true,
                   validator: (value) => FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: 'Please confirm your password'),
-                    FormBuilderValidators.equal(
-                      passwordController.text,
-                      errorText: 'Passwords do not match',
-                    ),
+                    FormBuilderValidators.equal(passwordController.text, errorText: 'Passwords do not match'),
                   ])(value),
                 ),
 
@@ -173,11 +170,7 @@ class SignupLayout extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AppText(
-                        text: 'Already have an account? ',
-                        textSize: 14,
-                        textColor: colors.onSurfaceVariant,
-                      ),
+                      AppText(text: 'Already have an account? ', textSize: 14, textColor: colors.onSurfaceVariant),
                       GestureDetector(
                         onTap: onLoginTap,
                         child: AppText(

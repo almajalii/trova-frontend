@@ -100,7 +100,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 await _maybeOfferBiometricEnrollment(context);
               }
               if (context.mounted) {
-                Navigator.pop(context); // placeholder — swap for real navigation later
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.homeDashboard,
+                  (route) => false,
+                );
               }
             }
           },

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/di/service_locator.dart';
 import 'package:trova/features/email-verification/presentation/screens/verify_email_screen.dart';
 import 'package:trova/features/identity-verification/presentation/screens/identity_verification_screen.dart';
+// NEW — next step after identity verification
+import 'package:trova/features/company-details/presentation/screens/company_details_screen.dart';
 import 'package:trova/features/sign-up/logic/signup_service.dart';
 import 'package:trova/features/sign-up/presentation/bloc/signup_bloc.dart';
 import 'package:trova/features/sign-up/presentation/bloc/signup_event.dart';
@@ -50,7 +52,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   builder: (_) => VerifyEmailScreen(
                     email: state.result.user.email,
                     onVerified: () => navigator.pushReplacement(
-                      MaterialPageRoute(builder: (_) => const IdentityVerificationScreen()),
+                      MaterialPageRoute(
+                        // NEW — was `const IdentityVerificationScreen()` with no
+                        // onVerified, so nothing happened after ID verification.
+                        // Now it chains into Company Details next.
+                        builder: (_) => IdentityVerificationScreen(
+                          onVerified: () => navigator.pushReplacement(
+                            MaterialPageRoute(builder: (_) => const CompanyDetailsScreen()),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
