@@ -14,3 +14,8 @@ class CompanyDetailsSubmitted extends CompanyDetailsEvent {
   @override
   List<Object?> get props => [draft];
 }
+
+/// Triggers the initial GET fetch of the current user's company details.
+class CompanyDetailsRequested extends CompanyDetailsEvent {
+  const CompanyDetailsRequested();
+}

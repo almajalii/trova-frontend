@@ -14,8 +14,6 @@ class MyScoreLayout extends StatelessWidget {
 
   const MyScoreLayout({super.key, required this.score, required this.onBack});
 
-  String _jod(double v) => 'JOD ${v.toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',')}';
-
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
@@ -45,13 +43,21 @@ class MyScoreLayout extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          FactorProgressBar(label: score.financialSolvency.label, percentage: score.financialSolvency.percentage, description: score.financialSolvency.description),
-          const SizedBox(height: 16),
-          _OpenFinanceDetailsCard(data: score.openFinanceData, jod: _jod),
+          FactorProgressBar(label: score.numberOfCurrentDebts.label, percentage: score.numberOfCurrentDebts.percentage, description: score.numberOfCurrentDebts.description),
           const SizedBox(height: 20),
-          FactorProgressBar(label: score.projectTrackRecord.label, percentage: score.projectTrackRecord.percentage, description: score.projectTrackRecord.description),
+          FactorProgressBar(label: score.debtCapacity.label, percentage: score.debtCapacity.percentage, description: score.debtCapacity.description),
           const SizedBox(height: 20),
-          FactorProgressBar(label: score.pastProjectRatings.label, percentage: score.pastProjectRatings.percentage, description: score.pastProjectRatings.description),
+          FactorProgressBar(label: score.companyAssetsValue.label, percentage: score.companyAssetsValue.percentage, description: score.companyAssetsValue.description),
+          const SizedBox(height: 20),
+          FactorProgressBar(label: score.delinquentDebts.label, percentage: score.delinquentDebts.percentage, description: score.delinquentDebts.description),
+          const SizedBox(height: 20),
+          FactorProgressBar(label: score.paymentHistory.label, percentage: score.paymentHistory.percentage, description: score.paymentHistory.description),
+          const SizedBox(height: 20),
+          FactorProgressBar(label: score.currentWorkload.label, percentage: score.currentWorkload.percentage, description: score.currentWorkload.description),
+          const SizedBox(height: 20),
+          FactorProgressBar(label: score.projectDeliveryHistory.label, percentage: score.projectDeliveryHistory.percentage, description: score.projectDeliveryHistory.description),
+          const SizedBox(height: 20),
+          FactorProgressBar(label: score.cashflowTrends.label, percentage: score.cashflowTrends.percentage, description: score.cashflowTrends.description),
         ],
       ),
     );
@@ -77,62 +83,6 @@ class _StatTile extends StatelessWidget {
           Text(label, style: const TextStyle(fontFamily: 'Inter', fontSize: 10, color: Colors.grey)),
         ],
       ),
-    );
-  }
-}
-
-class _OpenFinanceDetailsCard extends StatelessWidget {
-  final OpenFinanceData data;
-  final String Function(double) jod;
-  const _OpenFinanceDetailsCard({required this.data, required this.jod});
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(border: Border.all(color: colors.surfaceBright), borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppText(text: 'Open Finance Data', textSize: 12, fontWeight: FontWeight.w600, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
-          const SizedBox(height: 10),
-          _Row('Current Outstanding Debt', jod(data.currentOutstandingDebtJod), colors.onSurface),
-          const SizedBox(height: 10),
-          _Row('Additional Borrowing Capacity', jod(data.additionalBorrowingCapacityJod), colors.onSurface),
-          const SizedBox(height: 10),
-          _Row('Value of Existing Assets', jod(data.valueOfExistingAssetsJod), colors.onSurface),
-          const SizedBox(height: 10),
-          Divider(height: 1, color: colors.surfaceBright),
-          const SizedBox(height: 10),
-          AppText(text: 'From Bank (via Open Finance)', textSize: 12, fontWeight: FontWeight.w600, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
-          const SizedBox(height: 10),
-          _Row('Distressed / Defaulted Debt', jod(data.distressedDebtJod), AppColors.success),
-          const SizedBox(height: 10),
-          _Row('Debt Payments Settled', '${data.debtPaymentsSettled}', colors.onSurface),
-          const SizedBox(height: 10),
-          _Row('Late Payments', '${data.latePayments}', data.latePayments > 0 ? AppColors.danger : colors.onSurface),
-        ],
-      ),
-    );
-  }
-}
-
-class _Row extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color valueColor;
-  const _Row(this.label, this.value, this.valueColor);
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(child: AppText(text: label, textSize: 13, textColor: colors.onSurface, textAlign: TextAlign.start)),
-        AppText(text: value, textSize: 13, fontWeight: FontWeight.w600, textColor: valueColor),
-      ],
     );
   }
 }

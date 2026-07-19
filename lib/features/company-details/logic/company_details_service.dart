@@ -17,4 +17,16 @@ class CompanyDetailsService {
       throw ApiException.fromDioException(e);
     }
   }
+
+  /// Fetches the current user's previously-submitted company details.
+  /// Throws an [ApiException] with [ApiException.isNotFound] set when the
+  /// user hasn't submitted company details yet (404).
+  Future<CompanyDetailsRecord> fetchMyCompanyDetails() async {
+    try {
+      final response = await dio.get('/company-details');
+      return CompanyDetailsRecord.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
 }

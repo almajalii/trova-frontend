@@ -7,20 +7,14 @@
 //   "classification": { "code": "A", "label": "Large Enterprise" },
 //   "trackRecordStats": { "totalProjects": 13, "failedProjects": 1, "avgRating": 4.8 },
 //   "factors": {
-//     "financialSolvency": {
-//       "percentage": 96,
-//       "description": "Verified via Open Finance access & approval",
-//       "openFinanceData": {
-//         "currentOutstandingDebtJod": 45000,
-//         "additionalBorrowingCapacityJod": 120000,
-//         "valueOfExistingAssetsJod": 310000,
-//         "distressedDebtJod": 0,
-//         "debtPaymentsSettled": 34,
-//         "latePayments": 1
-//       }
-//     },
-//     "projectTrackRecord": { "percentage": 92, "description": "12 of 13 projects completed on time" },
-//     "pastProjectRatings": { "percentage": 95, "description": "Based on 11 project owner reviews" }
+//     "numberOfCurrentDebts": { "percentage": 8, "description": "..." },
+//     "debtCapacity": { "percentage": 12, "description": "..." },
+//     "companyAssetsValue": { "percentage": 10, "description": "..." },
+//     "delinquentDebts": { "percentage": 12, "description": "..." },
+//     "paymentHistory": { "percentage": 20, "description": "..." },
+//     "currentWorkload": { "percentage": 12, "description": "..." },
+//     "projectDeliveryHistory": { "percentage": 10, "description": "..." },
+//     "cashflowTrends": { "percentage": 16, "description": "..." }
 //   }
 // }
 // ───────────────────────────────────────────────────────────────────────
@@ -58,66 +52,50 @@ class ScoreFactor {
       ScoreFactor(label: label, percentage: json['percentage'] as int, description: json['description'] as String);
 }
 
-class OpenFinanceData {
-  final double currentOutstandingDebtJod;
-  final double additionalBorrowingCapacityJod;
-  final double valueOfExistingAssetsJod;
-  final double distressedDebtJod;
-  final int debtPaymentsSettled;
-  final int latePayments;
-
-  const OpenFinanceData({
-    required this.currentOutstandingDebtJod,
-    required this.additionalBorrowingCapacityJod,
-    required this.valueOfExistingAssetsJod,
-    required this.distressedDebtJod,
-    required this.debtPaymentsSettled,
-    required this.latePayments,
-  });
-
-  factory OpenFinanceData.fromJson(Map<String, dynamic> json) => OpenFinanceData(
-        currentOutstandingDebtJod: (json['currentOutstandingDebtJod'] as num).toDouble(),
-        additionalBorrowingCapacityJod: (json['additionalBorrowingCapacityJod'] as num).toDouble(),
-        valueOfExistingAssetsJod: (json['valueOfExistingAssetsJod'] as num).toDouble(),
-        distressedDebtJod: (json['distressedDebtJod'] as num).toDouble(),
-        debtPaymentsSettled: json['debtPaymentsSettled'] as int,
-        latePayments: json['latePayments'] as int,
-      );
-}
-
 class CapabilityScore {
   final int overallScore;
   final String tierLabel;
   final ScoreClassification classification;
   final TrackRecordStats trackRecordStats;
-  final ScoreFactor financialSolvency;
-  final OpenFinanceData openFinanceData;
-  final ScoreFactor projectTrackRecord;
-  final ScoreFactor pastProjectRatings;
+  final ScoreFactor numberOfCurrentDebts;
+  final ScoreFactor debtCapacity;
+  final ScoreFactor companyAssetsValue;
+  final ScoreFactor delinquentDebts;
+  final ScoreFactor paymentHistory;
+  final ScoreFactor currentWorkload;
+  final ScoreFactor projectDeliveryHistory;
+  final ScoreFactor cashflowTrends;
 
   const CapabilityScore({
     required this.overallScore,
     required this.tierLabel,
     required this.classification,
     required this.trackRecordStats,
-    required this.financialSolvency,
-    required this.openFinanceData,
-    required this.projectTrackRecord,
-    required this.pastProjectRatings,
+    required this.numberOfCurrentDebts,
+    required this.debtCapacity,
+    required this.companyAssetsValue,
+    required this.delinquentDebts,
+    required this.paymentHistory,
+    required this.currentWorkload,
+    required this.projectDeliveryHistory,
+    required this.cashflowTrends,
   });
 
   factory CapabilityScore.fromJson(Map<String, dynamic> json) {
     final factors = json['factors'] as Map<String, dynamic>;
-    final financial = factors['financialSolvency'] as Map<String, dynamic>;
     return CapabilityScore(
       overallScore: json['overallScore'] as int,
       tierLabel: json['tierLabel'] as String,
       classification: ScoreClassification.fromJson(json['classification'] as Map<String, dynamic>),
       trackRecordStats: TrackRecordStats.fromJson(json['trackRecordStats'] as Map<String, dynamic>),
-      financialSolvency: ScoreFactor.fromJson('Financial Solvency', financial),
-      openFinanceData: OpenFinanceData.fromJson(financial['openFinanceData'] as Map<String, dynamic>),
-      projectTrackRecord: ScoreFactor.fromJson('Project Track Record', factors['projectTrackRecord'] as Map<String, dynamic>),
-      pastProjectRatings: ScoreFactor.fromJson('Past Project Ratings', factors['pastProjectRatings'] as Map<String, dynamic>),
+      numberOfCurrentDebts: ScoreFactor.fromJson('Number of Current Debts', factors['numberOfCurrentDebts'] as Map<String, dynamic>),
+      debtCapacity: ScoreFactor.fromJson('Debt Capacity', factors['debtCapacity'] as Map<String, dynamic>),
+      companyAssetsValue: ScoreFactor.fromJson('Company Assets Value', factors['companyAssetsValue'] as Map<String, dynamic>),
+      delinquentDebts: ScoreFactor.fromJson('Delinquent Debts', factors['delinquentDebts'] as Map<String, dynamic>),
+      paymentHistory: ScoreFactor.fromJson('Payment History', factors['paymentHistory'] as Map<String, dynamic>),
+      currentWorkload: ScoreFactor.fromJson('Current Workload', factors['currentWorkload'] as Map<String, dynamic>),
+      projectDeliveryHistory: ScoreFactor.fromJson('Project Delivery History', factors['projectDeliveryHistory'] as Map<String, dynamic>),
+      cashflowTrends: ScoreFactor.fromJson('Cashflow Trends', factors['cashflowTrends'] as Map<String, dynamic>),
     );
   }
 
@@ -127,16 +105,13 @@ class CapabilityScore {
         tierLabel: 'Strong Capability',
         classification: ScoreClassification(code: 'A', label: 'Large Enterprise'),
         trackRecordStats: TrackRecordStats(totalProjects: 13, failedProjects: 1, avgRating: 4.8),
-        financialSolvency: ScoreFactor(label: 'Financial Solvency', percentage: 96, description: 'Verified via Open Finance access & approval'),
-        openFinanceData: OpenFinanceData(
-          currentOutstandingDebtJod: 45000,
-          additionalBorrowingCapacityJod: 120000,
-          valueOfExistingAssetsJod: 310000,
-          distressedDebtJod: 0,
-          debtPaymentsSettled: 34,
-          latePayments: 1,
-        ),
-        projectTrackRecord: ScoreFactor(label: 'Project Track Record', percentage: 92, description: '12 of 13 projects completed on time'),
-        pastProjectRatings: ScoreFactor(label: 'Past Project Ratings', percentage: 95, description: 'Based on 11 project owner reviews'),
+        numberOfCurrentDebts: ScoreFactor(label: 'Number of Current Debts', percentage: 8, description: '2 active debts on record'),
+        debtCapacity: ScoreFactor(label: 'Debt Capacity', percentage: 12, description: 'Additional borrowing capacity of JOD 120,000'),
+        companyAssetsValue: ScoreFactor(label: 'Company Assets Value', percentage: 10, description: 'Verified assets valued at JOD 310,000'),
+        delinquentDebts: ScoreFactor(label: 'Delinquent Debts', percentage: 12, description: 'No distressed or defaulted debt found'),
+        paymentHistory: ScoreFactor(label: 'Payment History', percentage: 20, description: '34 of 35 payments settled on time'),
+        currentWorkload: ScoreFactor(label: 'Current Workload', percentage: 12, description: '3 active projects in progress'),
+        projectDeliveryHistory: ScoreFactor(label: 'Project Delivery History', percentage: 10, description: '12 of 13 projects completed on time'),
+        cashflowTrends: ScoreFactor(label: 'Cashflow Trends', percentage: 16, description: 'Stable positive cashflow over the last 6 months'),
       );
 }

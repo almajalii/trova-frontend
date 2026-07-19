@@ -30,3 +30,9 @@ class CapabilityScoreError extends CapabilityScoreState {
   @override
   List<Object?> get props => [message];
 }
+
+/// The user hasn't connected a bank account yet (404) — this is the
+/// normal "first time" case, distinct from [CapabilityScoreError].
+class CapabilityScoreNotFound extends CapabilityScoreState {
+  const CapabilityScoreNotFound();
+}

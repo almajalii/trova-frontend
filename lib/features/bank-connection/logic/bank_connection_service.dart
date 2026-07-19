@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:trova/core/mock_mode.dart';
 import 'package:trova/core/network/api_exception.dart';
 import 'package:trova/features/bank-connection/logic/bank_connection_model.dart';
 
@@ -8,12 +7,8 @@ class BankConnectionService {
   BankConnectionService({required this.dio});
 
   Future<List<BankOption>> fetchAvailableBanks() async {
-    if (kUseMockData) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return BankOption.demoList();
-    }
     try {
-      final response = await dio.get('/bank-connection/available-banks');
+      final response = await dio.get('/bank-connection/banks');
       return (response.data['data'] as List).map((e) => BankOption.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
@@ -21,13 +16,19 @@ class BankConnectionService {
   }
 
   /// Kicks off the Open Finance authorization flow for the chosen bank.
-  Future<void> authorize(String bankCode) async {
-    if (kUseMockData) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return;
-    }
+  /// Returns the authoritative bank name from the backend's response.
+  Future<String> connect({
+    required String bankCode,
+    required double remainingDebtCapacityJod,
+    required int numberOfDelinquentDebts,
+  }) async {
     try {
-      await dio.post('/bank-connection/authorize', data: {'bankCode': bankCode});
+      final response = await dio.post('/bank-connection/connect', data: {
+        'bankCode': bankCode,
+        'remainingDebtCapacityJod': remainingDebtCapacityJod,
+        'numberOfDelinquentDebts': numberOfDelinquentDebts,
+      });
+      return response.data['data']['bankName'] as String;
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

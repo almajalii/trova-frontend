@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trova/core/network/api_exception.dart';
 import 'package:trova/features/company-details/logic/company_details_service.dart';
 import 'package:trova/features/company-details/presentation/bloc/company_details_event.dart';
 import 'package:trova/features/company-details/presentation/bloc/company_details_state.dart';
@@ -12,6 +13,22 @@ class CompanyDetailsBloc extends Bloc<CompanyDetailsEvent, CompanyDetailsState> 
       try {
         final classificationLabel = await companyDetailsService.submit(event.draft);
         emit(CompanyDetailsSuccess(classificationLabel: classificationLabel));
+      } catch (e) {
+        emit(CompanyDetailsError(message: e.toString()));
+      }
+    });
+
+    on<CompanyDetailsRequested>((event, emit) async {
+      emit(const CompanyDetailsFetchLoading());
+      try {
+        final record = await companyDetailsService.fetchMyCompanyDetails();
+        emit(CompanyDetailsFetched(record: record));
+      } on ApiException catch (e) {
+        if (e.isNotFound) {
+          emit(const CompanyDetailsNotFound());
+        } else {
+          emit(CompanyDetailsError(message: e.message));
+        }
       } catch (e) {
         emit(CompanyDetailsError(message: e.toString()));
       }

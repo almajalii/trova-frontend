@@ -34,15 +34,22 @@ class ConnectBankLayout extends StatelessWidget {
             const SizedBox(height: 16),
             Expanded(
               child: ListView.separated(
-                itemCount: banks.length,
+                itemCount: banks.length + 1,
                 separatorBuilder: (_, _) => const SizedBox(height: 12),
-                itemBuilder: (context, i) => _BankRow(bank: banks[i], onTap: () => onBankTap(banks[i])),
+                itemBuilder: (context, i) {
+                  if (i == banks.length) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: AppText(
+                        text: 'Your data is encrypted and only used to calculate your score. You can revoke access anytime.',
+                        textSize: 12,
+                        textColor: colors.onSurfaceVariant,
+                      ),
+                    );
+                  }
+                  return _BankRow(bank: banks[i], onTap: () => onBankTap(banks[i]));
+                },
               ),
-            ),
-            AppText(
-              text: 'Your data is encrypted and only used to calculate your score. You can revoke access anytime.',
-              textSize: 12,
-              textColor: colors.onSurfaceVariant,
             ),
           ],
         ),
@@ -72,7 +79,7 @@ class _BankRow extends StatelessWidget {
               height: 40,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: AppColors.primaryTint, borderRadius: BorderRadius.circular(10)),
-              child: Text(bank.code, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 15, color: colors.primary)),
+              child: Text(bank.initials, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 15, color: colors.primary)),
             ),
             const SizedBox(width: 14),
             Expanded(child: AppText(text: bank.name, textSize: 14, fontWeight: FontWeight.w600, textColor: colors.onSurface, textAlign: TextAlign.start)),

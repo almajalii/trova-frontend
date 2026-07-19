@@ -4,11 +4,14 @@ import 'package:trova/core/app_title.dart';
 import 'package:trova/core/button.dart';
 import 'package:trova/core/inputfeild.dart';
 import 'package:trova/core/responsive_utils.dart';
+import 'package:trova/features/company-details/logic/company_details_model.dart';
 
 class CompanyDetailsLayout extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController companyNameController;
-  final TextEditingController sectorController;
+  final List<String> selectedSectors;
+  final ValueChanged<List<String>> onSectorsChanged;
+  final String? sectorsErrorText;
   final TextEditingController registrationNumberController;
   final TextEditingController yearsInOperationController;
   final TextEditingController teamSizeController;
@@ -21,7 +24,9 @@ class CompanyDetailsLayout extends StatelessWidget {
     super.key,
     required this.formKey,
     required this.companyNameController,
-    required this.sectorController,
+    required this.selectedSectors,
+    required this.onSectorsChanged,
+    this.sectorsErrorText,
     required this.registrationNumberController,
     required this.yearsInOperationController,
     required this.teamSizeController,
@@ -60,7 +65,36 @@ class CompanyDetailsLayout extends StatelessWidget {
                     InputField(controller: companyNameController, hintText: 'e.g. Al-Fahad Contracting', validator: _required),
                     const SizedBox(height: 16),
                     _Label('Sector'),
-                    InputField(controller: sectorController, hintText: 'e.g. Construction & Engineering', validator: _required),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: kAllowedSectors.map((sector) {
+                        final isSelected = selectedSectors.contains(sector);
+                        return FilterChip(
+                          label: Text(sector),
+                          selected: isSelected,
+                          showCheckmark: false,
+                          selectedColor: colors.primary.withValues(alpha: 0.15),
+                          backgroundColor: colors.surface,
+                          side: BorderSide(color: isSelected ? colors.primary : colors.surfaceBright, width: 1),
+                          labelStyle: TextStyle(color: isSelected ? colors.primary : colors.onSurfaceVariant, fontWeight: FontWeight.w400),
+                          onSelected: (selected) {
+                            final updated = List<String>.from(selectedSectors);
+                            if (selected) {
+                              updated.add(sector);
+                            } else {
+                              updated.remove(sector);
+                            }
+                            onSectorsChanged(updated);
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    if (sectorsErrorText != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: AppText(text: sectorsErrorText!, textSize: 12, textColor: colors.error, textAlign: TextAlign.start),
+                      ),
                     const SizedBox(height: 16),
                     _Label('Registration Number'),
                     InputField(controller: registrationNumberController, hintText: 'Company registration ID', validator: _required),
