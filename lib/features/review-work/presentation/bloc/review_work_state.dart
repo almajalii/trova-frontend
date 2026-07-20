@@ -34,11 +34,12 @@ class ReviewWorkSubmitting extends ReviewWorkState {
 }
 
 class WorkConfirmedComplete extends ReviewWorkState {
+  final String projectId;
   final String projectTitle;
-  const WorkConfirmedComplete({required this.projectTitle});
+  const WorkConfirmedComplete({required this.projectId, required this.projectTitle});
 
   @override
-  List<Object?> get props => [projectTitle];
+  List<Object?> get props => [projectId, projectTitle];
 }
 
 class WorkIssueFlagged extends ReviewWorkState {
