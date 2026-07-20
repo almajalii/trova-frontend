@@ -3,8 +3,12 @@ import 'package:dio/dio.dart';
 import 'package:trova/core/network/dio_client.dart';
 import 'package:trova/core/services/biometric_auth_service.dart';
 import 'package:trova/core/storage/token_storage.dart';
+import 'package:trova/features/guarantee-review/logic/guarantee_review_service.dart';
 import 'package:trova/features/log-in/logic/biometric_login_service.dart';
 import 'package:trova/features/log-in/logic/login_service.dart';
+import 'package:trova/features/project-detail/logic/project_detail_service.dart';
+import 'package:trova/features/project-history/logic/project_history_service.dart';
+import 'package:trova/features/review-work/logic/review_work_service.dart';
 import 'package:trova/features/sign-up/logic/signup_service.dart';
 import 'package:trova/features/email-verification/logic/verify_email_service.dart';
 import 'package:trova/features/forgot-password/logic/forgot_password_service.dart';
@@ -18,6 +22,7 @@ import 'package:trova/features/bank-connection/logic/bank_connection_service.dar
 import 'package:trova/features/post-project/logic/post_project_service.dart';
 import 'package:trova/features/bidders/logic/bidders_service.dart';
 import 'package:trova/features/guarantees/logic/guarantee_service.dart';
+import 'package:trova/features/my-projects/logic/my_projects_service.dart';
 
 /// Global service locator. Call `setupLocator()` once in main() before
 /// runApp(). Access anything registered here via `sl<Type>()`.
@@ -60,4 +65,9 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<PostProjectService>(() => PostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<BiddersService>(() => BiddersService(dio: sl<Dio>()));
   sl.registerLazySingleton<GuaranteeService>(() => GuaranteeService(dio: sl<Dio>()));
+  sl.registerLazySingleton<MyProjectsService>(() => MyProjectsService(dio: sl<Dio>()));
+  sl.registerLazySingleton<ProjectHistoryService>(() => ProjectHistoryService(dio: sl<Dio>()));
+  sl.registerLazySingleton<ProjectDetailService>(() => ProjectDetailService(dio: sl<Dio>()));
+  sl.registerLazySingleton<GuaranteeReviewService>(() => GuaranteeReviewService(dio: sl<Dio>()));
+  sl.registerLazySingleton<ReviewWorkService>(() => ReviewWorkService(dio: sl<Dio>()));
 }

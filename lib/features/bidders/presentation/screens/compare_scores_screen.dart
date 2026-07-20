@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trova/features/bidders/logic/bidder_model.dart';
 import 'package:trova/features/bidders/presentation/widget/compare_scores_layout.dart';
-import 'package:trova/features/guarantees/presentation/screens/award_request_guarantee_screen.dart';
+import 'package:trova/features/guarantee-review/presentation/screens/project_awarded_screen.dart';
 
 class CompareScoresScreen extends StatefulWidget {
   final String projectId;
@@ -35,14 +35,12 @@ class _CompareScoresScreenState extends State<CompareScoresScreen> {
         onBack: () => Navigator.of(context).maybePop(),
         onSelectBidder: (b) => setState(() => _selected = b),
         onAward: () {
-          if (_selected == null) return;
+          final selected = _selected;
+          if (selected == null) return;
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => AwardRequestGuaranteeScreen(
-                projectId: widget.projectId,
-                projectTitle: widget.projectTitle,
-                awardedBidder: _selected!,
-              ),
+              builder: (_) =>
+                  ProjectAwardedScreen(projectTitle: widget.projectTitle, contractorName: selected.companyName),
             ),
           );
         },

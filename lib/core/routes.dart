@@ -8,6 +8,7 @@ import 'package:trova/features/identity-verification/presentation/screens/identi
 import 'package:trova/features/home-dashboard/presentation/screens/home_dashboard_screen.dart';
 import 'package:trova/features/bank-connection/presentation/screens/connect_bank_account_screen.dart';
 import 'package:trova/features/post-project/presentation/screens/post_a_project_screen.dart';
+import 'package:trova/features/my-projects/presentation/screens/my_projects_screen.dart';
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -19,6 +20,7 @@ class AppRoutes {
   static const String homeDashboard = '/home';
   static const String connectBank = '/connect-bank';
   static const String postProject = '/post-project';
+  static const String myProjects = '/my-projects'; // NEW
 
   // NOTE: verify-email and the identity-confirm screens require constructor
   // params (email, IdentityInfo, callbacks) that don't fit this simple named-
@@ -52,6 +54,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const ConnectBankAccountScreen());
       case postProject:
         return MaterialPageRoute(builder: (_) => const PostAProjectScreen());
+      case myProjects:
+        return MaterialPageRoute(builder: (_) => const MyProjectsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(body: Center(child: Text('404 - Route not found'))),
