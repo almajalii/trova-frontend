@@ -20,7 +20,9 @@ class BiddersListScreen extends StatefulWidget {
 
 class _BiddersListScreenState extends State<BiddersListScreen> {
   final Set<String> _selected = {};
-  static const _maxSelection = 4;
+
+  // Updated to 3 to match the Figma subtitle: "Select up to 3 to compare."
+  static const _maxSelection = 3;
   bool _preselected = false;
 
   void _toggle(Bidder b) {
@@ -38,7 +40,8 @@ class _BiddersListScreenState extends State<BiddersListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (_) => BiddersBloc(biddersService: sl<BiddersService>())..add(BiddersStarted(projectId: widget.projectId)),
+        create: (_) =>
+            BiddersBloc(biddersService: sl<BiddersService>())..add(BiddersStarted(projectId: widget.projectId)),
         child: BlocConsumer<BiddersBloc, BiddersState>(
           listener: (context, state) {
             if (state is BiddersError) {
@@ -50,7 +53,12 @@ class _BiddersListScreenState extends State<BiddersListScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is BiddersError) {
-              return Center(child: Padding(padding: const EdgeInsets.all(24), child: Text(state.message, textAlign: TextAlign.center)));
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(state.message, textAlign: TextAlign.center),
+                ),
+              );
             }
             final bidders = (state as BiddersLoaded).bidders;
 
@@ -74,9 +82,15 @@ class _BiddersListScreenState extends State<BiddersListScreen> {
                   ? null
                   : () {
                       final chosen = bidders.where((b) => _selected.contains(b.companyName)).toList();
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => CompareScoresScreen(projectId: widget.projectId, projectTitle: widget.projectTitle, bidders: chosen),
-                      ));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => CompareScoresScreen(
+                            projectId: widget.projectId,
+                            projectTitle: widget.projectTitle,
+                            bidders: chosen,
+                          ),
+                        ),
+                      );
                     },
             );
           },

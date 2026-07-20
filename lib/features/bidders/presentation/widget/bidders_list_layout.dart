@@ -37,11 +37,27 @@ class BiddersListLayout extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            IconButton(onPressed: onBack, icon: Icon(Icons.arrow_back, color: colors.onSurface), padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
+            IconButton(
+              onPressed: onBack,
+              icon: Icon(Icons.arrow_back, color: colors.onSurface),
+              padding: EdgeInsets.zero,
+              alignment: Alignment.centerLeft,
+            ),
             const SizedBox(height: 8),
-            AppTitle(title: '$projectTitle — Bidders', size: 20, weight: FontWeight.w700, titleColor: colors.onSurface, textAlign: TextAlign.start),
+            AppTitle(
+              title: '$projectTitle — Bidders',
+              size: 20,
+              weight: FontWeight.w700,
+              titleColor: colors.onSurface,
+              textAlign: TextAlign.start,
+            ),
             const SizedBox(height: 6),
-            AppText(text: '${bidders.length} contractors bid on this project. Select up to $maxSelection to compare.', textSize: 13, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
+            AppText(
+              text: '${bidders.length} contractors bid on this project. Select up to $maxSelection to compare.',
+              textSize: 13,
+              textColor: colors.onSurfaceVariant,
+              textAlign: TextAlign.start,
+            ),
             const SizedBox(height: 14),
             Expanded(
               child: ListView.separated(
@@ -75,12 +91,20 @@ class _BidderCard extends StatelessWidget {
   final Bidder bidder;
   final bool selected;
   final VoidCallback onTap;
+
   const _BidderCard({required this.bidder, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     final highlight = selected && bidder.eligible;
+
+    // Add comma formatting to the JOD amount
+    final formattedBid = bidder.bidAmountJod.toInt().toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
+
     return InkWell(
       onTap: bidder.eligible ? onTap : null,
       borderRadius: BorderRadius.circular(12),
@@ -99,12 +123,26 @@ class _BidderCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppText(text: bidder.companyName, textSize: 14, fontWeight: FontWeight.w600, textColor: colors.onSurface, textAlign: TextAlign.start),
+                  AppText(
+                    text: bidder.companyName,
+                    textSize: 14,
+                    fontWeight: FontWeight.w600,
+                    textColor: colors.onSurface,
+                    textAlign: TextAlign.start,
+                  ),
                   const SizedBox(height: 2),
-                  AppText(text: 'Bid: JOD ${bidder.bidAmountJod.toStringAsFixed(0)}', textSize: 12, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
+                  AppText(
+                    text: 'Bid: JOD $formattedBid',
+                    textSize: 12,
+                    textColor: colors.onSurfaceVariant,
+                    textAlign: TextAlign.start,
+                  ),
                   const SizedBox(height: 6),
                   StatusPill(
-                    text: bidder.eligible ? 'Class ${bidder.classification}' : 'Class ${bidder.classification} · Below required tier',
+                    // Changed '·' to '-' to match Figma mockup
+                    text: bidder.eligible
+                        ? 'Class ${bidder.classification}'
+                        : 'Class ${bidder.classification} - Below required tier',
                     background: bidder.eligible ? AppColors.neutralTagBg : AppColors.dangerBg,
                     foreground: bidder.eligible ? colors.onSurfaceVariant : AppColors.danger,
                     fontSize: 10,
@@ -113,18 +151,18 @@ class _BidderCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (bidder.eligible)
-              Container(
-                width: 22,
-                height: 22,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: highlight ? colors.primary : Colors.transparent,
-                  border: Border.all(color: highlight ? colors.primary : colors.surfaceBright, width: 1.5),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: highlight ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
+            // Removed eligibility check wrapper so the empty checkbox remains visible
+            Container(
+              width: 22,
+              height: 22,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: highlight ? colors.primary : Colors.transparent,
+                border: Border.all(color: highlight ? colors.primary : colors.surfaceBright, width: 1.5),
+                borderRadius: BorderRadius.circular(6),
               ),
+              child: highlight ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
+            ),
           ],
         ),
       ),

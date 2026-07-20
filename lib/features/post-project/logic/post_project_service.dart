@@ -12,6 +12,7 @@ class PostProjectService {
       await Future.delayed(const Duration(milliseconds: 400));
       return 'mock-project-id-123';
     }
+
     try {
       final response = await dio.post('/projects', data: draft.toJson());
       return response.data['data']['projectId'] as String;

@@ -8,7 +8,7 @@ import 'package:trova/core/score_ring.dart';
 import 'package:trova/features/bidders/logic/bidder_model.dart';
 
 class CompareScoresLayout extends StatelessWidget {
-  final List<Bidder> bidders; // up to 4 selected bidders
+  final List<Bidder> bidders; // up to 3 selected bidders
   final Bidder? selectedBidder; // tapped by the user — award target
   final VoidCallback onBack;
   final ValueChanged<Bidder> onSelectBidder;
@@ -32,11 +32,20 @@ class CompareScoresLayout extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            IconButton(onPressed: onBack, icon: Icon(Icons.arrow_back, color: colors.onSurface), padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
+            IconButton(
+              onPressed: onBack,
+              icon: Icon(Icons.arrow_back, color: colors.onSurface),
+              padding: EdgeInsets.zero,
+              alignment: Alignment.centerLeft,
+            ),
             const SizedBox(height: 8),
-            AppTitle(title: 'Compare Contractors', size: 20, weight: FontWeight.w700, titleColor: colors.onSurface, textAlign: TextAlign.start),
-            const SizedBox(height: 6),
-            AppText(text: 'Tap a contractor to select them for award.', textSize: 13, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
+            AppTitle(
+              title: 'Compare Contractors',
+              size: 20,
+              weight: FontWeight.w700,
+              titleColor: colors.onSurface,
+              textAlign: TextAlign.start,
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: SingleChildScrollView(
@@ -82,11 +91,19 @@ class _CompareColumn extends StatelessWidget {
   final Bidder bidder;
   final bool selected;
   final VoidCallback onTap;
+
   const _CompareColumn({required this.bidder, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+
+    // Add comma formatting to the JOD amount
+    final formattedBid = bidder.bidAmountJod.toInt().toString().replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]},',
+    );
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -99,14 +116,34 @@ class _CompareColumn extends StatelessWidget {
         ),
         child: Column(
           children: [
-            AppText(text: bidder.companyName, textSize: 13, fontWeight: FontWeight.w600, textColor: colors.onSurface, textAlign: TextAlign.center),
-            const SizedBox(height: 10),
+            AppText(
+              text: bidder.companyName,
+              textSize: 13,
+              fontWeight: FontWeight.w700,
+              textColor: colors.onSurface,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
             ScoreCircleBadge(score: bidder.capabilityScore, size: 56, fontSize: 20, tinted: true),
-            const SizedBox(height: 10),
-            _SubFactor(label: 'Liquidity', value: bidder.liquidityPct),
-            _SubFactor(label: 'Revenue', value: bidder.revenuePct),
-            _SubFactor(label: 'Debt', value: bidder.debtPct),
-            _SubFactor(label: 'Reputation', value: bidder.reputationPct),
+            const SizedBox(height: 16),
+
+            // New Bid Section
+            AppText(text: 'Bid Submitted', textSize: 10, textColor: colors.onSurfaceVariant),
+            const SizedBox(height: 4),
+            AppText(text: 'JOD $formattedBid', textSize: 14, fontWeight: FontWeight.w700, textColor: colors.onSurface),
+            const SizedBox(height: 12),
+            Divider(color: colors.surfaceBright, height: 1),
+            const SizedBox(height: 4),
+
+            // Updated SubFactors
+            _SubFactor(label: 'Current Debts', value: bidder.currentDebtsPct),
+            _SubFactor(label: 'Debt Capacity', value: bidder.debtCapacityPct),
+            _SubFactor(label: 'Assets Value', value: bidder.assetsValuePct),
+            _SubFactor(label: 'Delinquent Debts', value: bidder.delinquentDebtsPct),
+            _SubFactor(label: 'Payment History', value: bidder.paymentHistoryPct),
+            _SubFactor(label: 'Current Workload', value: bidder.currentWorkloadPct),
+            _SubFactor(label: 'Delivery History', value: bidder.deliveryHistoryPct),
+            _SubFactor(label: 'Cashflow Trends', value: bidder.cashflowTrendsPct),
           ],
         ),
       ),
@@ -122,13 +159,18 @@ class _SubFactor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+
+    // Values >= 70 are green, otherwise they use the danger color
+    final isHealthy = value >= 70;
+    final valueColor = isHealthy ? Colors.green.shade700 : AppColors.danger;
+
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: Column(
         children: [
           AppText(text: label, textSize: 10, textColor: colors.onSurfaceVariant),
-          const SizedBox(height: 2),
-          AppText(text: '$value%', textSize: 13, fontWeight: FontWeight.w600, textColor: colors.onSurface),
+          const SizedBox(height: 4),
+          AppText(text: '$value%', textSize: 13, fontWeight: FontWeight.w700, textColor: valueColor),
         ],
       ),
     );

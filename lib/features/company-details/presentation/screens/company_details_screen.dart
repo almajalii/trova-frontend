@@ -27,11 +27,35 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   late final CompanyDetailsBloc _bloc;
 
   final _formKey = GlobalKey<FormState>();
-  final _companyNameController = TextEditingController();
+
+  // Company Legal Info
+  final _legalCompanyNameController = TextEditingController();
+  final _tradingNameController = TextEditingController();
   final _registrationNumberController = TextEditingController();
-  final _yearsInOperationController = TextEditingController();
+  final _taxVatNumberController = TextEditingController();
+  final _legalStructureController = TextEditingController();
+  final _yearOfEstablishmentController = TextEditingController();
+  final _registeredAddressController = TextEditingController();
+  final _countryOfRegistrationController = TextEditingController();
+
+  // Contact Information
+  final _primaryContactNameController = TextEditingController();
+  final _positionTitleController = TextEditingController();
+  final _primaryEmailController = TextEditingController();
+  final _primaryPhoneNumberController = TextEditingController();
+
+  // Business Qualifications
+  final _businessLicenseNumberController = TextEditingController();
+  final _contractorClassificationGradeController = TextEditingController();
+  final _yearsOfExperienceController = TextEditingController();
   final _teamSizeController = TextEditingController();
   final _annualRevenueController = TextEditingController();
+
+  // Banking Basics
+  final _primaryBankNameController = TextEditingController();
+  final _ibanNumberController = TextEditingController();
+  final _swiftBicCodeController = TextEditingController();
+  final _bankBranchNameCityController = TextEditingController();
 
   List<String> _selectedSectors = [];
   String? _sectorsErrorText;
@@ -50,38 +74,86 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   @override
   void dispose() {
     _bloc.close();
-    _companyNameController.dispose();
+    _legalCompanyNameController.dispose();
+    _tradingNameController.dispose();
     _registrationNumberController.dispose();
-    _yearsInOperationController.dispose();
+    _taxVatNumberController.dispose();
+    _legalStructureController.dispose();
+    _yearOfEstablishmentController.dispose();
+    _registeredAddressController.dispose();
+    _countryOfRegistrationController.dispose();
+    _primaryContactNameController.dispose();
+    _positionTitleController.dispose();
+    _primaryEmailController.dispose();
+    _primaryPhoneNumberController.dispose();
+    _businessLicenseNumberController.dispose();
+    _contractorClassificationGradeController.dispose();
+    _yearsOfExperienceController.dispose();
     _teamSizeController.dispose();
     _annualRevenueController.dispose();
+    _primaryBankNameController.dispose();
+    _ibanNumberController.dispose();
+    _swiftBicCodeController.dispose();
+    _bankBranchNameCityController.dispose();
     super.dispose();
   }
 
   void _prefillFrom(CompanyDetailsRecord record) {
-    _companyNameController.text = record.companyName;
-    _selectedSectors = List<String>.from(record.sectors);
+    _legalCompanyNameController.text = record.legalCompanyName;
+    _tradingNameController.text = record.tradingName;
     _registrationNumberController.text = record.registrationNumber;
-    _yearsInOperationController.text = record.yearsInOperation.toString();
+    _taxVatNumberController.text = record.taxVatNumber;
+    _legalStructureController.text = record.legalStructure;
+    _yearOfEstablishmentController.text = record.yearOfEstablishment.toString();
+    _registeredAddressController.text = record.registeredAddress;
+    _countryOfRegistrationController.text = record.countryOfRegistration;
+    _primaryContactNameController.text = record.primaryContactName;
+    _positionTitleController.text = record.positionTitle;
+    _primaryEmailController.text = record.primaryEmail;
+    _primaryPhoneNumberController.text = record.primaryPhoneNumber;
+    _businessLicenseNumberController.text = record.businessLicenseNumber;
+    _contractorClassificationGradeController.text = record.contractorClassificationGrade;
+    _selectedSectors = List<String>.from(record.sectors);
+    _yearsOfExperienceController.text = record.yearsOfExperience.toString();
     _teamSizeController.text = record.teamSize.toString();
     _annualRevenueController.text = record.annualRevenueJod.toString();
+    _primaryBankNameController.text = record.primaryBankName;
+    _ibanNumberController.text = record.ibanNumber;
+    _swiftBicCodeController.text = record.swiftBicCode;
+    _bankBranchNameCityController.text = record.bankBranchNameCity;
   }
 
   void _submit() {
     final formValid = _formKey.currentState!.validate();
     final sectorsValid = _selectedSectors.isNotEmpty;
     setState(() {
-      _sectorsErrorText = sectorsValid ? null : 'Select at least one sector';
+      _sectorsErrorText = sectorsValid ? null : 'Select at least one area of expertise';
     });
     if (!formValid || !sectorsValid) return;
 
     final draft = CompanyDetailsDraft(
-      companyName: _companyNameController.text.trim(),
-      sectors: _selectedSectors,
+      legalCompanyName: _legalCompanyNameController.text.trim(),
+      tradingName: _tradingNameController.text.trim(),
       registrationNumber: _registrationNumberController.text.trim(),
-      yearsInOperation: int.tryParse(_yearsInOperationController.text) ?? 0,
+      taxVatNumber: _taxVatNumberController.text.trim(),
+      legalStructure: _legalStructureController.text.trim(),
+      yearOfEstablishment: int.tryParse(_yearOfEstablishmentController.text) ?? 0,
+      registeredAddress: _registeredAddressController.text.trim(),
+      countryOfRegistration: _countryOfRegistrationController.text.trim(),
+      primaryContactName: _primaryContactNameController.text.trim(),
+      positionTitle: _positionTitleController.text.trim(),
+      primaryEmail: _primaryEmailController.text.trim(),
+      primaryPhoneNumber: _primaryPhoneNumberController.text.trim(),
+      businessLicenseNumber: _businessLicenseNumberController.text.trim(),
+      contractorClassificationGrade: _contractorClassificationGradeController.text.trim(),
+      sectors: _selectedSectors,
+      yearsOfExperience: int.tryParse(_yearsOfExperienceController.text) ?? 0,
       teamSize: int.tryParse(_teamSizeController.text) ?? 0,
       annualRevenueJod: double.tryParse(_annualRevenueController.text) ?? 0,
+      primaryBankName: _primaryBankNameController.text.trim(),
+      ibanNumber: _ibanNumberController.text.trim(),
+      swiftBicCode: _swiftBicCodeController.text.trim(),
+      bankBranchNameCity: _bankBranchNameCityController.text.trim(),
     );
     _bloc.add(CompanyDetailsSubmitted(draft: draft));
   }
@@ -107,9 +179,9 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
               if (widget.onSaved != null) {
                 widget.onSaved!.call();
               } else {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => const ConnectBankAccountScreen()),
-                );
+                Navigator.of(
+                  context,
+                ).pushReplacement(MaterialPageRoute(builder: (_) => const ConnectBankAccountScreen()));
               }
             }
           },
@@ -118,16 +190,26 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is CompanyDetailsError && !_hasResolvedInitialFetch) {
-              return _FetchErrorView(
-                message: state.message,
-                onRetry: () => _bloc.add(const CompanyDetailsRequested()),
-              );
+              return _FetchErrorView(message: state.message, onRetry: () => _bloc.add(const CompanyDetailsRequested()));
             }
 
             final isLoading = state is CompanyDetailsLoading;
             return CompanyDetailsLayout(
               formKey: _formKey,
-              companyNameController: _companyNameController,
+              legalCompanyNameController: _legalCompanyNameController,
+              tradingNameController: _tradingNameController,
+              registrationNumberController: _registrationNumberController,
+              taxVatNumberController: _taxVatNumberController,
+              legalStructureController: _legalStructureController,
+              yearOfEstablishmentController: _yearOfEstablishmentController,
+              registeredAddressController: _registeredAddressController,
+              countryOfRegistrationController: _countryOfRegistrationController,
+              primaryContactNameController: _primaryContactNameController,
+              positionTitleController: _positionTitleController,
+              primaryEmailController: _primaryEmailController,
+              primaryPhoneNumberController: _primaryPhoneNumberController,
+              businessLicenseNumberController: _businessLicenseNumberController,
+              contractorClassificationGradeController: _contractorClassificationGradeController,
               selectedSectors: _selectedSectors,
               onSectorsChanged: (updated) {
                 setState(() {
@@ -136,10 +218,13 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
                 });
               },
               sectorsErrorText: _sectorsErrorText,
-              registrationNumberController: _registrationNumberController,
-              yearsInOperationController: _yearsInOperationController,
+              yearsOfExperienceController: _yearsOfExperienceController,
               teamSizeController: _teamSizeController,
               annualRevenueController: _annualRevenueController,
+              primaryBankNameController: _primaryBankNameController,
+              ibanNumberController: _ibanNumberController,
+              swiftBicCodeController: _swiftBicCodeController,
+              bankBranchNameCityController: _bankBranchNameCityController,
               isLoading: isLoading,
               onBack: () => Navigator.of(context).maybePop(),
               onSubmit: _submit,

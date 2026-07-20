@@ -1,10 +1,20 @@
+import 'package:equatable/equatable.dart';
+
 // ── DATA SHAPE NOTE FOR BACKEND ──────────────────────────────────────────
 // POST /api/projects
 // {
 //   "title": "Al-Noor Tower Construction",
-//   "contractValueJod": 240000,
+//   "sector": "Construction",
+//   "location": "Amman, Abdali District",
+//   "contractValue": 240000,
+//   "currency": "JOD",
+//   "duration": "14 months (Aug 2026 – Oct 2027)",
+//   "milestones": "Foundation - Month 2...",
+//   "bidSubmissionDeadline": "2026-08-15T00:00:00.000",
 //   "minimumRequiredScore": 80,
 //   "minimumClassification": "B",      // enum: A | B | C
+//   "guaranteeType": "Performance",
+//   "paymentTerms": "20% upfront / 60% at milestones / 20% on completion",
 //   "description": "..."
 // }
 // → 201 { "data": { "projectId": "..." } }
@@ -36,26 +46,67 @@ extension ClassificationCodeX on ClassificationCode {
   }
 }
 
-class ProjectDraft {
+class ProjectDraft extends Equatable {
   final String title;
-  final double contractValueJod;
+  final String sector;
+  final String location;
+  final double contractValue;
+  final String currency;
+  final String duration;
+  final String milestones;
+  final DateTime bidSubmissionDeadline;
   final int minimumRequiredScore;
   final ClassificationCode minimumClassification;
+  final String guaranteeType;
+  final String paymentTerms;
   final String description;
 
   const ProjectDraft({
     required this.title,
-    required this.contractValueJod,
+    required this.sector,
+    required this.location,
+    required this.contractValue,
+    this.currency = 'JOD',
+    required this.duration,
+    required this.milestones,
+    required this.bidSubmissionDeadline,
     required this.minimumRequiredScore,
     required this.minimumClassification,
+    required this.guaranteeType,
+    required this.paymentTerms,
     required this.description,
   });
 
   Map<String, dynamic> toJson() => {
-        'title': title,
-        'contractValueJod': contractValueJod,
-        'minimumRequiredScore': minimumRequiredScore,
-        'minimumClassification': minimumClassification.apiValue,
-        'description': description,
-      };
+    'title': title,
+    'sector': sector,
+    'location': location,
+    'contractValue': contractValue,
+    'currency': currency,
+    'duration': duration,
+    'milestones': milestones,
+    'bidSubmissionDeadline': bidSubmissionDeadline.toIso8601String(),
+    'minimumRequiredScore': minimumRequiredScore,
+    'minimumClassification': minimumClassification.apiValue,
+    'guaranteeType': guaranteeType,
+    'paymentTerms': paymentTerms,
+    'description': description,
+  };
+
+  @override
+  List<Object?> get props => [
+    title,
+    sector,
+    location,
+    contractValue,
+    currency,
+    duration,
+    milestones,
+    bidSubmissionDeadline,
+    minimumRequiredScore,
+    minimumClassification,
+    guaranteeType,
+    paymentTerms,
+    description,
+  ];
 }
