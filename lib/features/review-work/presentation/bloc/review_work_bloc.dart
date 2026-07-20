@@ -23,7 +23,7 @@ class ReviewWorkBloc extends Bloc<ReviewWorkEvent, ReviewWorkState> {
       emit(ReviewWorkSubmitting(work: current.work));
       try {
         await reviewWorkService.confirmComplete(current.work.projectId);
-        emit(WorkConfirmedComplete(projectTitle: current.work.projectTitle));
+        emit(WorkConfirmedComplete(projectId: current.work.projectId, projectTitle: current.work.projectTitle));
       } catch (e) {
         emit(ReviewWorkError(message: e.toString()));
       }

@@ -229,6 +229,7 @@ class ProjectDetail {
         DetailTimelineStep(label: 'In Progress', state: DetailStepState.upcoming),
         DetailTimelineStep(label: 'Pending Review → Completed', state: DetailStepState.upcoming),
       ],
+      actionLabel: 'Review Guarantee',
     ),
     ProjectDetail(
       id: 'TRV-PRJ-60214',

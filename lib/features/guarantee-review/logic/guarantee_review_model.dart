@@ -167,5 +167,18 @@ class OwnerGuarantee {
       issueDate: DateTime(2026, 3, 12),
       claimDate: DateTime(2026, 5, 10),
     ),
+    OwnerGuarantee(
+      guaranteeId: 'TRV-GT-77104',
+      projectId: 'TRV-PRJ-33871',
+      projectTitle: 'Al-Salam Mall',
+      contractorName: 'Al-Fahad Contracting',
+      beneficiary: 'You',
+      issuingBank: 'Arab Bank',
+      amountJod: 22800,
+      type: 'Performance Guarantee',
+      status: OwnerGuaranteeStatus.active,
+      issueDate: DateTime(2026, 6, 29),
+      validUntil: DateTime(2027, 4, 30),
+    ),
   ];
 }

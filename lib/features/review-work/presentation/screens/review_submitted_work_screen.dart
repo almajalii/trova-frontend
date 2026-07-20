@@ -27,7 +27,9 @@ class ReviewSubmittedWorkScreen extends StatelessWidget {
             }
             if (state is WorkConfirmedComplete) {
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => WorkConfirmedScreen(projectTitle: state.projectTitle)),
+                MaterialPageRoute(
+                  builder: (_) => WorkConfirmedScreen(projectTitle: state.projectTitle, projectId: state.projectId),
+                ),
               );
             }
             if (state is WorkIssueFlagged) {

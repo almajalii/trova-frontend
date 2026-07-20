@@ -4,10 +4,12 @@ import 'package:trova/core/network/dio_client.dart';
 import 'package:trova/core/services/biometric_auth_service.dart';
 import 'package:trova/core/storage/token_storage.dart';
 import 'package:trova/features/guarantee-review/logic/guarantee_review_service.dart';
+import 'package:trova/features/leave-review/logic/leave_review_service.dart';
 import 'package:trova/features/log-in/logic/biometric_login_service.dart';
 import 'package:trova/features/log-in/logic/login_service.dart';
 import 'package:trova/features/project-detail/logic/project_detail_service.dart';
 import 'package:trova/features/project-history/logic/project_history_service.dart';
+import 'package:trova/features/repost-project/logic/repost_project_service.dart';
 import 'package:trova/features/review-work/logic/review_work_service.dart';
 import 'package:trova/features/sign-up/logic/signup_service.dart';
 import 'package:trova/features/email-verification/logic/verify_email_service.dart';
@@ -70,4 +72,6 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<ProjectDetailService>(() => ProjectDetailService(dio: sl<Dio>()));
   sl.registerLazySingleton<GuaranteeReviewService>(() => GuaranteeReviewService(dio: sl<Dio>()));
   sl.registerLazySingleton<ReviewWorkService>(() => ReviewWorkService(dio: sl<Dio>()));
+  sl.registerLazySingleton<RepostProjectService>(() => RepostProjectService(dio: sl<Dio>()));
+  sl.registerLazySingleton<LeaveReviewService>(() => LeaveReviewService(dio: sl<Dio>()));
 }

@@ -13,6 +13,7 @@ import 'package:trova/features/my-projects/presentation/bloc/my_projects_state.d
 import 'package:trova/features/my-projects/presentation/widget/my_projects_layout.dart';
 import 'package:trova/features/post-project/presentation/screens/post_a_project_screen.dart';
 import 'package:trova/features/project-history/presentation/screens/project_history_screen.dart';
+import 'package:trova/features/repost-project/presentation/screens/repost_project_screen.dart';
 
 class MyProjectsScreen extends StatelessWidget {
   const MyProjectsScreen({super.key});
@@ -68,6 +69,13 @@ class MyProjectsScreen extends StatelessWidget {
                   Navigator.of(
                     context,
                   ).push(MaterialPageRoute(builder: (_) => ReviewSubmittedWorkScreen(projectId: project.id)));
+                  return;
+                }
+                if (project.status == ProjectStatus.contractorBackedOff ||
+                    project.status == ProjectStatus.guaranteeRejectedByYou) {
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (_) => RepostProjectScreen(projectId: project.id)));
                   return;
                 }
                 Navigator.of(
