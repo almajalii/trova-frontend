@@ -8,6 +8,21 @@ import 'package:trova/features/project-detail/logic/project_detail_model.dart';
 /// colors.surfaceBright).
 const _neutralDot = Color(0xFFE0E0E5);
 
+const _months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/// Formats an ISO date string (e.g. "2026-06-28") as "Jun 28, 2026", matching
+/// review-work's date display convention. Falls back to the raw string if it
+/// isn't a parseable ISO date, since the demo/mock data here uses
+/// pre-formatted strings (e.g. "Jun 28, 2026") directly.
+String _formatDate(String raw) {
+  try {
+    final d = DateTime.parse(raw);
+    return '${_months[d.month - 1]} ${d.day}, ${d.year}';
+  } on FormatException {
+    return raw;
+  }
+}
+
 /// The bordered "Project Timeline" card — a vertical stepper where each
 /// step's dot/line color follows Figma's rule exactly:
 ///  - done: green dot with a check, green line to the next step
@@ -100,7 +115,7 @@ class _StepRow extends StatelessWidget {
                   if (step.date != null) ...[
                     const SizedBox(height: 2),
                     AppText(
-                      text: step.date!,
+                      text: _formatDate(step.date!),
                       textSize: 11,
                       textColor: colors.onSurfaceVariant,
                       textAlign: TextAlign.start,

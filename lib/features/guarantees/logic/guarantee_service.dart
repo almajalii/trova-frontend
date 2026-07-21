@@ -12,7 +12,7 @@ class GuaranteeService {
     required double amountJod,
     required GuaranteeType type,
   }) async {
-    if (kUseMockData) {
+    if (kUseMockGuarantees) {
       await Future.delayed(const Duration(milliseconds: 400));
       final now = DateTime.now();
       return Guarantee(

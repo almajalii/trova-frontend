@@ -10,6 +10,7 @@ import 'package:trova/features/bidders/logic/bidder_model.dart';
 class CompareScoresLayout extends StatelessWidget {
   final List<Bidder> bidders; // up to 3 selected bidders
   final Bidder? selectedBidder; // tapped by the user — award target
+  final bool isAwarding;
   final VoidCallback onBack;
   final ValueChanged<Bidder> onSelectBidder;
   final VoidCallback onAward;
@@ -18,6 +19,7 @@ class CompareScoresLayout extends StatelessWidget {
     super.key,
     required this.bidders,
     required this.selectedBidder,
+    required this.isAwarding,
     required this.onBack,
     required this.onSelectBidder,
     required this.onAward,
@@ -57,7 +59,7 @@ class CompareScoresLayout extends StatelessWidget {
                       Expanded(
                         child: _CompareColumn(
                           bidder: bidders[i],
-                          selected: selectedBidder?.companyName == bidders[i].companyName,
+                          selected: selectedBidder?.bidId == bidders[i].bidId,
                           onTap: () => onSelectBidder(bidders[i]),
                         ),
                       ),
@@ -69,7 +71,7 @@ class CompareScoresLayout extends StatelessWidget {
             if (selectedBidder != null) ...[
               const SizedBox(height: 12),
               Button(
-                text: 'Award ${selectedBidder!.companyName}',
+                text: isAwarding ? 'Awarding…' : 'Award ${selectedBidder!.companyName}',
                 textColor: Colors.white,
                 borderRadius: 10,
                 fontSize: 15,
@@ -77,7 +79,7 @@ class CompareScoresLayout extends StatelessWidget {
                 elevation: 0,
                 buttonWidth: double.infinity,
                 buttonHeight: context.buttonSizeH,
-                onPressed: onAward,
+                onPressed: isAwarding ? null : onAward,
               ),
             ],
           ],

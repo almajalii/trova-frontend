@@ -18,7 +18,8 @@ class HomeDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocProvider(
-        create: (_) => HomeDashboardBloc(homeDashboardService: sl<HomeDashboardService>())..add(const HomeDashboardStarted()),
+        create: (_) =>
+            HomeDashboardBloc(homeDashboardService: sl<HomeDashboardService>())..add(const HomeDashboardStarted()),
         child: BlocConsumer<HomeDashboardBloc, HomeDashboardState>(
           listener: (context, state) {
             if (state is HomeDashboardError) {
@@ -40,11 +41,12 @@ class HomeDashboardScreen extends StatelessWidget {
             final summary = (state as HomeDashboardLoaded).summary;
             return HomeDashboardLayout(
               summary: summary,
-              onViewScoreBreakdown: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyScoreScreen())),
-             onBrowseProjects: () => Navigator.of(context).push(
-  MaterialPageRoute(builder: (_) => const BrowseProjectsScreen()),
-),
-              onPostProject: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PostAProjectScreen())),
+              onViewScoreBreakdown: () =>
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyScoreScreen())),
+              onBrowseProjects: () =>
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const BrowseProjectsScreen())),
+              onPostProject: () =>
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PostAProjectScreen())),
               onNotifications: () {
                 // TODO: wire to Notifications screen once it's built (flagged as "remaining").
               },

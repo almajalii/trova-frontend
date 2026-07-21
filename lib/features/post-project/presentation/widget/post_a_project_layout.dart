@@ -189,7 +189,12 @@ class PostAProjectLayout extends StatelessWidget {
                     _AppDropdown(
                       value: guaranteeType,
                       hint: 'Select one: Performance, Advance Payment...',
-                      items: const ['Performance', 'Advance Payment', 'Bid Bond', 'Retention'],
+                      items: const [
+                        'Performance Guarantee',
+                        'Advance Payment Guarantee',
+                        'Bid Bond Guarantee',
+                        'Retention Guarantee',
+                      ],
                       onChanged: onGuaranteeTypeChanged,
                     ),
                     const SizedBox(height: 18),

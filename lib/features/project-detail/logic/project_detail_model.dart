@@ -120,7 +120,7 @@ class ProjectDetail {
   final String title;
   final DetailStatus status;
   final String statusLabel;
-  final String subtitle;
+  final String? subtitle;
 
   final String sector;
   final double contractValueJod;
@@ -143,7 +143,7 @@ class ProjectDetail {
     required this.title,
     required this.status,
     required this.statusLabel,
-    required this.subtitle,
+    this.subtitle,
     required this.sector,
     required this.contractValueJod,
     required this.location,
@@ -164,7 +164,7 @@ class ProjectDetail {
     title: json['title'] as String,
     status: DetailStatusX.fromApiValue(json['status'] as String),
     statusLabel: json['statusLabel'] as String,
-    subtitle: json['subtitle'] as String,
+    subtitle: json['subtitle'] as String?,
     sector: json['sector'] as String,
     contractValueJod: (json['contractValueJod'] as num).toDouble(),
     location: json['location'] as String,
@@ -182,7 +182,7 @@ class ProjectDetail {
 
   /// Demo data matching all nine Project Detail variants on the Figma
   /// frame — six active statuses plus the three reachable from Project
-  /// History. Used while kUseMockData is true.
+  /// History. Used while kUseMockProjectDetail is true.
   static List<ProjectDetail> demoList() => const [
     ProjectDetail(
       id: 'TRV-PRJ-88104',

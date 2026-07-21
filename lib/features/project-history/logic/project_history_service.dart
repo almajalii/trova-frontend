@@ -8,7 +8,7 @@ class ProjectHistoryService {
   ProjectHistoryService({required this.dio});
 
   Future<List<HistoryProjectSummary>> fetchProjectHistory() async {
-    if (kUseMockData) {
+    if (kUseMockProjectHistory) {
       await Future.delayed(const Duration(milliseconds: 400));
       return HistoryProjectSummary.demoList();
     }

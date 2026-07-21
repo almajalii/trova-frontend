@@ -83,8 +83,15 @@ class ProjectDetailLayout extends StatelessWidget {
             StatusPill(text: project.statusLabel, background: badgeBg, foreground: badgeFg, fontSize: 11),
           ],
         ),
-        const SizedBox(height: 8),
-        AppText(text: project.subtitle, textSize: 13, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
+        if (project.subtitle != null) ...[
+          const SizedBox(height: 8),
+          AppText(
+            text: project.subtitle!,
+            textSize: 13,
+            textColor: colors.onSurfaceVariant,
+            textAlign: TextAlign.start,
+          ),
+        ],
         const SizedBox(height: 18),
         _InfoCard(project: project, colors: colors, formatValue: _formatValue, onGuaranteeRowTap: onGuaranteeRowTap),
         const SizedBox(height: 18),

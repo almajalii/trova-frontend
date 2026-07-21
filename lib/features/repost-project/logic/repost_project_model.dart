@@ -122,7 +122,7 @@ class RepostProjectDraft {
     };
   }
 
-  /// Mock data for `kUseMockData` — mirrors the two Project Detail / My
+  /// Mock data for `kUseMockRepostProject` — mirrors the two Project Detail / My
   /// Projects entries that expose "Post Project Again" (Zaytoonah Textile
   /// Plant's contractor backed off; Sahab Business Center's guarantee was
   /// rejected), so `originalProjectId` here matches the ids used there.

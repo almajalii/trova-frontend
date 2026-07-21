@@ -148,7 +148,7 @@ class LeaveReviewDraft {
     };
   }
 
-  /// Mock data for `kUseMockData`. Starts fully unrated + no comment, since
+  /// Mock data for `kUseMockLeaveReview`. Starts fully unrated + no comment, since
   /// this represents the initial state of the form when an owner opens it
   /// (not a pre-filled example review). The first entry matches the id used
   /// by review-work's `SubmittedWork` demo (Al-Salam Mall) — that's the only

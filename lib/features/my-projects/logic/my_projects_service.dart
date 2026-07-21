@@ -8,7 +8,7 @@ class MyProjectsService {
   MyProjectsService({required this.dio});
 
   Future<List<ProjectSummary>> fetchMyProjects() async {
-    if (kUseMockData) {
+    if (kUseMockMyProjects) {
       await Future.delayed(const Duration(milliseconds: 400));
       return ProjectSummary.demoList();
     }

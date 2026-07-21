@@ -8,7 +8,7 @@ class ReviewWorkService {
   ReviewWorkService({required this.dio});
 
   Future<SubmittedWork> fetchSubmittedWork(String projectId) async {
-    if (kUseMockData) {
+    if (kUseMockReviewWork) {
       await Future.delayed(const Duration(milliseconds: 400));
       return SubmittedWork.demoList().firstWhere(
         (w) => w.projectId == projectId,
@@ -25,7 +25,7 @@ class ReviewWorkService {
   }
 
   Future<void> confirmComplete(String projectId) async {
-    if (kUseMockData) {
+    if (kUseMockReviewWork) {
       await Future.delayed(const Duration(milliseconds: 400));
       return;
     }
@@ -37,7 +37,7 @@ class ReviewWorkService {
   }
 
   Future<void> flagIssue(String projectId) async {
-    if (kUseMockData) {
+    if (kUseMockReviewWork) {
       await Future.delayed(const Duration(milliseconds: 400));
       return;
     }

@@ -10,7 +10,7 @@ class RepostProjectService {
 
   /// Loads the prefilled draft for [projectId] (the project being reposted).
   Future<RepostProjectDraft> fetchDraft(String projectId) async {
-    if (kUseMockData) {
+    if (kUseMockRepostProject) {
       await Future.delayed(const Duration(milliseconds: 300));
       final draft = RepostProjectDraft.demoList().where((d) => d.originalProjectId == projectId).toList();
       if (draft.isEmpty) {
@@ -30,7 +30,7 @@ class RepostProjectService {
   /// Submits the (possibly edited) draft, creating a new active project.
   /// Returns the new project's id.
   Future<String> submitRepost(RepostProjectDraft draft) async {
-    if (kUseMockData) {
+    if (kUseMockRepostProject) {
       await Future.delayed(const Duration(milliseconds: 500));
       return 'TRV-PRJ-${DateTime.now().millisecondsSinceEpoch % 100000}';
     }

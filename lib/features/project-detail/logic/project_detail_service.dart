@@ -8,7 +8,7 @@ class ProjectDetailService {
   ProjectDetailService({required this.dio});
 
   Future<ProjectDetail> fetchProjectDetail(String projectId) async {
-    if (kUseMockData) {
+    if (kUseMockProjectDetail) {
       await Future.delayed(const Duration(milliseconds: 400));
       return ProjectDetail.demoList().firstWhere(
         (p) => p.id == projectId,

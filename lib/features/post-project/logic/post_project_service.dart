@@ -8,7 +8,7 @@ class PostProjectService {
   PostProjectService({required this.dio});
 
   Future<String> submitProject(ProjectDraft draft) async {
-    if (kUseMockData) {
+    if (kUseMockPostProject) {
       await Future.delayed(const Duration(milliseconds: 400));
       return 'mock-project-id-123';
     }

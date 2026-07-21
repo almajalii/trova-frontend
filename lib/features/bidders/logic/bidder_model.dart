@@ -2,6 +2,7 @@
 // GET /api/projects/{projectId}/bids
 // [
 //   {
+//     "bidId": "51651ada-1711-4a99-81dc-00c076f726ba",
 //     "companyName": "Al-Fahad Contracting",
 //     "capabilityScore": 94,
 //     "bidAmountJod": 238000,
@@ -23,6 +24,7 @@
 // ───────────────────────────────────────────────────────────────────────
 
 class Bidder {
+  final String bidId;
   final String companyName;
   final int capabilityScore;
   final double bidAmountJod;
@@ -40,6 +42,7 @@ class Bidder {
   final int cashflowTrendsPct;
 
   const Bidder({
+    required this.bidId,
     required this.companyName,
     required this.capabilityScore,
     required this.bidAmountJod,
@@ -58,6 +61,7 @@ class Bidder {
   factory Bidder.fromJson(Map<String, dynamic> json) {
     final sub = json['subFactors'] as Map<String, dynamic>? ?? const {};
     return Bidder(
+      bidId: json['bidId'] as String,
       companyName: json['companyName'] as String,
       capabilityScore: json['capabilityScore'] as int,
       bidAmountJod: (json['bidAmountJod'] as num).toDouble(),
@@ -76,6 +80,7 @@ class Bidder {
 
   static List<Bidder> demoList() => const [
     Bidder(
+      bidId: '51651ada-1711-4a99-81dc-00c076f726ba',
       companyName: 'Al-Fahad Contracting',
       capabilityScore: 94,
       bidAmountJod: 238000,
@@ -91,6 +96,7 @@ class Bidder {
       cashflowTrendsPct: 92,
     ),
     Bidder(
+      bidId: '6b2e1f3a-8c44-4d5b-9e21-3f7a2c9d1b04',
       companyName: 'Zamzam Builders',
       capabilityScore: 87,
       bidAmountJod: 245000,
@@ -106,6 +112,7 @@ class Bidder {
       cashflowTrendsPct: 60,
     ),
     Bidder(
+      bidId: 'd4a9f712-55e3-4b8a-9c60-1a2b3c4d5e6f',
       companyName: 'Horizon Engineering',
       capabilityScore: 81,
       bidAmountJod: 231000,
@@ -121,6 +128,7 @@ class Bidder {
       cashflowTrendsPct: 80,
     ),
     Bidder(
+      bidId: '8f3c2a1b-4d5e-4f60-8a7b-9c0d1e2f3a4b',
       companyName: 'Cedar Construction',
       capabilityScore: 76,
       bidAmountJod: 250000,
@@ -136,6 +144,7 @@ class Bidder {
       cashflowTrendsPct: 0,
     ),
     Bidder(
+      bidId: '2c7e9f10-3b4a-4d5c-8e6f-1a2b3c4d5e60',
       companyName: 'Al-Manara Group',
       capabilityScore: 69,
       bidAmountJod: 226000,
@@ -151,4 +160,24 @@ class Bidder {
       cashflowTrendsPct: 0,
     ),
   ];
+}
+
+// ── DATA SHAPE NOTE FOR BACKEND ──────────────────────────────────────────
+// POST /api/projects/{projectId}/award
+// { "bidId": "51651ada-1711-4a99-81dc-00c076f726ba" }
+// → 200 { "data": { "projectId": "TRV-PRJ-60214", "status": "AWARDED", "awardedCompanyName": "Al-Fahad Contracting" } }
+// ───────────────────────────────────────────────────────────────────────
+
+class AwardResult {
+  final String projectId;
+  final String status;
+  final String awardedCompanyName;
+
+  const AwardResult({required this.projectId, required this.status, required this.awardedCompanyName});
+
+  factory AwardResult.fromJson(Map<String, dynamic> json) => AwardResult(
+    projectId: json['projectId'] as String,
+    status: json['status'] as String,
+    awardedCompanyName: json['awardedCompanyName'] as String,
+  );
 }

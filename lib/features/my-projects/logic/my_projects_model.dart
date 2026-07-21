@@ -169,7 +169,7 @@ class ProjectSummary {
   );
 
   /// Demo data matching the six example cards on the Figma "My Projects"
-  /// frame — used while kUseMockData is true and by the dev screens gallery.
+  /// frame — used while kUseMockMyProjects is true and by the dev screens gallery.
   static List<ProjectSummary> demoList() => const [
     ProjectSummary(
       id: 'TRV-PRJ-88104',

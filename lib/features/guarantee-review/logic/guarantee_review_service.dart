@@ -8,7 +8,7 @@ class GuaranteeReviewService {
   GuaranteeReviewService({required this.dio});
 
   Future<OwnerGuarantee> fetchGuarantee(String projectId) async {
-    if (kUseMockData) {
+    if (kUseMockGuaranteeReview) {
       await Future.delayed(const Duration(milliseconds: 400));
       return OwnerGuarantee.demoList().firstWhere(
         (g) => g.projectId == projectId,
@@ -25,7 +25,7 @@ class GuaranteeReviewService {
   }
 
   Future<OwnerGuarantee> approveGuarantee(OwnerGuarantee guarantee) async {
-    if (kUseMockData) {
+    if (kUseMockGuaranteeReview) {
       await Future.delayed(const Duration(milliseconds: 400));
       return guarantee.copyWith(status: OwnerGuaranteeStatus.active);
     }
@@ -39,7 +39,7 @@ class GuaranteeReviewService {
   }
 
   Future<OwnerGuarantee> rejectGuarantee(OwnerGuarantee guarantee) async {
-    if (kUseMockData) {
+    if (kUseMockGuaranteeReview) {
       await Future.delayed(const Duration(milliseconds: 400));
       return guarantee.copyWith(status: OwnerGuaranteeStatus.rejected);
     }

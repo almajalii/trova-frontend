@@ -28,10 +28,10 @@ class _BiddersListScreenState extends State<BiddersListScreen> {
   void _toggle(Bidder b) {
     if (!b.eligible) return;
     setState(() {
-      if (_selected.contains(b.companyName)) {
-        _selected.remove(b.companyName);
+      if (_selected.contains(b.bidId)) {
+        _selected.remove(b.bidId);
       } else if (_selected.length < _maxSelection) {
-        _selected.add(b.companyName);
+        _selected.add(b.bidId);
       }
     });
   }
@@ -67,7 +67,7 @@ class _BiddersListScreenState extends State<BiddersListScreen> {
             if (!_preselected) {
               _preselected = true;
               for (final b in bidders.where((b) => b.eligible).take(2)) {
-                _selected.add(b.companyName);
+                _selected.add(b.bidId);
               }
             }
 
@@ -81,7 +81,7 @@ class _BiddersListScreenState extends State<BiddersListScreen> {
               onCompare: _selected.length < 2
                   ? null
                   : () {
-                      final chosen = bidders.where((b) => _selected.contains(b.companyName)).toList();
+                      final chosen = bidders.where((b) => _selected.contains(b.bidId)).toList();
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => CompareScoresScreen(

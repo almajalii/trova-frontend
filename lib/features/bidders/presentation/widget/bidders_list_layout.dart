@@ -65,7 +65,7 @@ class BiddersListLayout extends StatelessWidget {
                 separatorBuilder: (_, _) => const SizedBox(height: 14),
                 itemBuilder: (context, i) {
                   final b = bidders[i];
-                  return _BidderCard(bidder: b, selected: selected.contains(b.companyName), onTap: () => onToggle(b));
+                  return _BidderCard(bidder: b, selected: selected.contains(b.bidId), onTap: () => onToggle(b));
                 },
               ),
             ),

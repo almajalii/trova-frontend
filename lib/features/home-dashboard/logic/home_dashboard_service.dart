@@ -8,7 +8,7 @@ class HomeDashboardService {
   HomeDashboardService({required this.dio});
 
   Future<HomeSummary> fetchSummary() async {
-    if (kUseMockData) {
+    if (kUseMockHomeDashboard) {
       await Future.delayed(const Duration(milliseconds: 400));
       return HomeSummary.demo();
     }

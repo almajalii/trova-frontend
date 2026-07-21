@@ -13,7 +13,7 @@ import 'package:equatable/equatable.dart';
 //   "bidSubmissionDeadline": "2026-08-15T00:00:00.000",
 //   "minimumRequiredScore": 80,
 //   "minimumClassification": "B",      // enum: A | B | C
-//   "guaranteeType": "Performance",
+//   "guaranteeType": "Performance Guarantee",
 //   "paymentTerms": "20% upfront / 60% at milestones / 20% on completion",
 //   "description": "..."
 // }

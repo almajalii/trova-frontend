@@ -11,7 +11,7 @@ class LeaveReviewService {
   /// Loads the review context (contractor name, project title, completed
   /// date) for [projectId], with an empty/unrated draft ready to fill in.
   Future<LeaveReviewDraft> fetchContext(String projectId) async {
-    if (kUseMockData) {
+    if (kUseMockLeaveReview) {
       await Future.delayed(const Duration(milliseconds: 300));
       final match = LeaveReviewDraft.demoList().where((d) => d.projectId == projectId).toList();
       if (match.isEmpty) {
@@ -31,7 +31,7 @@ class LeaveReviewService {
   /// Submits the completed review. Throws [ApiException] if the backend
   /// rejects it (e.g. project not actually completed, or already reviewed).
   Future<void> submitReview(LeaveReviewDraft draft) async {
-    if (kUseMockData) {
+    if (kUseMockLeaveReview) {
       await Future.delayed(const Duration(milliseconds: 500));
       return;
     }
