@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: AppRoutes.onboarding,
       onGenerateRoute: AppRoutes.generateRoute,
+      onUnknownRoute: AppRoutes.onUnknownRoute,
     );
   }
 }

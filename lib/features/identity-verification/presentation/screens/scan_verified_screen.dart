@@ -7,7 +7,7 @@ import 'package:trova/features/identity-verification/presentation/widget/scan_id
 
 class ScanVerifiedScreen extends StatefulWidget {
   final IdentityInfo info;
-  final VoidCallback? onVerified;
+  final ValueChanged<String>? onVerified;
 
   const ScanVerifiedScreen({super.key, required this.info, this.onVerified});
 
@@ -49,7 +49,7 @@ class _ScanVerifiedScreenState extends State<ScanVerifiedScreen> {
 
     try {
       await sl<IdentityVerificationService>().saveVerification(fullName: name, nationalId: nationalId, method: 'scan');
-      widget.onVerified?.call();
+      widget.onVerified?.call(name);
     } on ApiException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));

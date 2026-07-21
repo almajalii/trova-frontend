@@ -13,8 +13,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
 
       try {
         final data = SignupData(
-          name: event.name,
+          firstName: event.firstName,
+          lastName: event.lastName,
           workEmail: event.workEmail,
+          phoneNumber: event.phoneNumber,
           password: event.password,
           confirmPassword: event.confirmPassword,
         );

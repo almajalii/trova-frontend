@@ -18,10 +18,16 @@ import 'package:trova/features/bank-connection/presentation/screens/connect_bank
 import 'package:trova/features/post-project/presentation/screens/post_a_project_screen.dart';
 import 'package:trova/features/bidders/logic/bidder_model.dart';
 import 'package:trova/features/bidders/presentation/screens/bidders_list_screen.dart';
+import 'package:trova/features/bidders/presentation/screens/bidder_profile_screen.dart';
 import 'package:trova/features/bidders/presentation/screens/compare_scores_screen.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
 import 'package:trova/features/guarantees/presentation/screens/award_request_guarantee_screen.dart';
 import 'package:trova/features/guarantees/presentation/screens/guarantee_verified_screen.dart';
+import 'package:trova/features/company-profile/presentation/screens/company_profile_screen.dart';
+import 'package:trova/features/notifications/presentation/screens/notifications_screen.dart';
+import 'package:trova/features/settings/presentation/screens/settings_screen.dart';
+import 'package:trova/features/settings/presentation/screens/change_password_screen.dart';
+import 'package:trova/features/settings/presentation/screens/about_trova_screen.dart';
 
 const _dummyEmail = 'ahmad.khalil@email.com';
 const _dummyIdentity = IdentityInfo(
@@ -51,7 +57,7 @@ class ScreensGallery extends StatelessWidget {
       ('Check Your Email (OTP)', (_) => const CheckEmailScreen(email: _dummyEmail)),
       ('Set New Password', (_) => const SetNewPasswordScreen(token: '123456')),
       ('Password Reset Success', (_) => const PasswordResetSuccessScreen()),
-      ('Identity Verification (chooser)', (_) => const IdentityVerificationScreen()),
+      ('Identity Verification (chooser)', (_) => IdentityVerificationScreen(fullName: _dummyIdentity.fullName)),
       ('Sanad Verified', (_) => const SanadVerifiedScreen(info: _dummyIdentity)),
       ('Scan National ID', (_) => const ScanIdScreen()),
       ('Scan Verified', (_) => const ScanVerifiedScreen(info: _dummyIdentity)),
@@ -83,6 +89,12 @@ class ScreensGallery extends StatelessWidget {
             ),
       ),
       ('Guarantee Verified', (_) => GuaranteeVerifiedScreen(guarantee: _dummyGuarantee)),
+      ('Bidder Profile', (_) => BidderProfileScreen(bidder: _dummyBidders.first)),
+      ('Company Profile', (_) => const CompanyProfileScreen()),
+      ('Notifications', (_) => const NotificationsScreen()),
+      ('Settings', (_) => const SettingsScreen()),
+      ('Change Password', (_) => const ChangePasswordScreen()),
+      ('About Trova', (_) => const AboutTrovaScreen()),
     ];
 
     return Scaffold(

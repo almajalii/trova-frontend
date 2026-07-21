@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:trova/core/network/api_exception.dart';
+import 'package:trova/features/capability-score/logic/capability_score_model.dart';
 import 'package:trova/features/company-details/logic/company_details_model.dart';
 
 class CompanyDetailsService {
@@ -12,7 +13,7 @@ class CompanyDetailsService {
     try {
       final response = await dio.post('/company-details', data: draft.toJson());
       final classification = response.data['data']['classification'] as Map<String, dynamic>;
-      return 'Class ${classification['code']} · ${classification['label']}';
+      return ScoreClassification.fromJson(classification).display;
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

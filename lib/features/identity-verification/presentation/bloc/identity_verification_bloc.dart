@@ -15,7 +15,7 @@ class IdentityVerificationBloc extends Bloc<IdentityVerificationEvent, IdentityV
     on<SanadVerificationRequested>((event, emit) async {
       emit(const IdentityVerificationLoading());
       try {
-        final info = await identityVerificationService.verifyWithSanad();
+        final info = await identityVerificationService.verifyWithSanad(fullName: event.fullName);
         emit(SanadVerificationSuccess(info: info));
       } catch (e) {
         emit(IdentityVerificationError(message: e.toString()));

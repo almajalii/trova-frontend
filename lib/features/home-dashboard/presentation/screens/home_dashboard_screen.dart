@@ -9,6 +9,7 @@ import 'package:trova/features/home-dashboard/presentation/bloc/home_dashboard_b
 import 'package:trova/features/home-dashboard/presentation/bloc/home_dashboard_event.dart';
 import 'package:trova/features/home-dashboard/presentation/bloc/home_dashboard_state.dart';
 import 'package:trova/features/home-dashboard/presentation/widget/home_dashboard_layout.dart';
+import 'package:trova/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:trova/features/post-project/presentation/screens/post_a_project_screen.dart';
 
 class HomeDashboardScreen extends StatelessWidget {
@@ -47,9 +48,8 @@ class HomeDashboardScreen extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const BrowseProjectsScreen())),
               onPostProject: () =>
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PostAProjectScreen())),
-              onNotifications: () {
-                // TODO: wire to Notifications screen once it's built (flagged as "remaining").
-              },
+              onNotifications: () =>
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NotificationsScreen())),
             );
           },
         ),

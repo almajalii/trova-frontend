@@ -21,15 +21,19 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
@@ -57,8 +61,15 @@ class _SignupScreenState extends State<SignupScreen> {
                         // onVerified, so nothing happened after ID verification.
                         // Now it chains into Company Details next.
                         builder: (_) => IdentityVerificationScreen(
-                          onVerified: () => navigator.pushReplacement(
-                            MaterialPageRoute(builder: (_) => const CompanyDetailsScreen()),
+                          fullName: state.result.user.name,
+                          onVerified: (confirmedName) => navigator.pushReplacement(
+                            MaterialPageRoute(
+                              builder: (_) => CompanyDetailsScreen(
+                                initialContactName: confirmedName,
+                                initialEmail: state.result.user.email,
+                                initialPhoneNumber: state.result.user.phone,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -73,19 +84,25 @@ class _SignupScreenState extends State<SignupScreen> {
 
             return SignupLayout(
               formKey: _formKey,
-              nameController: _nameController,
+              firstNameController: _firstNameController,
+              lastNameController: _lastNameController,
               emailController: _emailController,
+              phoneController: _phoneController,
               passwordController: _passwordController,
               confirmPasswordController: _confirmPasswordController,
               isLoading: isLoading,
-              onBack: () => Navigator.pop(context),
+              onBack: () {
+                if (Navigator.canPop(context)) Navigator.pop(context);
+              },
               onLoginTap: () => Navigator.pushNamed(context, AppRoutes.login),
               onSubmit: () {
                 if (_formKey.currentState!.validate()) {
                   context.read<SignupBloc>().add(
                     SignupSubmitted(
-                      name: _nameController.text,
+                      firstName: _firstNameController.text,
+                      lastName: _lastNameController.text,
                       workEmail: _emailController.text,
+                      phoneNumber: '+962${_phoneController.text.trim()}',
                       password: _passwordController.text,
                       confirmPassword: _confirmPasswordController.text,
                     ),

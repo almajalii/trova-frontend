@@ -18,14 +18,20 @@ import 'package:trova/features/forgot-password/logic/forgot_password_service.dar
 import 'package:trova/features/identity-verification/logic/identity_verification_service.dart';
 // NEW — company details (onboarding step between identity verification and bank connection)
 import 'package:trova/features/company-details/logic/company_details_service.dart';
+// NEW — Company Profile screen (read-only view, opened from the bottom nav)
+import 'package:trova/features/company-profile/logic/company_profile_service.dart';
+import 'package:trova/features/company-profile/logic/company_reviews_service.dart';
 // NEW — scoring / guarantees feature services
 import 'package:trova/features/home-dashboard/logic/home_dashboard_service.dart';
 import 'package:trova/features/capability-score/logic/capability_score_service.dart';
 import 'package:trova/features/bank-connection/logic/bank_connection_service.dart';
 import 'package:trova/features/post-project/logic/post_project_service.dart';
+import 'package:trova/features/bidders/logic/bidder_profile_service.dart';
 import 'package:trova/features/bidders/logic/bidders_service.dart';
 import 'package:trova/features/guarantees/logic/guarantee_service.dart';
 import 'package:trova/features/my-projects/logic/my_projects_service.dart';
+import 'package:trova/features/notifications/logic/notification_service.dart';
+import 'package:trova/features/settings/logic/change_password_service.dart';
 
 /// Global service locator. Call `setupLocator()` once in main() before
 /// runApp(). Access anything registered here via `sl<Type>()`.
@@ -60,13 +66,30 @@ Future<void> setupLocator() async {
   // NEW — company details, submitted right after identity verification
   sl.registerLazySingleton<CompanyDetailsService>(() => CompanyDetailsService(dio: sl<Dio>()));
 
+  // NEW — Company Profile screen (read-only view, opened from the bottom nav)
+  sl.registerLazySingleton<CompanyReviewsService>(() => CompanyReviewsService(dio: sl<Dio>()));
+
   // NEW — scoring / guarantees feature services (none of these endpoints
   // exist on TrovaBackend yet; wire them up when the .NET side is ready).
-  sl.registerLazySingleton<HomeDashboardService>(() => HomeDashboardService(dio: sl<Dio>()));
   sl.registerLazySingleton<CapabilityScoreService>(() => CapabilityScoreService(dio: sl<Dio>()));
+  sl.registerLazySingleton<HomeDashboardService>(
+    () => HomeDashboardService(
+      dio: sl<Dio>(),
+      companyDetailsService: sl<CompanyDetailsService>(),
+      capabilityScoreService: sl<CapabilityScoreService>(),
+    ),
+  );
+  sl.registerLazySingleton<CompanyProfileService>(
+    () => CompanyProfileService(
+      companyDetailsService: sl<CompanyDetailsService>(),
+      capabilityScoreService: sl<CapabilityScoreService>(),
+      companyReviewsService: sl<CompanyReviewsService>(),
+    ),
+  );
   sl.registerLazySingleton<BankConnectionService>(() => BankConnectionService(dio: sl<Dio>()));
   sl.registerLazySingleton<PostProjectService>(() => PostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<BiddersService>(() => BiddersService(dio: sl<Dio>()));
+  sl.registerLazySingleton<BidderProfileService>(() => BidderProfileService(dio: sl<Dio>()));
   sl.registerLazySingleton<GuaranteeService>(() => GuaranteeService(dio: sl<Dio>()));
   sl.registerLazySingleton<MyProjectsService>(() => MyProjectsService(dio: sl<Dio>()));
   sl.registerLazySingleton<ProjectHistoryService>(() => ProjectHistoryService(dio: sl<Dio>()));
@@ -75,5 +98,7 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<ReviewWorkService>(() => ReviewWorkService(dio: sl<Dio>()));
   sl.registerLazySingleton<RepostProjectService>(() => RepostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<LeaveReviewService>(() => LeaveReviewService(dio: sl<Dio>()));
+  sl.registerLazySingleton<NotificationService>(() => NotificationService(dio: sl<Dio>()));
+  sl.registerLazySingleton<ChangePasswordService>(() => ChangePasswordService(dio: sl<Dio>()));
   sl.registerLazySingleton(() => ProjectsService(dio: sl<Dio>()));
 }

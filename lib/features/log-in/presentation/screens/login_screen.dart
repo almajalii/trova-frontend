@@ -117,7 +117,9 @@ class _LoginScreenState extends State<LoginScreen> {
               passwordController: _passwordController,
               isLoading: isLoading,
               showBiometricOption: _showBiometricOption,
-              onBack: () => Navigator.pop(context),
+              onBack: () {
+                if (Navigator.canPop(context)) Navigator.pop(context);
+              },
               onSignupTap: () => Navigator.pushNamed(context, AppRoutes.signup),
               onForgotPasswordTap: () {
                 Navigator.pushNamed(context, AppRoutes.forgotPassword);

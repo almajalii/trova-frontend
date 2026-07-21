@@ -78,7 +78,7 @@ class _BiddersListScreenState extends State<BiddersListScreen> {
               maxSelection: _maxSelection,
               onBack: () => Navigator.of(context).maybePop(),
               onToggle: _toggle,
-              onCompare: _selected.length < 2
+              onCompare: _selected.isEmpty
                   ? null
                   : () {
                       final chosen = bidders.where((b) => _selected.contains(b.bidId)).toList();
