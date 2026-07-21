@@ -39,16 +39,15 @@ class TrovaBottomNav extends StatelessWidget {
     (Icons.person_outline, 'Profile'),
   ];
 
-  // NEW — one entry per tab above. Null = screen not built yet.
   static const List<String?> _routes = [
     AppRoutes.homeDashboard,
     AppRoutes.myProjects,
-    null, // TODO: My Guarantees screen doesn't exist yet
-    null, // TODO: Company Profile screen doesn't exist yet
+    null,
+    null, 
   ];
 
   void _onTabTapped(BuildContext context, int index) {
-    if (index == activeIndex) return; // already here
+    if (index == activeIndex) return; 
 
     final route = _routes[index];
     if (route == null) {

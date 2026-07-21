@@ -6,6 +6,7 @@ class InputField extends StatefulWidget {
   final bool isPassword;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
+  final void Function(String)? onChanged;
 
   const InputField({
     super.key,
@@ -14,6 +15,7 @@ class InputField extends StatefulWidget {
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.onChanged,
   });
 
   @override
@@ -32,10 +34,11 @@ class _InputFieldState extends State<InputField> {
       obscureText: widget.isPassword ? _obscureText : false,
       keyboardType: widget.keyboardType,
       validator: widget.validator,
+      onChanged: widget.onChanged,
       style: TextStyle(color: colors.onSurface, fontSize: 15),
       decoration: InputDecoration(
         hintText: widget.hintText,
-        hintStyle: TextStyle(color: colors.surfaceBright, fontSize: 15,fontWeight: FontWeight.w500),
+        hintStyle: TextStyle(color: colors.surfaceBright, fontSize: 15, fontWeight: FontWeight.w500),
         filled: true,
         fillColor: colors.surface,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/di/service_locator.dart';
-import 'package:trova/core/routes.dart';
 import 'package:trova/core/success_badge.dart';
 import 'package:trova/features/browse-project/presentation/screen/browseproj_screen.dart';
 import 'package:trova/features/capability-score/presentation/screens/my_score_screen.dart';
