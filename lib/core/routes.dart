@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trova/features/browse-project/presentation/screen/browseproj_screen.dart';
 import 'package:trova/features/log-in/presentation/screens/login_screen.dart';
 import 'package:trova/features/onboarding/presentation/screens/onboard_screen.dart';
 import 'package:trova/features/sign-up/presentation/screen/signup_screen.dart';
@@ -21,6 +22,7 @@ class AppRoutes {
   static const String connectBank = '/connect-bank';
   static const String postProject = '/post-project';
   static const String myProjects = '/my-projects'; // NEW
+  static const String browseProjects = '/browse-projects'; 
 
   // NOTE: verify-email and the identity-confirm screens require constructor
   // params (email, IdentityInfo, callbacks) that don't fit this simple named-
@@ -56,6 +58,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const PostAProjectScreen());
       case myProjects:
         return MaterialPageRoute(builder: (_) => const MyProjectsScreen());
+        case browseProjects: // NEW
+  return MaterialPageRoute(builder: (_) => const BrowseProjectsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(body: Center(child: Text('404 - Route not found'))),

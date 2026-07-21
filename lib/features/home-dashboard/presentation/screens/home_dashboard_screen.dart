@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/di/service_locator.dart';
+import 'package:trova/core/routes.dart';
 import 'package:trova/core/success_badge.dart';
+import 'package:trova/features/browse-project/presentation/screen/browseproj_screen.dart';
 import 'package:trova/features/capability-score/presentation/screens/my_score_screen.dart';
 import 'package:trova/features/home-dashboard/logic/home_dashboard_service.dart';
 import 'package:trova/features/home-dashboard/presentation/bloc/home_dashboard_bloc.dart';
@@ -40,9 +42,9 @@ class HomeDashboardScreen extends StatelessWidget {
             return HomeDashboardLayout(
               summary: summary,
               onViewScoreBreakdown: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const MyScoreScreen())),
-              onBrowseProjects: () {
-                // TODO: wire to Browse Projects screen once it's built (flagged as "remaining").
-              },
+             onBrowseProjects: () => Navigator.of(context).push(
+  MaterialPageRoute(builder: (_) => const BrowseProjectsScreen()),
+),
               onPostProject: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PostAProjectScreen())),
               onNotifications: () {
                 // TODO: wire to Notifications screen once it's built (flagged as "remaining").
