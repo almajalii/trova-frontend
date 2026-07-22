@@ -26,7 +26,7 @@
 // }
 // ───────────────────────────────────────────────────────────────────────
 
-enum HistoryProjectStatus { completed, disputed, failed }
+enum HistoryProjectStatus { completed, disputed, failed, cancelled }
 
 extension HistoryProjectStatusX on HistoryProjectStatus {
   String get apiValue {
@@ -37,6 +37,8 @@ extension HistoryProjectStatusX on HistoryProjectStatus {
         return 'DISPUTED';
       case HistoryProjectStatus.failed:
         return 'FAILED';
+      case HistoryProjectStatus.cancelled:
+        return 'CANCELLED';
     }
   }
 
@@ -55,6 +57,8 @@ extension HistoryProjectStatusX on HistoryProjectStatus {
         return 'Disputed';
       case HistoryProjectStatus.failed:
         return 'Failed';
+      case HistoryProjectStatus.cancelled:
+        return 'Reposted';
     }
   }
 }

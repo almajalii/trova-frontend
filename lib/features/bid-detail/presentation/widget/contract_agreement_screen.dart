@@ -5,12 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
 import 'package:trova/core/di/service_locator.dart';
+import 'package:trova/core/network/api_exception.dart';
 import 'package:trova/features/bid-detail/logic/bid_detail_service.dart';
 import 'package:trova/features/bid-detail/presentation/bloc/bid_detail_bloc.dart';
 import 'package:trova/features/bid-detail/presentation/bloc/bid_detail_event.dart';
 import 'package:trova/features/bid-detail/presentation/bloc/bid_detail_state.dart';
 import 'package:trova/features/bid-detail/presentation/widget/detail_info_card.dart';
 import 'package:trova/features/bid-detail/presentation/widget/status_timeline.dart';
+import 'package:trova/features/mybids/logic/mybid_service.dart';
 
 class ContractAgreementScreen extends StatelessWidget {
   final String bidId;
@@ -20,13 +22,36 @@ class ContractAgreementScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => BidDetailBloc(service: sl<BidDetailService>())..add(FetchBidDetail(bidId)),
-      child: const _ContractAgreementView(),
+      child: _ContractAgreementView(bidId: bidId),
     );
   }
 }
 
-class _ContractAgreementView extends StatelessWidget {
-  const _ContractAgreementView();
+class _ContractAgreementView extends StatefulWidget {
+  final String bidId;
+  const _ContractAgreementView({required this.bidId});
+
+  @override
+  State<_ContractAgreementView> createState() => _ContractAgreementViewState();
+}
+
+class _ContractAgreementViewState extends State<_ContractAgreementView> {
+  bool _isSubmitting = false;
+
+  Future<void> _respond(Future<List<dynamic>> Function() action) async {
+    setState(() => _isSubmitting = true);
+    try {
+      await action();
+      if (!mounted) return;
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+      final message = e is ApiException ? e.message : e.toString();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,10 +161,9 @@ class _ContractAgreementView extends StatelessWidget {
                           buttonWidth: double.infinity,
                           buttonHeight: 44,
                           elevation: 0,
-                          onPressed: () {
-                            // TODO: dispatch CancelBid via BidsBloc / repository
-                            Navigator.pop(context);
-                          },
+                          onPressed: _isSubmitting
+                              ? null
+                              : () => _respond(() => sl<BidsService>().cancelBid(detail.id)),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -153,10 +177,9 @@ class _ContractAgreementView extends StatelessWidget {
                           buttonWidth: double.infinity,
                           buttonHeight: 44,
                           elevation: 0,
-                          onPressed: () {
-                            // TODO: dispatch ConfirmBid via BidsBloc / repository
-                            Navigator.pop(context);
-                          },
+                          onPressed: _isSubmitting
+                              ? null
+                              : () => _respond(() => sl<BidsService>().confirmBid(detail.id)),
                         ),
                       ),
                     ],

@@ -34,7 +34,12 @@ class BidsService {
   }
 
   Future<List<BidModel>> markWorkAsDone(String id) async {
-    throw UnimplementedError('wired in a follow-up task');
+    try {
+      final response = await dio.post('/bids/$id/work-done');
+      return _parseBidsList(response.data);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
   }
 
   Future<List<BidModel>> backOff(String id) async {

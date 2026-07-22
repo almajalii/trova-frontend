@@ -2,7 +2,11 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:trova/core/app_text.dart';
+import 'package:trova/core/app_title.dart';
+import 'package:trova/core/button.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
+import 'package:trova/features/guarantees/presentation/widget/guarantee_shared.dart';
 
 class GuaranteeStep5DocumentsLayout extends StatelessWidget {
   final GuaranteeRequestModel model;
@@ -30,62 +34,81 @@ class GuaranteeStep5DocumentsLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Supporting Documents', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          _DocumentRow(
-            title: 'Signed Contract / Agreement',
-            subtitle: 'Required · PDF, max 10MB',
-            file: model.signedContractFile,
-            onUpload: () async {
-              final f = await _pickPdf();
-              if (f != null) onChanged(model.copyWith(signedContractFile: f));
-            },
-          ),
-          _DocumentRow(
-            title: 'Letter of Award',
-            subtitle: 'Required · PDF, max 10MB',
-            file: model.letterOfAwardFile,
-            onUpload: () async {
-              final f = await _pickPdf();
-              if (f != null) onChanged(model.copyWith(letterOfAwardFile: f));
-            },
-          ),
-          _DocumentRow(
-            title: 'Other Supporting Documents',
-            subtitle: 'Optional · PDF, max 10MB',
-            file: model.otherDocuments.isNotEmpty ? model.otherDocuments.last : null,
-            onUpload: () async {
-              final f = await _pickPdf();
-              if (f != null) {
-                onChanged(model.copyWith(otherDocuments: [...model.otherDocuments, f]));
-              }
-            },
-          ),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: () async {
-              final f = await _pickPdf();
-              if (f != null) {
-                onChanged(model.copyWith(otherDocuments: [...model.otherDocuments, f]));
-              }
-            },
-            child: const Text('+ Add another document'),
-          ),
-          const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: _isValid ? onContinue : null,
-              child: const Text('Continue to Declarations'),
-            ),
-          ),
-        ],
-      ),
+    final colors = Theme.of(context).colorScheme;
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      children: [
+        AppTitle(
+          title: 'Supporting Documents',
+          size: 20,
+          weight: FontWeight.w700,
+          titleColor: colors.onSurface,
+          textAlign: TextAlign.start,
+        ),
+        const SizedBox(height: 20),
+        _DocumentRow(
+          title: 'Signed Contract / Agreement',
+          subtitle: 'Required · PDF, max 10MB',
+          file: model.signedContractFile,
+          onUpload: () async {
+            final f = await _pickPdf();
+            if (f != null) onChanged(model.copyWith(signedContractFile: f));
+          },
+        ),
+        const SizedBox(height: 12),
+        _DocumentRow(
+          title: 'Letter of Award',
+          subtitle: 'Required · PDF, max 10MB',
+          file: model.letterOfAwardFile,
+          onUpload: () async {
+            final f = await _pickPdf();
+            if (f != null) onChanged(model.copyWith(letterOfAwardFile: f));
+          },
+        ),
+        const SizedBox(height: 12),
+        _DocumentRow(
+          title: 'Other Supporting Documents',
+          subtitle: 'Optional · PDF, max 10MB',
+          file: model.otherDocuments.isNotEmpty ? model.otherDocuments.last : null,
+          onUpload: () async {
+            final f = await _pickPdf();
+            if (f != null) {
+              onChanged(model.copyWith(otherDocuments: [...model.otherDocuments, f]));
+            }
+          },
+        ),
+        const SizedBox(height: 8),
+        Button(
+          text: '+ Add another document',
+          isText: true,
+          textColor: colors.primary,
+          borderRadius: 0,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          buttonWidth: 0,
+          buttonHeight: 0,
+          elevation: 0,
+          onPressed: () async {
+            final f = await _pickPdf();
+            if (f != null) {
+              onChanged(model.copyWith(otherDocuments: [...model.otherDocuments, f]));
+            }
+          },
+        ),
+        const SizedBox(height: 16),
+        Button(
+          text: 'Continue to Declarations',
+          textColor: colors.onPrimary,
+          borderRadius: 12,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          buttonWidth: double.infinity,
+          buttonHeight: 47,
+          elevation: 0,
+          onPressed: _isValid ? onContinue : null,
+        ),
+      ],
     );
   }
 }
@@ -105,28 +128,43 @@ class _DocumentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).colorScheme.surfaceBright),
-        borderRadius: BorderRadius.circular(8),
-      ),
+    final colors = Theme.of(context).colorScheme;
+
+    return GuaranteeCard(
       child: Row(
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text(subtitle, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                if (file != null)
-                  Text(file!.path.split('/').last,
-                      style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+                AppText(text: title, textSize: 14, fontWeight: FontWeight.w600, textColor: colors.onSurface, textAlign: TextAlign.start),
+                const SizedBox(height: 2),
+                AppText(text: subtitle, textSize: 12, textColor: colors.secondary.withValues(alpha: 0.6), textAlign: TextAlign.start),
+                if (file != null) ...[
+                  const SizedBox(height: 4),
+                  AppText(
+                    text: file!.path.split('/').last,
+                    textSize: 12,
+                    textColor: colors.primary,
+                    textAlign: TextAlign.start,
+                  ),
+                ],
               ],
             ),
           ),
-          TextButton(onPressed: onUpload, child: Text(file == null ? 'Upload' : 'Replace')),
+          const SizedBox(width: 8),
+          Button(
+            text: file == null ? 'Upload' : 'Replace',
+            isText: true,
+            textColor: colors.primary,
+            borderRadius: 0,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            buttonWidth: 0,
+            buttonHeight: 0,
+            elevation: 0,
+            onPressed: onUpload,
+          ),
         ],
       ),
     );

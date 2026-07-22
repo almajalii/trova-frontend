@@ -21,7 +21,7 @@ class RepostProjectService {
 
     try {
       final response = await _dio.get('/owner/projects/$projectId/repost-draft');
-      return RepostProjectDraft.fromJson(response.data as Map<String, dynamic>);
+      return RepostProjectDraft.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }
@@ -37,7 +37,8 @@ class RepostProjectService {
 
     try {
       final response = await _dio.post('/owner/projects/${draft.originalProjectId}/repost', data: draft.toJson());
-      return response.data['newProjectId'] as String;
+      final data = response.data['data'] as Map<String, dynamic>;
+      return data['newProjectId'] as String;
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

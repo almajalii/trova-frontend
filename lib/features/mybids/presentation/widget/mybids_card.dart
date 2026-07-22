@@ -29,6 +29,8 @@ class BidCard extends StatelessWidget {
         return _StatusStyle(label: 'Pending Bank Review', bg: const Color(0xFFFCEFD8), text: const Color(0xFFB8760B));
       case 'inProgress':
         return _StatusStyle(label: 'In Progress', bg: const Color(0xFFFCEFD8), text: const Color(0xFFB8760B));
+      case 'workSubmitted':
+        return _StatusStyle(label: 'Awaiting Owner Review', bg: const Color(0xFFDFF3E3), text: const Color(0xFF1E8E3E));
       case 'guaranteeRejected':
         return _StatusStyle(label: 'Guarantee Rejected', bg: const Color(0xFFFDE8E8), text: const Color(0xFFC82333));
       default:
@@ -108,7 +110,7 @@ class BidCard extends StatelessWidget {
             )
           else
             AppText(
-              text: bid.note ?? '',
+              text: bid.status == 'workSubmitted' ? 'Waiting for the owner to confirm your work.' : (bid.note ?? ''),
               textSize: 12,
               textColor: bid.status == 'guaranteeRejected' ? const Color(0xFFC82333) : colors.secondary.withValues(alpha: 0.6),
               textAlign: TextAlign.start,
@@ -191,6 +193,9 @@ class BidCard extends StatelessWidget {
           elevation: 0,
           onPressed: onPrimaryAction,
         );
+
+      case 'workSubmitted':
+        return const SizedBox.shrink();
 
       case 'guaranteeRejected':
         return Row(

@@ -1,12 +1,34 @@
 // lib/features/biddetail/logic/bid_detail_service.dart
 
+import 'package:dio/dio.dart';
+import 'package:trova/core/mock_mode.dart';
+import 'package:trova/core/network/api_exception.dart';
 import 'package:trova/features/bid-detail/logic/bide_detail_model.dart';
 
-/// Mock implementation for now — no Dio dependency yet.
-/// TODO(backend): swap internals for real .NET Web API calls once the
-/// bid-detail endpoint exists. Keep method signatures the same so the
-/// bloc doesn't need to change.
 class BidDetailService {
+  final Dio dio;
+  BidDetailService({required this.dio});
+
+  Future<BidDetailModel> fetchBidDetail(String id) async {
+    if (kUseMockBidDetail) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      final detail = _mockDetails[id];
+      if (detail == null) {
+        throw Exception('Bid detail not found for id $id');
+      }
+      return detail;
+    }
+
+    try {
+      final response = await dio.get('/bids/$id');
+      return BidDetailModel.fromJson(response.data['data'] as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  // Kept for local UI development / demos when kUseMockBidDetail is
+  // flipped to true. Not used on the live path.
   static final Map<String, BidDetailModel> _mockDetails = {
     '1': const BidDetailModel(
       id: '1',
@@ -112,9 +134,33 @@ class BidDetailService {
         StatusStepModel(label: 'Rejected by Owner', date: 'Jul 9, 2026', state: BidStepState.rejected),
       ],
     ),
-    // 'Selected' status shares the same underlying data as the contract
-    // agreement flow — kept as its own entry so BidDetailScreen can also
-    // show a light version if ever linked to directly.
+    '7': const BidDetailModel(
+      id: '7',
+      projectTitle: 'Marka Textile Fit-out',
+      companyName: 'Marka Retail Holdings',
+      status: 'completed',
+      sector: 'Renovation & Fit-out',
+      location: 'Marka, Amman',
+      contractValue: 58000,
+      timelineRange: '4 months (Jan 2026 – Apr 2026)',
+      bidAmount: 58000,
+      projectId: 'TRV-PRJ-22417',
+      milestones: 'Demo – M1, Fit-out – M3, Handover – M4',
+      guaranteeTypeRequired: 'Performance Guarantee',
+      paymentTerms: '25% upfront / 50% milestones / 25% completion',
+      reviewRating: 5,
+      reviewText:
+          'Excellent execution and communication. The team delivered ahead of schedule and the quality exceeded expectations.',
+      statusSteps: [
+        StatusStepModel(label: 'Bid Submitted', date: 'Dec 15, 2025', state: BidStepState.completed),
+        StatusStepModel(label: 'Selected by Owner', date: 'Dec 20, 2025', state: BidStepState.completed),
+        StatusStepModel(label: 'Confirmed', date: 'Dec 22, 2025', state: BidStepState.completed),
+        StatusStepModel(label: 'Guarantee Applied & Active', date: 'Dec 29, 2025', state: BidStepState.completed),
+        StatusStepModel(label: 'In Progress', date: 'Jan 5, 2026', state: BidStepState.completed),
+        StatusStepModel(label: 'Pending Review', date: 'Apr 20, 2026', state: BidStepState.completed),
+        StatusStepModel(label: 'Completed', date: 'Apr 24, 2026', state: BidStepState.completed),
+      ],
+    ),
     '6': const BidDetailModel(
       id: '6',
       projectTitle: 'Al-Noor Tower Construction',
@@ -139,13 +185,4 @@ class BidDetailService {
       ],
     ),
   };
-
-  Future<BidDetailModel> fetchBidDetail(String id) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-    final detail = _mockDetails[id];
-    if (detail == null) {
-      throw Exception('Bid detail not found for id $id');
-    }
-    return detail;
-  }
 }

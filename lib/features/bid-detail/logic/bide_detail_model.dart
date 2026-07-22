@@ -35,7 +35,7 @@ class BidDetailModel {
   final String id;
   final String projectTitle;
   final String companyName;
-  final String status; // 'pending' | 'selected' | 'confirmed' | 'inProgress' | 'guaranteeRejected' | 'rejected'
+  final String status; // 'pending' | 'selected' | 'confirmed' | 'inProgress' | 'workSubmitted' | 'guaranteeRejected' | 'rejected' | 'completed'
   final String sector;
   final String location;
   final double contractValue;
@@ -51,6 +51,9 @@ class BidDetailModel {
   final String? description;
   final int? guaranteeExpiresInDays;
   final String? bannerNote; // rejection / guarantee-rejected explanation text
+  final int? reviewRating; // 1..5, only for completed bids with a review
+  final String? reviewText;
+  final String? workSubmittedAt; // "yyyy-MM-dd", only set when status == 'workSubmitted'
 
   const BidDetailModel({
     required this.id,
@@ -70,6 +73,9 @@ class BidDetailModel {
     this.description,
     this.guaranteeExpiresInDays,
     this.bannerNote,
+    this.reviewRating,
+    this.reviewText,
+    this.workSubmittedAt,
   });
 
   factory BidDetailModel.fromJson(Map<String, dynamic> json) {
@@ -77,7 +83,7 @@ class BidDetailModel {
       id: json['id'] as String,
       projectTitle: json['projectTitle'] as String,
       companyName: json['companyName'] as String,
-      status: json['status'] as String,
+      status: _statusFromApi(json['status'] as String),
       sector: json['sector'] as String,
       location: json['location'] as String,
       contractValue: (json['contractValue'] as num).toDouble(),
@@ -93,7 +99,38 @@ class BidDetailModel {
       description: json['description'] as String?,
       guaranteeExpiresInDays: json['guaranteeExpiresInDays'] as int?,
       bannerNote: json['bannerNote'] as String?,
+      reviewRating: json['reviewRating'] as int?,
+      reviewText: json['reviewText'] as String?,
+      workSubmittedAt: json['workSubmittedAt'] as String?,
     );
+  }
+
+  /// Backend sends SCREAMING_SNAKE status codes; the UI switches on
+  /// lowerCamel values (see mybid_model.dart for the same mapping on the
+  /// list screen). Unknown codes pass through as-is.
+  static String _statusFromApi(String raw) {
+    switch (raw) {
+      case 'PENDING':
+        return 'pending';
+      case 'SELECTED':
+        return 'selected';
+      case 'CONFIRMED':
+        return 'confirmed';
+      case 'GUARANTEE_PENDING_REVIEW':
+        return 'guaranteePendingReview';
+      case 'GUARANTEE_REJECTED':
+        return 'guaranteeRejected';
+      case 'IN_PROGRESS':
+        return 'inProgress';
+      case 'WORK_SUBMITTED':
+        return 'workSubmitted';
+      case 'REJECTED':
+        return 'rejected';
+      case 'COMPLETED':
+        return 'completed';
+      default:
+        return raw;
+    }
   }
 
   Map<String, dynamic> toJson() => {
@@ -114,5 +151,8 @@ class BidDetailModel {
         'description': description,
         'guaranteeExpiresInDays': guaranteeExpiresInDays,
         'bannerNote': bannerNote,
+        'reviewRating': reviewRating,
+        'reviewText': reviewText,
+        'workSubmittedAt': workSubmittedAt,
       };
 }

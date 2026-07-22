@@ -22,7 +22,7 @@ class LeaveReviewService {
 
     try {
       final response = await _dio.get('/owner/projects/$projectId/review-context');
-      return LeaveReviewDraft.fromJson(response.data as Map<String, dynamic>);
+      return LeaveReviewDraft.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

@@ -20,8 +20,9 @@ class DetailInfoCard extends StatelessWidget {
         border: Border.all(color: colors.surfaceBright),
       ),
       child: Column(
-        children: rows.map((row) {
-          final isLast = row.key == rows.last.key;
+        children: rows.asMap().entries.map((entry) {
+          final isLast = entry.key == rows.length - 1;
+          final row = entry.value;
           return Container(
             padding: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(

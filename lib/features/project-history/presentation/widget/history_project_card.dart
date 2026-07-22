@@ -23,6 +23,10 @@ class HistoryProjectCard extends StatelessWidget {
         return (AppColors.warningBg, AppColors.warning);
       case HistoryProjectStatus.failed:
         return (AppColors.dangerBg, AppColors.danger);
+      case HistoryProjectStatus.cancelled:
+        // Neutral, same as completed — being reposted isn't a bad
+        // outcome, just a terminal one for this particular project.
+        return (AppColors.neutralTagBg, colors.onSurfaceVariant);
     }
   }
 

@@ -11,7 +11,9 @@ import 'package:trova/features/mybids/logic/mybid_service.dart';
 import 'package:trova/features/mybids/presentation/bloc/mybids_bloc.dart';
 import 'package:trova/features/mybids/presentation/bloc/mybids_event.dart';
 import 'package:trova/features/mybids/presentation/bloc/mybids_state.dart';
+import 'package:trova/features/mybids/presentation/screen/bid_action_confirmation_screens.dart';
 import 'package:trova/features/mybids/presentation/widget/mybids_card.dart';
+import 'package:trova/features/bid-history/presentation/screen/bid_history_screen.dart';
 import 'package:trova/features/guarantees/logic/guarantee_service.dart';
 import 'package:trova/features/guarantees/presentation/bloc/guarantee_bloc.dart';
 import 'package:trova/features/guarantees/presentation/bloc/guarantee_event.dart';
@@ -56,7 +58,9 @@ class _MyBidsView extends StatelessWidget {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        // TODO: navigate to bids history screen
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (_) => const BidHistoryScreen(),
+                        ));
                       },
                       child: AppText(
                         text: 'History',
@@ -117,6 +121,7 @@ class _MyBidsView extends StatelessWidget {
                             b.status == 'confirmed' ||
                             b.status == 'guaranteePendingReview' ||
                             b.status == 'inProgress' ||
+                            b.status == 'workSubmitted' ||
                             b.status == 'guaranteeRejected')
                         .toList();
 
@@ -159,11 +164,11 @@ class _MyBidsView extends StatelessWidget {
               if (bid.status == 'selected') {
                 Navigator.push(context, MaterialPageRoute(
                   builder: (_) => ContractAgreementScreen(bidId: bid.id),
-                ));
+                )).then((_) => context.read<BidsBloc>().add(const FetchBids()));
               } else {
                 Navigator.push(context, MaterialPageRoute(
                   builder: (_) => BidDetailScreen(bidId: bid.id),
-                ));
+                )).then((_) => context.read<BidsBloc>().add(const FetchBids()));
               }
             },
           )),
@@ -182,10 +187,32 @@ class _MyBidsView extends StatelessWidget {
         _openGuaranteeRequest(context, bid.projectId);
         break;
       case 'inProgress':
-        bloc.add(MarkWorkAsDone(bid.id));
+        _runActionWithConfirmation(
+          context,
+          () => sl<BidsService>().markWorkAsDone(bid.id),
+          WorkSubmittedScreen(companyName: bid.companyName),
+        );
         break;
       default:
         break;
+    }
+  }
+
+  /// Runs a bid action directly against BidsService and, on success, shows
+  /// the matching Figma confirmation screen ("Submitted for Review" /
+  /// "You've Backed Off"). Errors surface via the standard snackbar.
+  Future<void> _runActionWithConfirmation(
+    BuildContext context,
+    Future<List<BidModel>> Function() action,
+    Widget confirmation,
+  ) async {
+    try {
+      await action();
+      if (!context.mounted) return;
+      Navigator.push(context, MaterialPageRoute(builder: (_) => confirmation));
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
@@ -207,7 +234,11 @@ class _MyBidsView extends StatelessWidget {
         bloc.add(CancelBid(bid.id));
         break;
       case 'guaranteeRejected':
-        bloc.add(BackOff(bid.id));
+        _runActionWithConfirmation(
+          context,
+          () => sl<BidsService>().backOff(bid.id),
+          BackedOffScreen(companyName: bid.companyName),
+        );
         break;
       default:
         break;

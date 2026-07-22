@@ -1,6 +1,10 @@
 // guarantee_step1_applicant_layout.dart
 import 'package:flutter/material.dart';
+import 'package:trova/core/app_text.dart';
+import 'package:trova/core/app_title.dart';
+import 'package:trova/core/button.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
+import 'package:trova/features/guarantees/presentation/widget/guarantee_shared.dart';
 
 class GuaranteeStep1ApplicantLayout extends StatelessWidget {
   final GuaranteeRequestModel model;
@@ -16,77 +20,58 @@ class GuaranteeStep1ApplicantLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     final isFilled = model.legalCompanyName != null;
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Applicant (Contractor) Information',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 4),
-          const Text(
-            'Auto-filled from your Trova profile.',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      children: [
+        AppTitle(
+          title: 'Applicant (Contractor) Information',
+          size: 20,
+          weight: FontWeight.w700,
+          titleColor: colors.onSurface,
+          textAlign: TextAlign.start,
+        ),
+        const SizedBox(height: 6),
+        AppText(
+          text: 'Auto-filled from your Trova profile.',
+          textSize: 13,
+          textColor: colors.secondary.withValues(alpha: 0.6),
+          textAlign: TextAlign.start,
+        ),
+        const SizedBox(height: 20),
+        if (isFilled)
+          GuaranteeInfoCard(rows: [
+            MapEntry('Contractor ID', model.contractorId ?? ''),
+            MapEntry('Legal Company Name', model.legalCompanyName ?? ''),
+            MapEntry('Registration Number (CR)', model.registrationNumber ?? ''),
+            MapEntry('Tax / VAT Number', model.taxVatNumber ?? ''),
+            MapEntry('Registered Address', model.registeredAddress ?? ''),
+            MapEntry('Primary Contact', model.primaryContact ?? ''),
+            MapEntry('Primary Email', model.primaryEmail ?? ''),
+            MapEntry('Primary Phone', model.primaryPhone ?? ''),
+          ])
+        else
+          AppText(
+            text: 'Waiting on applicant details...',
+            textSize: 13,
+            textColor: colors.secondary.withValues(alpha: 0.6),
+            textAlign: TextAlign.start,
           ),
-          const SizedBox(height: 16),
-          if (isFilled)
-            _InfoCard(rows: {
-              'Legal Company Name': model.legalCompanyName ?? '',
-              'Registration Number (CR)': model.registrationNumber ?? '',
-              'Tax / VAT Number': model.taxVatNumber ?? '',
-              'Registered Address': model.registeredAddress ?? '',
-              'Primary Contact': model.primaryContact ?? '',
-              'Primary Email': model.primaryEmail ?? '',
-              'Primary Phone': model.primaryPhone ?? '',
-            })
-          else
-            const Text('Waiting on applicant details...', style: TextStyle(color: Colors.grey)),
-          const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: isFilled ? onContinue : null,
-              child: const Text('Continue to Project Details'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoCard extends StatelessWidget {
-  final Map<String, String> rows;
-  const _InfoCard({required this.rows});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).colorScheme.surfaceBright),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        children: rows.entries.map((e) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(flex: 2, child: Text(e.key, style: const TextStyle(color: Colors.grey))),
-                Expanded(
-                  flex: 3,
-                  child: Text(e.value,
-                      textAlign: TextAlign.right, style: const TextStyle(fontWeight: FontWeight.w600)),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
+        const SizedBox(height: 24),
+        Button(
+          text: 'Continue to Project Details',
+          textColor: colors.onPrimary,
+          borderRadius: 12,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          buttonWidth: double.infinity,
+          buttonHeight: 47,
+          elevation: 0,
+          onPressed: isFilled ? onContinue : null,
+        ),
+      ],
     );
   }
 }

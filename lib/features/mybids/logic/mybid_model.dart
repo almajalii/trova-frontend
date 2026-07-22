@@ -4,9 +4,10 @@ class BidModel {
   final String projectTitle;
   final String companyName;
   final double bidAmount;
-  final String status; // 'pending' | 'selected' | 'confirmed' | 'guaranteePendingReview' | 'guaranteeRejected' | 'inProgress'
+  final String status; // 'pending' | 'selected' | 'confirmed' | 'guaranteePendingReview' | 'guaranteeRejected' | 'inProgress' | 'workSubmitted'
   final String? note;
   final int? guaranteeExpiresInDays; // only used when status == 'inProgress'
+  final String? workSubmittedAt; // "yyyy-MM-dd", only set when status == 'workSubmitted'
 
   const BidModel({
     required this.id,
@@ -17,6 +18,7 @@ class BidModel {
     required this.status,
     this.note,
     this.guaranteeExpiresInDays,
+    this.workSubmittedAt,
   });
 
   factory BidModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class BidModel {
       status: _statusFromApi(json['status'] as String),
       note: json['note'] as String?,
       guaranteeExpiresInDays: json['guaranteeExpiresInDays'] as int?,
+      workSubmittedAt: json['workSubmittedAt'] as String?,
     );
   }
 
@@ -50,6 +53,8 @@ class BidModel {
         return 'guaranteeRejected';
       case 'IN_PROGRESS':
         return 'inProgress';
+      case 'WORK_SUBMITTED':
+        return 'workSubmitted';
       default:
         return raw;
     }
@@ -65,6 +70,7 @@ class BidModel {
       'status': status,
       'note': note,
       'guaranteeExpiresInDays': guaranteeExpiresInDays,
+      'workSubmittedAt': workSubmittedAt,
     };
   }
 }

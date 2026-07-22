@@ -1,6 +1,10 @@
 // guarantee_step4_beneficiary_layout.dart
 import 'package:flutter/material.dart';
+import 'package:trova/core/app_text.dart';
+import 'package:trova/core/app_title.dart';
+import 'package:trova/core/button.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
+import 'package:trova/features/guarantees/presentation/widget/guarantee_shared.dart';
 
 class GuaranteeStep4BeneficiaryLayout extends StatelessWidget {
   final GuaranteeRequestModel model;
@@ -16,69 +20,62 @@ class GuaranteeStep4BeneficiaryLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('Beneficiary (Project Owner) Information',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 4),
-          const Text(
-            "Auto-filled from the Project ID. Edit if this project has multiple owners.",
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).colorScheme.surfaceBright),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              children: {
-                'Beneficiary ID (Optional)': model.beneficiaryId ?? '',
-                'Company Name': model.beneficiaryCompanyName ?? '',
-                'Registered Address': model.beneficiaryAddress ?? '',
-                'Contact Person': model.beneficiaryContact ?? '',
-                'Email': model.beneficiaryEmail ?? '',
-                'Phone (Optional)': model.beneficiaryPhone ?? '',
-              }.entries.map((e) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(flex: 2, child: Text(e.key, style: const TextStyle(color: Colors.grey))),
-                      Expanded(
-                        flex: 3,
-                        child: Text(e.value,
-                            textAlign: TextAlign.right,
-                            style: const TextStyle(fontWeight: FontWeight.w600)),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: () {
-              // TODO: open an edit sheet/dialog to modify beneficiary fields
-            },
-            child: const Text('Edit Beneficiary Details'),
-          ),
-          const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onContinue,
-              child: const Text('Continue to Documents'),
-            ),
-          ),
-        ],
-      ),
+    final colors = Theme.of(context).colorScheme;
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      children: [
+        AppTitle(
+          title: 'Beneficiary (Project Owner) Information',
+          size: 20,
+          weight: FontWeight.w700,
+          titleColor: colors.onSurface,
+          textAlign: TextAlign.start,
+        ),
+        const SizedBox(height: 6),
+        AppText(
+          text: "Auto-filled from the Project ID. Edit if this project has multiple owners.",
+          textSize: 13,
+          textColor: colors.secondary.withValues(alpha: 0.6),
+          textAlign: TextAlign.start,
+        ),
+        const SizedBox(height: 20),
+        GuaranteeInfoCard(rows: [
+          MapEntry('Beneficiary ID (Optional)', model.beneficiaryId ?? ''),
+          MapEntry('Company Name', model.beneficiaryCompanyName ?? ''),
+          MapEntry('Registered Address', model.beneficiaryAddress ?? ''),
+          MapEntry('Contact Person', model.beneficiaryContact ?? ''),
+          MapEntry('Email', model.beneficiaryEmail ?? ''),
+          MapEntry('Phone (Optional)', model.beneficiaryPhone ?? ''),
+        ]),
+        const SizedBox(height: 8),
+        Button(
+          text: 'Edit Beneficiary Details',
+          isText: true,
+          textColor: colors.primary,
+          borderRadius: 0,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          buttonWidth: 0,
+          buttonHeight: 0,
+          elevation: 0,
+          onPressed: () {
+            // TODO: open an edit sheet/dialog to modify beneficiary fields
+          },
+        ),
+        const SizedBox(height: 16),
+        Button(
+          text: 'Continue to Documents',
+          textColor: colors.onPrimary,
+          borderRadius: 12,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          buttonWidth: double.infinity,
+          buttonHeight: 47,
+          elevation: 0,
+          onPressed: onContinue,
+        ),
+      ],
     );
   }
 }
