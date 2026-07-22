@@ -24,13 +24,6 @@ class CancelBid extends BidsEvent {
   List<Object?> get props => [id];
 }
 
-class ApplyForGuarantee extends BidsEvent {
-  final String id;
-  const ApplyForGuarantee(this.id);
-  @override
-  List<Object?> get props => [id];
-}
-
 class MarkWorkAsDone extends BidsEvent {
   final String id;
   const MarkWorkAsDone(this.id);
@@ -41,13 +34,6 @@ class MarkWorkAsDone extends BidsEvent {
 class BackOff extends BidsEvent {
   final String id;
   const BackOff(this.id);
-  @override
-  List<Object?> get props => [id];
-}
-
-class ApplyForNewGuarantee extends BidsEvent {
-  final String id;
-  const ApplyForNewGuarantee(this.id);
   @override
   List<Object?> get props => [id];
 }

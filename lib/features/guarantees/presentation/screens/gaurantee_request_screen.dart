@@ -54,15 +54,21 @@ class GuaranteeRequestScreen extends StatelessWidget {
                 }
               },
             ),
-            title: Text('Guarantee Step ${state.currentStep + 1} - ${_stepTitles[state.currentStep]}'),
+            title: Text(state.isPrefilling || state.prefillError != null
+                ? 'Guarantee Application'
+                : 'Guarantee Step ${state.currentStep + 1} - ${_stepTitles[state.currentStep]}'),
           ),
           body: SafeArea(
-            child: Column(
-              children: [
-                _StepProgressBar(currentStep: state.currentStep, totalSteps: 6),
-                Expanded(child: _buildStep(context, state, bloc)),
-              ],
-            ),
+            child: state.isPrefilling
+                ? const Center(child: CircularProgressIndicator())
+                : state.prefillError != null
+                    ? _PrefillErrorView(message: state.prefillError!)
+                    : Column(
+                        children: [
+                          _StepProgressBar(currentStep: state.currentStep, totalSteps: 6),
+                          Expanded(child: _buildStep(context, state, bloc)),
+                        ],
+                      ),
           ),
         );
       },
@@ -100,6 +106,31 @@ class GuaranteeRequestScreen extends StatelessWidget {
       default:
         return const SizedBox.shrink();
     }
+  }
+}
+
+class _PrefillErrorView extends StatelessWidget {
+  final String message;
+  const _PrefillErrorView({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, size: 48, color: Theme.of(context).colorScheme.error),
+          const SizedBox(height: 16),
+          Text(message, textAlign: TextAlign.center),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Go Back'),
+          ),
+        ],
+      ),
+    );
   }
 }
 

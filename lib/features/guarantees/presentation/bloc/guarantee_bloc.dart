@@ -13,6 +13,16 @@ class GuaranteeRequestBloc extends Bloc<GuaranteeRequestEvent, GuaranteeRequestS
       emit(state.copyWith(model: event.updatedModel));
     });
 
+    on<GuaranteePrefillRequested>((event, emit) async {
+      emit(state.copyWith(isPrefilling: true, prefillError: null));
+      try {
+        final prefillModel = await service.fetchPrefill(event.projectId);
+        emit(state.copyWith(model: prefillModel, isPrefilling: false));
+      } catch (e) {
+        emit(state.copyWith(isPrefilling: false, prefillError: e.toString()));
+      }
+    });
+
     on<GuaranteeNextStep>((event, emit) {
       if (state.currentStep < _lastStepIndex) {
         emit(state.copyWith(currentStep: state.currentStep + 1));

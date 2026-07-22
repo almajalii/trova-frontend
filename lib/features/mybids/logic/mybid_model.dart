@@ -1,14 +1,16 @@
 class BidModel {
   final String id;
+  final String projectId;
   final String projectTitle;
   final String companyName;
   final double bidAmount;
-  final String status; // 'pending' | 'selected' | 'confirmed' | 'inProgress' | 'guaranteeRejected'
+  final String status; // 'pending' | 'selected' | 'confirmed' | 'guaranteePendingReview' | 'guaranteeRejected' | 'inProgress'
   final String? note;
   final int? guaranteeExpiresInDays; // only used when status == 'inProgress'
 
   const BidModel({
     required this.id,
+    required this.projectId,
     required this.projectTitle,
     required this.companyName,
     required this.bidAmount,
@@ -20,6 +22,7 @@ class BidModel {
   factory BidModel.fromJson(Map<String, dynamic> json) {
     return BidModel(
       id: json['bidId'] as String,
+      projectId: json['projectId'] as String,
       projectTitle: json['projectTitle'] as String,
       companyName: json['companyName'] as String,
       bidAmount: (json['bidAmountJod'] as num).toDouble(),
@@ -41,6 +44,10 @@ class BidModel {
         return 'selected';
       case 'CONFIRMED':
         return 'confirmed';
+      case 'GUARANTEE_PENDING_REVIEW':
+        return 'guaranteePendingReview';
+      case 'GUARANTEE_REJECTED':
+        return 'guaranteeRejected';
       case 'IN_PROGRESS':
         return 'inProgress';
       default:
@@ -51,6 +58,7 @@ class BidModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'projectId': projectId,
       'projectTitle': projectTitle,
       'companyName': companyName,
       'bidAmount': bidAmount,

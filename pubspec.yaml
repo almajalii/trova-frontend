@@ -45,7 +45,8 @@ dependencies:
   google_mlkit_text_recognition: ^0.15.0
   flutter_svg: ^2.3.0
   intl: ^0.20.2
-  file_picker: ^8.1.6 # matches the version already resolved in your pubspec.lock
+  file_picker: ^11.0.2 # 8.x hardcodes compileSdk 34, which conflicts with flutter_plugin_android_lifecycle's compileSdk 36 requirement
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:

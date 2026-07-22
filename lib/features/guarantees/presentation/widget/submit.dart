@@ -8,7 +8,10 @@ class GuaranteeSubmittedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Guarantee Submitted (Pending)')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Guarantee Submitted (Pending)'),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),

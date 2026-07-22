@@ -74,7 +74,7 @@ class BrowseProjectsScreen extends StatelessWidget {
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: _sectors.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        separatorBuilder: (_, _) => const SizedBox(width: 8),
                         itemBuilder: (context, index) {
                           final sector = _sectors[index];
                           final currentSector = state is ProjectsSuccess ? state.filter.sector : null;

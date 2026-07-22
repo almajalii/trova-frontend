@@ -56,7 +56,7 @@ class _GuaranteeStep3DetailsLayoutState extends State<GuaranteeStep3DetailsLayou
           const Text('Type of Guarantee'),
           const SizedBox(height: 8),
           DropdownButtonFormField<GuaranteeType>(
-            value: widget.model.guaranteeType,
+            initialValue: widget.model.guaranteeType,
             decoration: const InputDecoration(border: OutlineInputBorder()),
             items: GuaranteeType.values.map((t) {
               return DropdownMenuItem(value: t, child: Text(_typeLabel(t)));

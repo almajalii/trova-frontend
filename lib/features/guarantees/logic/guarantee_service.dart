@@ -1,51 +1,73 @@
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:trova/core/network/api_exception.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
-import 'guarantee_request_model.dart';
 
 class GuaranteeService {
-  // TODO: replace with your real .NET Web API base URL / shared ApiClient
-  static const _baseUrl = 'https://YOUR_API_BASE_URL/api/guarantees';
+  final Dio dio;
+  GuaranteeService({required this.dio});
 
-  Future<void> submitGuaranteeRequest(GuaranteeRequestModel model) async {
-    final request = http.MultipartRequest('POST', Uri.parse(_baseUrl));
-
-    request.fields.addAll({
-      'contractorId': model.contractorId ?? '',
-      'projectId': model.projectId ?? '',
-      'guaranteeType': model.guaranteeType?.name ?? '',
-      'guaranteedAmount': model.guaranteedAmount?.toString() ?? '',
-      'currency': model.currency,
-      'validityStart': model.validityStart?.toIso8601String() ?? '',
-      'validityExpiry': model.validityExpiry?.toIso8601String() ?? '',
-      'specialConditions': model.specialConditions ?? '',
-      'beneficiaryId': model.beneficiaryId ?? '',
-      'confirmAccurate': model.confirmAccurate.toString(),
-      'agreeIndemnify': model.agreeIndemnify.toString(),
-      'acceptTerms': model.acceptTerms.toString(),
-      'signatureName': model.signatureName ?? '',
-    });
-
-    if (model.signedContractFile != null) {
-      request.files.add(
-        await http.MultipartFile.fromPath('signedContract', model.signedContractFile!.path),
+  /// GET /guarantees/prefill — auto-fills Steps 1, 2 and 4 for the given
+  /// project. Throws ApiException (with a human-readable message) if the
+  /// project isn't found, the bid isn't confirmed yet, or the contractor
+  /// hasn't completed Company Details.
+  Future<GuaranteeRequestModel> fetchPrefill(String projectId) async {
+    try {
+      final response = await dio.get(
+        '/guarantees/prefill',
+        queryParameters: {'projectId': projectId},
       );
-    }
-    if (model.letterOfAwardFile != null) {
-      request.files.add(
-        await http.MultipartFile.fromPath('letterOfAward', model.letterOfAwardFile!.path),
+      return GuaranteeRequestModel.fromPrefillJson(
+        response.data['data'] as Map<String, dynamic>,
       );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
     }
-    for (var i = 0; i < model.otherDocuments.length; i++) {
-      request.files.add(
-        await http.MultipartFile.fromPath('otherDocuments[$i]', model.otherDocuments[i].path),
-      );
-    }
+  }
 
-    final streamed = await request.send();
-    final response = await http.Response.fromStream(streamed);
+  /// POST /guarantees — submits the full application as multipart/form-data.
+  /// Returns the new `guaranteeApplicationId` on success.
+  Future<String> submitGuaranteeRequest(GuaranteeRequestModel model) async {
+    try {
+      final formData = FormData.fromMap({
+        'contractorId': model.contractorId ?? '',
+        'projectId': model.projectId ?? '',
+        'guaranteeType': model.guaranteeType?.name ?? '',
+        'guaranteedAmount': model.guaranteedAmount?.toString() ?? '',
+        'currency': model.currency,
+        'validityStart': model.validityStart?.toIso8601String() ?? '',
+        'validityExpiry': model.validityExpiry?.toIso8601String() ?? '',
+        'specialConditions': model.specialConditions ?? '',
+        'beneficiaryId': model.beneficiaryId ?? '',
+        'confirmAccurate': model.confirmAccurate.toString(),
+        'agreeIndemnify': model.agreeIndemnify.toString(),
+        'acceptTerms': model.acceptTerms.toString(),
+        'signatureName': model.signatureName ?? '',
+      });
 
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw Exception('Failed to submit guarantee request: ${response.body}');
+      if (model.signedContractFile != null) {
+        formData.files.add(MapEntry(
+          'signedContract',
+          await MultipartFile.fromFile(model.signedContractFile!.path),
+        ));
+      }
+      if (model.letterOfAwardFile != null) {
+        formData.files.add(MapEntry(
+          'letterOfAward',
+          await MultipartFile.fromFile(model.letterOfAwardFile!.path),
+        ));
+      }
+      for (var i = 0; i < model.otherDocuments.length; i++) {
+        formData.files.add(MapEntry(
+          'otherDocuments[$i]',
+          await MultipartFile.fromFile(model.otherDocuments[i].path),
+        ));
+      }
+
+      final response = await dio.post('/guarantees', data: formData);
+      final data = response.data['data'] as Map<String, dynamic>?;
+      return data?['guaranteeApplicationId'] as String? ?? '';
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
     }
   }
 }

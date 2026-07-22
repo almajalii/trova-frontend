@@ -33,10 +33,6 @@ class BidsService {
     }
   }
 
-  Future<List<BidModel>> applyForGuarantee(String id) async {
-    throw UnimplementedError('wired in a follow-up task');
-  }
-
   Future<List<BidModel>> markWorkAsDone(String id) async {
     throw UnimplementedError('wired in a follow-up task');
   }
@@ -48,10 +44,6 @@ class BidsService {
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }
-  }
-
-  Future<List<BidModel>> applyForNewGuarantee(String id) async {
-    throw UnimplementedError('wired in a follow-up task');
   }
 
   List<BidModel> _parseBidsList(dynamic data) {

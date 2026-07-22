@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
 
-class GuaranteeStep1ApplicantLayout extends StatefulWidget {
+class GuaranteeStep1ApplicantLayout extends StatelessWidget {
   final GuaranteeRequestModel model;
   final ValueChanged<GuaranteeRequestModel> onChanged;
   final VoidCallback onContinue;
@@ -15,30 +15,8 @@ class GuaranteeStep1ApplicantLayout extends StatefulWidget {
   });
 
   @override
-  State<GuaranteeStep1ApplicantLayout> createState() => _GuaranteeStep1ApplicantLayoutState();
-}
-
-class _GuaranteeStep1ApplicantLayoutState extends State<GuaranteeStep1ApplicantLayout> {
-  late final TextEditingController _contractorIdController =
-      TextEditingController(text: widget.model.contractorId);
-
-  void _autoFill(String contractorId) {
-    // TODO: replace with real lookup call (likely from your Trova profile service)
-    widget.onChanged(widget.model.copyWith(
-      contractorId: contractorId,
-      legalCompanyName: 'Al-Fahad Contracting L',
-      registrationNumber: 'JO-CR-1',
-      taxVatNumber: 'JO-TAX-994512',
-      registeredAddress: 'Wadi Saqra, Amman, Jordan',
-      primaryContact: 'Ahmad Khalil, Operations Director',
-      primaryEmail: 'ahmad.khalil@alfahad.jo',
-      primaryPhone: '+962 79 123 4567',
-    ));
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isFilled = widget.model.legalCompanyName != null;
+    final isFilled = model.legalCompanyName != null;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -47,38 +25,29 @@ class _GuaranteeStep1ApplicantLayoutState extends State<GuaranteeStep1ApplicantL
         children: [
           const Text('Applicant (Contractor) Information',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          const Text('Contractor ID'),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _contractorIdController,
-            decoration: const InputDecoration(
-              hintText: 'Enter your Contractor ID to auto-fill',
-              border: OutlineInputBorder(),
-            ),
-            onSubmitted: _autoFill,
-          ),
           const SizedBox(height: 4),
           const Text(
-            'Entering your Contractor ID auto-fills the fields below from your Trova profile.',
+            'Auto-filled from your Trova profile.',
             style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
           const SizedBox(height: 16),
           if (isFilled)
             _InfoCard(rows: {
-              'Legal Company Name': widget.model.legalCompanyName ?? '',
-              'Registration Number (CR)': widget.model.registrationNumber ?? '',
-              'Tax / VAT Number': widget.model.taxVatNumber ?? '',
-              'Registered Address': widget.model.registeredAddress ?? '',
-              'Primary Contact': widget.model.primaryContact ?? '',
-              'Primary Email': widget.model.primaryEmail ?? '',
-              'Primary Phone': widget.model.primaryPhone ?? '',
-            }),
+              'Legal Company Name': model.legalCompanyName ?? '',
+              'Registration Number (CR)': model.registrationNumber ?? '',
+              'Tax / VAT Number': model.taxVatNumber ?? '',
+              'Registered Address': model.registeredAddress ?? '',
+              'Primary Contact': model.primaryContact ?? '',
+              'Primary Email': model.primaryEmail ?? '',
+              'Primary Phone': model.primaryPhone ?? '',
+            })
+          else
+            const Text('Waiting on applicant details...', style: TextStyle(color: Colors.grey)),
           const Spacer(),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: isFilled ? widget.onContinue : null,
+              onPressed: isFilled ? onContinue : null,
               child: const Text('Continue to Project Details'),
             ),
           ),

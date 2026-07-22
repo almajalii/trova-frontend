@@ -92,7 +92,7 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<PostProjectService>(() => PostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<BiddersService>(() => BiddersService(dio: sl<Dio>()));
   sl.registerLazySingleton<BidderProfileService>(() => BidderProfileService(dio: sl<Dio>()));
-  sl.registerLazySingleton<GuaranteeService>(() => GuaranteeService());
+  sl.registerLazySingleton<GuaranteeService>(() => GuaranteeService(dio: sl<Dio>()));
   sl.registerLazySingleton<MyProjectsService>(() => MyProjectsService(dio: sl<Dio>()));
   sl.registerLazySingleton<ProjectHistoryService>(() => ProjectHistoryService(dio: sl<Dio>()));
   sl.registerLazySingleton<ProjectDetailService>(() => ProjectDetailService(dio: sl<Dio>()));
@@ -100,13 +100,9 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<ReviewWorkService>(() => ReviewWorkService(dio: sl<Dio>()));
   sl.registerLazySingleton<RepostProjectService>(() => RepostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<LeaveReviewService>(() => LeaveReviewService(dio: sl<Dio>()));
-<<<<<<< HEAD
-  sl.registerLazySingleton(() => ProjectsService());
-  sl.registerLazySingleton<BidDetailService>(() => BidDetailService());
-=======
   sl.registerLazySingleton(() => ProjectsService(dio: sl<Dio>()));
+  sl.registerLazySingleton<BidDetailService>(() => BidDetailService());
   sl.registerLazySingleton<ProjectBidDetailService>(() => ProjectBidDetailService(dio: sl<Dio>()));
   sl.registerLazySingleton<BidsService>(() => BidsService(dio: sl<Dio>()));
   sl.registerLazySingleton<NotificationService>(() => NotificationService(dio: sl<Dio>()));
->>>>>>> 8a30ba134963891dfb189a14035b4fbbdd121f9f
 }

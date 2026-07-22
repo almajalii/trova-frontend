@@ -8,12 +8,16 @@ class GuaranteeRequestState extends Equatable {
   final int currentStep;
   final GuaranteeRequestModel model;
   final String? errorMessage;
+  final bool isPrefilling;
+  final String? prefillError;
 
   const GuaranteeRequestState({
     this.status = GuaranteeStatus.init,
     this.currentStep = 0,
     this.model = const GuaranteeRequestModel(),
     this.errorMessage,
+    this.isPrefilling = true,
+    this.prefillError,
   });
 
   GuaranteeRequestState copyWith({
@@ -21,15 +25,20 @@ class GuaranteeRequestState extends Equatable {
     int? currentStep,
     GuaranteeRequestModel? model,
     String? errorMessage,
+    bool? isPrefilling,
+    String? prefillError,
   }) {
     return GuaranteeRequestState(
       status: status ?? this.status,
       currentStep: currentStep ?? this.currentStep,
       model: model ?? this.model,
       errorMessage: errorMessage,
+      isPrefilling: isPrefilling ?? this.isPrefilling,
+      prefillError: prefillError,
     );
   }
 
   @override
-  List<Object?> get props => [status, currentStep, model, errorMessage];
+  List<Object?> get props =>
+      [status, currentStep, model, errorMessage, isPrefilling, prefillError];
 }

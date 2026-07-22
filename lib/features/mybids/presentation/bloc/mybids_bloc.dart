@@ -11,10 +11,8 @@ class BidsBloc extends Bloc<BidsEvent, BidsState> {
     on<FetchBids>(_onFetchBids);
     on<ConfirmBid>((event, emit) => _runAction(emit, () => service.confirmBid(event.id)));
     on<CancelBid>((event, emit) => _runAction(emit, () => service.cancelBid(event.id)));
-    on<ApplyForGuarantee>((event, emit) => _runAction(emit, () => service.applyForGuarantee(event.id)));
     on<MarkWorkAsDone>((event, emit) => _runAction(emit, () => service.markWorkAsDone(event.id)));
     on<BackOff>((event, emit) => _runAction(emit, () => service.backOff(event.id)));
-    on<ApplyForNewGuarantee>((event, emit) => _runAction(emit, () => service.applyForNewGuarantee(event.id)));
   }
 
   Future<void> _onFetchBids(FetchBids event, Emitter<BidsState> emit) async {

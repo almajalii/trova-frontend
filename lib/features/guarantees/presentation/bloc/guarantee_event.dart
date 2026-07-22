@@ -14,6 +14,13 @@ class GuaranteeStepDataChanged extends GuaranteeRequestEvent {
   List<Object?> get props => [updatedModel];
 }
 
+class GuaranteePrefillRequested extends GuaranteeRequestEvent {
+  final String projectId;
+  const GuaranteePrefillRequested(this.projectId);
+  @override
+  List<Object?> get props => [projectId];
+}
+
 class GuaranteeNextStep extends GuaranteeRequestEvent {}
 
 class GuaranteeBackStep extends GuaranteeRequestEvent {}

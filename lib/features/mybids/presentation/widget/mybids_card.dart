@@ -5,16 +5,16 @@ import 'package:trova/features/mybids/logic/mybid_model.dart';
 
 class BidCard extends StatelessWidget {
   final BidModel bid;
+  final VoidCallback? onTap;
   final VoidCallback? onPrimaryAction;
   final VoidCallback? onSecondaryAction;
-   final VoidCallback? onTap;
 
   const BidCard({
     super.key,
     required this.bid,
-    this.onPrimaryAction,
-    this.onSecondaryAction, 
     this.onTap,
+    this.onPrimaryAction,
+    this.onSecondaryAction,
   });
 
   _StatusStyle get _style {
@@ -25,6 +25,8 @@ class BidCard extends StatelessWidget {
         return _StatusStyle(label: 'Selected', bg: const Color(0xFFDFF3E3), text: const Color(0xFF1E8E3E));
       case 'confirmed':
         return _StatusStyle(label: 'Confirmed', bg: const Color(0xFFDFF3E3), text: const Color(0xFF1E8E3E));
+      case 'guaranteePendingReview':
+        return _StatusStyle(label: 'Pending Bank Review', bg: const Color(0xFFFCEFD8), text: const Color(0xFFB8760B));
       case 'inProgress':
         return _StatusStyle(label: 'In Progress', bg: const Color(0xFFFCEFD8), text: const Color(0xFFB8760B));
       case 'guaranteeRejected':
@@ -39,7 +41,9 @@ class BidCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
     final style = _style;
 
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -115,6 +119,7 @@ class BidCard extends StatelessWidget {
           _buildActions(colors),
         ],
       ),
+      ),
     );
   }
 
@@ -170,6 +175,9 @@ class BidCard extends StatelessWidget {
           elevation: 0,
           onPressed: onPrimaryAction,
         );
+
+      case 'guaranteePendingReview':
+        return const SizedBox.shrink();
 
       case 'inProgress':
         return Button(

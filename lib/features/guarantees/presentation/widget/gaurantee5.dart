@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
-import '../../logic/guarantee_request_model.dart';
 
 class GuaranteeStep5DocumentsLayout extends StatelessWidget {
   final GuaranteeRequestModel model;
@@ -18,7 +17,7 @@ class GuaranteeStep5DocumentsLayout extends StatelessWidget {
   });
 
   Future<File?> _pickPdf() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf'],
       withData: false,

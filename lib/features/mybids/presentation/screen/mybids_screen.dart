@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/app_title.dart';
 import 'package:trova/core/di/service_locator.dart';
+import 'package:trova/core/success_badge.dart';
 import 'package:trova/features/bid-detail/presentation/screen/bid_detail_screen.dart';
 import 'package:trova/features/bid-detail/presentation/widget/contract_agreement_screen.dart';
 import 'package:trova/features/mybids/logic/mybid_model.dart';
@@ -11,6 +12,10 @@ import 'package:trova/features/mybids/presentation/bloc/mybids_bloc.dart';
 import 'package:trova/features/mybids/presentation/bloc/mybids_event.dart';
 import 'package:trova/features/mybids/presentation/bloc/mybids_state.dart';
 import 'package:trova/features/mybids/presentation/widget/mybids_card.dart';
+import 'package:trova/features/guarantees/logic/guarantee_service.dart';
+import 'package:trova/features/guarantees/presentation/bloc/guarantee_bloc.dart';
+import 'package:trova/features/guarantees/presentation/bloc/guarantee_event.dart';
+import 'package:trova/features/guarantees/presentation/screens/gaurantee_request_screen.dart';
 
 class MyBidsScreen extends StatelessWidget {
   const MyBidsScreen({super.key});
@@ -41,14 +46,8 @@ class _MyBidsView extends StatelessWidget {
             children: [
               const SizedBox(height: 8),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(Icons.arrow_back, color: colors.onSurface),
-                    padding: EdgeInsets.zero,
-                    alignment: Alignment.centerLeft,
-                  ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
@@ -116,6 +115,7 @@ class _MyBidsView extends StatelessWidget {
                     final inExecution = bids
                         .where((b) =>
                             b.status == 'confirmed' ||
+                            b.status == 'guaranteePendingReview' ||
                             b.status == 'inProgress' ||
                             b.status == 'guaranteeRejected')
                         .toList();
@@ -135,6 +135,7 @@ class _MyBidsView extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const TrovaBottomNav(activeIndex: 2),
     );
   }
 
@@ -155,16 +156,16 @@ class _MyBidsView extends StatelessWidget {
             onPrimaryAction: () => _onPrimaryAction(context, bid),
             onSecondaryAction: () => _onSecondaryAction(context, bid),
             onTap: () {
-        if (bid.status == 'selected') {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => ContractAgreementScreen(bidId: bid.id),
-          ));
-        } else {
-          Navigator.push(context, MaterialPageRoute(
-            builder: (_) => BidDetailScreen(bidId: bid.id),
-          ));
-        }
-      }
+              if (bid.status == 'selected') {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => ContractAgreementScreen(bidId: bid.id),
+                ));
+              } else {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => BidDetailScreen(bidId: bid.id),
+                ));
+              }
+            },
           )),
       const SizedBox(height: 8),
     ];
@@ -177,17 +178,26 @@ class _MyBidsView extends StatelessWidget {
         bloc.add(ConfirmBid(bid.id));
         break;
       case 'confirmed':
-        bloc.add(ApplyForGuarantee(bid.id));
+      case 'guaranteeRejected':
+        _openGuaranteeRequest(context, bid.projectId);
         break;
       case 'inProgress':
         bloc.add(MarkWorkAsDone(bid.id));
         break;
-      case 'guaranteeRejected':
-        bloc.add(ApplyForNewGuarantee(bid.id));
-        break;
       default:
         break;
     }
+  }
+
+  void _openGuaranteeRequest(BuildContext context, String projectId) {
+    final bloc = context.read<BidsBloc>();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => BlocProvider(
+        create: (_) => GuaranteeRequestBloc(sl<GuaranteeService>())
+          ..add(GuaranteePrefillRequested(projectId)),
+        child: const GuaranteeRequestScreen(),
+      ),
+    )).then((_) => bloc.add(const FetchBids()));
   }
 
   void _onSecondaryAction(BuildContext context, BidModel bid) {

@@ -5,7 +5,7 @@ import 'package:trova/core/storage/token_storage.dart';
 
 /// Builds a configured Dio instance:
 ///  - base URL resolved per platform (see ApiConfig)
-///  - automatically attaches "Authorization: Bearer <token>" when available
+///  - automatically attaches "Authorization: Bearer `<token>`" when available
 ///  - logs requests/responses in debug builds only
 class DioClient {
   static Dio create(TokenStorage tokenStorage) {

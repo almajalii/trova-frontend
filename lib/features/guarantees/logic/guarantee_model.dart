@@ -85,6 +85,35 @@ class GuaranteeRequestModel extends Equatable {
     this.signatureName,
   });
 
+  /// Builds a model from the `data` object of GET /guarantees/prefill.
+  /// Only Steps 1, 2 and 4 fields are populated — Step 3 (guarantee type,
+  /// amount, validity, conditions) and Step 5/6 (documents, declarations,
+  /// signature) are filled in by the contractor afterwards.
+  factory GuaranteeRequestModel.fromPrefillJson(Map<String, dynamic> json) {
+    return GuaranteeRequestModel(
+      contractorId: json['contractorId'] as String?,
+      legalCompanyName: json['legalCompanyName'] as String?,
+      registrationNumber: json['registrationNumber'] as String?,
+      taxVatNumber: json['taxVatNumber'] as String?,
+      registeredAddress: json['registeredAddress'] as String?,
+      primaryContact: json['primaryContact'] as String?,
+      primaryEmail: json['primaryEmail'] as String?,
+      primaryPhone: json['primaryPhone'] as String?,
+      projectId: json['projectId'] as String?,
+      projectName: json['projectName'] as String?,
+      location: json['location'] as String?,
+      contractValue: (json['contractValue'] as num?)?.toDouble(),
+      description: json['description'] as String?,
+      contractDuration: json['contractDuration'] as String?,
+      beneficiaryId: json['beneficiaryId'] as String?,
+      beneficiaryCompanyName: json['beneficiaryCompanyName'] as String?,
+      beneficiaryAddress: json['beneficiaryAddress'] as String?,
+      beneficiaryContact: json['beneficiaryContact'] as String?,
+      beneficiaryEmail: json['beneficiaryEmail'] as String?,
+      beneficiaryPhone: json['beneficiaryPhone'] as String?,
+    );
+  }
+
   GuaranteeRequestModel copyWith({
     String? contractorId,
     String? legalCompanyName,
