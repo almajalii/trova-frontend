@@ -6,7 +6,7 @@ import 'package:trova/features/leave-review/logic/leave_review_model.dart';
 class LeaveReviewService {
   final Dio _dio;
 
-  LeaveReviewService({required Dio dio}) : _dio = dio;
+  LeaveReviewService({required this._dio});
 
   /// Loads the review context (contractor name, project title, completed
   /// date) for [projectId], with an empty/unrated draft ready to fill in.

@@ -16,7 +16,7 @@ class Button extends StatelessWidget {
   final double buttonWidth;
   final double buttonHeight;
   final bool isText;
-  final Color? borderColor; // NEW
+  final Color? borderColor;
 
   const Button({
     super.key,

@@ -6,7 +6,7 @@ import 'package:trova/features/repost-project/logic/repost_project_model.dart';
 class RepostProjectService {
   final Dio _dio;
 
-  RepostProjectService({required Dio dio}) : _dio = dio;
+  RepostProjectService({required this._dio});
 
   /// Loads the prefilled draft for [projectId] (the project being reposted).
   Future<RepostProjectDraft> fetchDraft(String projectId) async {

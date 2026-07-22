@@ -74,6 +74,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                   if (isLastPage) {
                     return WelcomeLayout(
                       onLogin: () {
+                        debugPrint('LOGIN TAPPED');
                         Navigator.pushReplacementNamed(context, AppRoutes.login);
                       },
                       onSignup: () {

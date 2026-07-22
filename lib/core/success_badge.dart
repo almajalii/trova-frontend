@@ -42,7 +42,7 @@ class TrovaBottomNav extends StatelessWidget {
   static const List<String?> _routes = [
     AppRoutes.homeDashboard,
     AppRoutes.myProjects,
-    null,
+    AppRoutes.myBids,
     null, 
   ];
 

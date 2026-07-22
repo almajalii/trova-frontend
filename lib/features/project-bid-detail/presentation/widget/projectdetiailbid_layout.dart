@@ -46,7 +46,7 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
           onPressed: () => Navigator.maybePop(context),
         ),
       ),
-      body: BlocConsumer<ProjectDetailBloc, ProjectDetailState>(
+      body: BlocConsumer<ProjectBidDetailBloc, ProjectDetailState>(
         listener: (context, state) {
           if (state is ProjectDetailSubmitted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -71,7 +71,7 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
           }
 
           if (project == null) return const SizedBox.shrink();
-          final bloc = context.read<ProjectDetailBloc>();
+          final bloc = context.read<ProjectBidDetailBloc>();
 
           return Form(
             key: _formKey,
@@ -101,7 +101,7 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
                   AppText(
                     text: project.description,
                     textSize: 13,
-                    textColor: colors.onSecondary.withOpacity(0.7),
+                    textColor: colors.onSecondary.withValues(alpha: 0.7),
                     textAlign: TextAlign.start,
                   ),
                   const SizedBox(height: 20),
@@ -187,7 +187,7 @@ class ProjectPosterHeader extends StatelessWidget {
         AppText(
           text: 'Posted by $postedBy',
           textSize: 13,
-          textColor: colors.onSecondary.withOpacity(0.6),
+          textColor: colors.onSecondary.withValues(alpha: 0.6),
           textAlign: TextAlign.start,
         ),
       ],
@@ -249,7 +249,7 @@ class ProjectInfoCard extends StatelessWidget {
             child: AppText(
               text: label,
               textSize: 12,
-              textColor: colors.onSecondary.withOpacity(0.6),
+              textColor: colors.onSecondary.withValues(alpha: 0.6),
               textAlign: TextAlign.start,
             ),
           ),

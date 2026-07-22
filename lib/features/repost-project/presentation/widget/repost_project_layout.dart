@@ -257,7 +257,7 @@ class _RepostButton extends StatelessWidget {
         onPressed: isSubmitting ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: RepostProjectLayout._noticeText,
-          disabledBackgroundColor: RepostProjectLayout._noticeText.withOpacity(0.6),
+          disabledBackgroundColor: RepostProjectLayout._noticeText.withValues(alpha: 0.6),
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),

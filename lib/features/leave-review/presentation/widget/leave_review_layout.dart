@@ -186,7 +186,7 @@ class _SubmitButton extends StatelessWidget {
         onPressed: (enabled && !isSubmitting) ? onPressed : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: LeaveReviewLayout._starFilled,
-          disabledBackgroundColor: LeaveReviewLayout._starFilled.withOpacity(0.4),
+          disabledBackgroundColor: LeaveReviewLayout._starFilled.withValues(alpha: 0.4),
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),

@@ -1,6 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:trova/core/app_text.dart';
 import 'package:trova/features/project-bid-detail/logic/projectdetailbid_model.dart';
 
 class ProjectInfoCard extends StatelessWidget {
@@ -21,21 +19,19 @@ class ProjectInfoCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _buildRow(context, 'Sector', project.sector),
-          _buildRow(context, 'Location', project.location),
+          _buildRow('Sector', project.sector),
+          _buildRow('Location', project.location),
           _buildRow(
-            context,
             'Contract Value',
             'JOD ${project.contractValue.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
           ),
-          _buildRow(context, 'Timeline', project.timeline),
-          _buildRow(context, 'Milestones', project.milestones),
-          _buildRow(context, 'Guarantee Type Required', project.guaranteeTypeRequired),
-          _buildRow(context, 'Payment Terms', project.paymentTerms),
-          _buildRow(context, 'Minimum Score', '${project.minimumScore}+'),
-          _buildRow(context, 'Minimum Classification', project.minimumClassification),
+          _buildRow('Timeline', project.timeline),
+          _buildRow('Milestones', project.milestones),
+          _buildRow('Guarantee Type Required', project.guaranteeTypeRequired),
+          _buildRow('Payment Terms', project.paymentTerms),
+          _buildRow('Minimum Score', '${project.minimumScore}+'),
+          _buildRow('Minimum Classification', project.minimumClassification),
           _buildRow(
-            context,
             'Bid Deadline',
             '${_monthName(project.bidDeadline.month)} ${project.bidDeadline.day}, ${project.bidDeadline.year}',
             isLast: true,
@@ -45,8 +41,7 @@ class ProjectInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRow(BuildContext context, String label, String value, {bool isLast = false}) {
-    final colors = Theme.of(context).colorScheme;
+  Widget _buildRow(String label, String value, {bool isLast = false}) {
     return Padding(
       padding: EdgeInsets.only(bottom: isLast ? 0 : 10),
       child: Row(
@@ -54,22 +49,26 @@ class ProjectInfoCard extends StatelessWidget {
         children: [
           Expanded(
             flex: 5,
-            child: AppText(
-              text: label,
-              textSize: 12,
-              textColor: colors.onSecondary.withOpacity(0.6),
+            child: Text(
+              label,
               textAlign: TextAlign.start,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF504D4D),
+              ),
             ),
           ),
           const SizedBox(width: 8),
           Expanded(
             flex: 6,
-            child: AppText(
-              text: value,
-              textSize: 12,
-              fontWeight: FontWeight.w600,
-              textColor: colors.secondary,
+            child: Text(
+              value,
               textAlign: TextAlign.end,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1A1A1A),
+              ),
             ),
           ),
         ],
@@ -109,12 +108,13 @@ class BidWarningBox extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: AppText(
-              text:
-                  'By submitting this bid, your Capability Score and its underlying data will be visible to $postedBy for evaluation.',
-              textSize: 12,
-              textColor: const Color(0xFFC82333),
+            child: Text(
+              'By submitting this bid, your Capability Score and its underlying data will be visible to $postedBy for evaluation.',
               textAlign: TextAlign.start,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFFC82333),
+              ),
             ),
           ),
         ],

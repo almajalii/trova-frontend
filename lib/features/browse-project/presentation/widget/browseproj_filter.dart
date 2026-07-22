@@ -126,7 +126,7 @@ class _FilterProjectsSheetState extends State<FilterProjectsSheet> {
                   decoration: InputDecoration(
                     hintText: 'Min',
                     filled: true,
-                    fillColor: colors.surfaceBright.withOpacity(0.3),
+                    fillColor: colors.surfaceBright.withValues(alpha: 0.3),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                   ),
                 ),
@@ -139,7 +139,7 @@ class _FilterProjectsSheetState extends State<FilterProjectsSheet> {
                   decoration: InputDecoration(
                     hintText: 'Max',
                     filled: true,
-                    fillColor: colors.surfaceBright.withOpacity(0.3),
+                    fillColor: colors.surfaceBright.withValues(alpha: 0.3),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
                   ),
                 ),
@@ -152,7 +152,7 @@ class _FilterProjectsSheetState extends State<FilterProjectsSheet> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: colors.surfaceBright.withOpacity(0.3),
+              color: colors.surfaceBright.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(10),
             ),
             child: DropdownButtonHideUnderline(

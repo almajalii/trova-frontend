@@ -61,7 +61,7 @@ class ProjectCardbrowse extends StatelessWidget {
             children: [
               _Badge(
                 text: project.budgetDisplay,
-                backgroundColor: colors.primary.withOpacity(0.1),
+                backgroundColor: colors.primary.withValues(alpha: 0.1),
                 textColor: colors.primary,
               ),
               _Badge(

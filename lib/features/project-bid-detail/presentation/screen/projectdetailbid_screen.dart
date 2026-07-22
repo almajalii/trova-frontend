@@ -13,8 +13,8 @@ class ProjectDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProjectDetailBloc(
-        service: ProjectDetailService(),
+      create: (_) => ProjectBidDetailBloc(
+        service: ProjectBidDetailService(),
         project: project,
       ),
       child: const ProjectDetailLayout(),

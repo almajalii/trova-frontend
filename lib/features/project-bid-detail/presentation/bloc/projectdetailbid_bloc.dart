@@ -4,11 +4,11 @@ import 'package:trova/features/project-bid-detail/logic/projectdetailbid_service
 import 'package:trova/features/project-bid-detail/presentation/bloc/projectdetailbid_event.dart';
 import 'package:trova/features/project-bid-detail/presentation/bloc/projectdetailbid_state.dart';
 
-class ProjectDetailBloc extends Bloc<ProjectDetailEvent, ProjectDetailState> {
-  final ProjectDetailService service;
+class ProjectBidDetailBloc extends Bloc<ProjectDetailEvent, ProjectDetailState> {
+  final ProjectBidDetailService service;
   String _bidAmount = '';
 
-  ProjectDetailBloc({required this.service, required Project project})
+  ProjectBidDetailBloc({required this.service, required Project project})
       : super(ProjectDetailSuccess(project: project)) {
     on<BidAmountChanged>(_onBidAmountChanged);
     on<SubmitBidPressed>(_onSubmitBidPressed);
