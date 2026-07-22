@@ -7,7 +7,7 @@ import 'package:trova/features/identity-verification/presentation/screens/scan_v
 import 'package:trova/features/identity-verification/presentation/widget/scan_id_layout.dart';
 
 class ScanIdScreen extends StatefulWidget {
-  final VoidCallback? onVerified;
+  final ValueChanged<String>? onVerified;
   const ScanIdScreen({super.key, this.onVerified});
 
   @override

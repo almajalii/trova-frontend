@@ -26,8 +26,8 @@ class SuccessBadge extends StatelessWidget {
 /// Tapping a tab swaps the whole screen (pushNamedAndRemoveUntil, so the
 /// stack doesn't pile up as you bounce between tabs) rather than pushing
 /// on top — same mental model as a real bottom nav bar. Tabs whose screens
-/// don't exist yet (Guarantees, Profile) just show a "coming soon" snackbar
-/// instead of routing.
+/// don't exist yet (Guarantees) just show a "coming soon" snackbar instead
+/// of routing.
 class TrovaBottomNav extends StatelessWidget {
   final int activeIndex;
   const TrovaBottomNav({super.key, required this.activeIndex});
@@ -39,11 +39,12 @@ class TrovaBottomNav extends StatelessWidget {
     (Icons.person_outline, 'Profile'),
   ];
 
-  static const List<String?> _routes = [
+  static final List<String?> _routes = [
     AppRoutes.homeDashboard,
     AppRoutes.myProjects,
     AppRoutes.myBids,
-    null, 
+    null,
+  
   ];
 
   void _onTabTapped(BuildContext context, int index) {

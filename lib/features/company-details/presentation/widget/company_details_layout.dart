@@ -41,6 +41,8 @@ class CompanyDetailsLayout extends StatelessWidget {
   final TextEditingController swiftBicCodeController;
   final TextEditingController bankBranchNameCityController;
 
+  final VoidCallback onPickBank;
+
   final bool isLoading;
   final VoidCallback onBack;
   final VoidCallback onSubmit;
@@ -69,6 +71,7 @@ class CompanyDetailsLayout extends StatelessWidget {
     required this.teamSizeController,
     required this.annualRevenueController,
     required this.primaryBankNameController,
+    required this.onPickBank,
     required this.ibanNumberController,
     required this.swiftBicCodeController,
     required this.bankBranchNameCityController,
@@ -96,8 +99,15 @@ class CompanyDetailsLayout extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Expanded(
-                child: ListView(
-                  children: [
+                // SingleChildScrollView + Column (not ListView) — ListView
+                // only mounts children near the viewport, so any FormField
+                // scrolled out of view at submit time is invisible to
+                // Form.validate() and its "required" check silently gets
+                // skipped, letting blank fields through to the backend.
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                     AppTitle(
                       title: 'Tell Us About Your Company',
                       size: 22,
@@ -288,7 +298,13 @@ class CompanyDetailsLayout extends StatelessWidget {
                     // ── Banking Basics ───────────────────────────────
                     _SectionHeader('BANKING BASICS'),
                     _Label('Primary Bank Name'),
-                    InputField(controller: primaryBankNameController, hintText: 'e.g. Arab Bank', validator: _required),
+                    InputField(
+                      controller: primaryBankNameController,
+                      hintText: 'Select your bank',
+                      readOnly: true,
+                      onTap: onPickBank,
+                      validator: _required,
+                    ),
                     const SizedBox(height: 16),
                     _Label('Bank Account Number (IBAN)'),
                     InputField(
@@ -315,7 +331,8 @@ class CompanyDetailsLayout extends StatelessWidget {
                       textColor: colors.onSurfaceVariant,
                       textAlign: TextAlign.start,
                     ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 12),

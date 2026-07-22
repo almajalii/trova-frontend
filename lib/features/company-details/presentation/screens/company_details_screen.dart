@@ -3,12 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
 import 'package:trova/core/di/service_locator.dart';
+import 'package:trova/core/network/api_exception.dart';
+import 'package:trova/features/bank-connection/logic/bank_connection_model.dart';
+import 'package:trova/features/bank-connection/logic/bank_connection_service.dart';
 import 'package:trova/features/bank-connection/presentation/screens/connect_bank_account_screen.dart';
 import 'package:trova/features/company-details/logic/company_details_model.dart';
 import 'package:trova/features/company-details/logic/company_details_service.dart';
 import 'package:trova/features/company-details/presentation/bloc/company_details_bloc.dart';
 import 'package:trova/features/company-details/presentation/bloc/company_details_event.dart';
 import 'package:trova/features/company-details/presentation/bloc/company_details_state.dart';
+import 'package:trova/features/company-details/presentation/widget/bank_picker_sheet.dart';
 import 'package:trova/features/company-details/presentation/widget/company_details_layout.dart';
 
 class CompanyDetailsScreen extends StatefulWidget {
@@ -17,7 +21,21 @@ class CompanyDetailsScreen extends StatefulWidget {
   /// chain) if not provided.
   final VoidCallback? onSaved;
 
-  const CompanyDetailsScreen({super.key, this.onSaved});
+  // Carried over from signup + identity verification so the user isn't
+  // asked to retype what we already know. Only used to pre-fill the form
+  // the first time through (a previously-saved record, if one is fetched,
+  // takes priority — see _prefillFrom).
+  final String? initialContactName;
+  final String? initialEmail;
+  final String? initialPhoneNumber;
+
+  const CompanyDetailsScreen({
+    super.key,
+    this.onSaved,
+    this.initialContactName,
+    this.initialEmail,
+    this.initialPhoneNumber,
+  });
 
   @override
   State<CompanyDetailsScreen> createState() => _CompanyDetailsScreenState();
@@ -59,6 +77,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
 
   List<String> _selectedSectors = [];
   String? _sectorsErrorText;
+  List<BankOption> _banks = [];
 
   // Set once the initial GET resolves (found or not-found), so a later
   // CompanyDetailsError is known to be a submit error, not a fetch error.
@@ -67,8 +86,40 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    _primaryContactNameController.text = widget.initialContactName ?? '';
+    _primaryEmailController.text = widget.initialEmail ?? '';
+    _primaryPhoneNumberController.text = widget.initialPhoneNumber ?? '';
     _bloc = CompanyDetailsBloc(companyDetailsService: sl<CompanyDetailsService>());
     _bloc.add(const CompanyDetailsRequested());
+    _loadBanks();
+  }
+
+  Future<void> _loadBanks() async {
+    try {
+      final banks = await sl<BankConnectionService>().fetchAvailableBanks();
+      if (mounted) setState(() => _banks = banks);
+    } on ApiException {
+      // Primary Bank Name validator still requires a value; the user can
+      // retry by tapping the field again, which re-fetches if the list is
+      // still empty.
+    }
+  }
+
+  Future<void> _pickBank() async {
+    if (_banks.isEmpty) {
+      await _loadBanks();
+      if (!mounted) return;
+      if (_banks.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Couldn't load the bank list. Please try again.")),
+        );
+        return;
+      }
+    }
+    final selected = await showBankPickerSheet(context, _banks);
+    if (selected != null) {
+      setState(() => _primaryBankNameController.text = selected.name);
+    }
   }
 
   @override
@@ -222,6 +273,7 @@ class _CompanyDetailsScreenState extends State<CompanyDetailsScreen> {
               teamSizeController: _teamSizeController,
               annualRevenueController: _annualRevenueController,
               primaryBankNameController: _primaryBankNameController,
+              onPickBank: _pickBank,
               ibanNumberController: _ibanNumberController,
               swiftBicCodeController: _swiftBicCodeController,
               bankBranchNameCityController: _bankBranchNameCityController,

@@ -26,8 +26,7 @@ class AppRoutes {
   static const String myProjects = '/my-projects'; // NEW
   static const String browseProjects = '/browse-projects'; 
   static const String projectDetail = '/project-detail'; // NEW
-  static const String myBids = '/my-bids';
-
+  static const String myBids = '/my-bids'; // NEW
 
   // NOTE: verify-email and the identity-confirm screens require constructor
   // params (email, IdentityInfo, callbacks) that don't fit this simple named-
@@ -53,7 +52,8 @@ class AppRoutes {
       case forgotPassword:
         return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen());
       case identityVerification:
-        return MaterialPageRoute(builder: (_) => const IdentityVerificationScreen());
+         final args = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => IdentityVerificationScreen(fullName:args));
       case homeDashboard:
         return MaterialPageRoute(builder: (_) => const HomeDashboardScreen());
       case connectBank:
@@ -68,7 +68,7 @@ class AppRoutes {
         final project = settings.arguments as Project;
         return MaterialPageRoute(builder: (_) => ProjectDetailScreen(project: project));
       case myBids:
-  return MaterialPageRoute(builder: (_) => const MyBidsScreen());
+        return MaterialPageRoute(builder: (_) => const MyBidsScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(body: Center(child: Text('404 - Route not found'))),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:trova/core/app_title.dart';
 import 'package:trova/core/app_text.dart';
@@ -8,8 +9,10 @@ import 'package:trova/core/responsive_utils.dart';
 
 class SignupLayout extends StatelessWidget {
   final GlobalKey<FormState> formKey;
-  final TextEditingController nameController;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
   final TextEditingController emailController;
+  final TextEditingController phoneController;
   final TextEditingController passwordController;
   final TextEditingController confirmPasswordController;
   final bool isLoading;
@@ -20,8 +23,10 @@ class SignupLayout extends StatelessWidget {
   const SignupLayout({
     super.key,
     required this.formKey,
-    required this.nameController,
+    required this.firstNameController,
+    required this.lastNameController,
     required this.emailController,
+    required this.phoneController,
     required this.passwordController,
     required this.confirmPasswordController,
     required this.isLoading,
@@ -73,21 +78,57 @@ class SignupLayout extends StatelessWidget {
 
                 SizedBox(height: context.vertical),
 
-                AppText(
-                  text: 'Full Name',
-                  textSize: 14,
-                  fontWeight: FontWeight.w600,
-                  textColor: colors.onSurface,
-                  textAlign: TextAlign.start,
-                ),
-                const SizedBox(height: 8),
-                InputField(
-                  controller: nameController,
-                  hintText: 'Enter your full name',
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(errorText: 'Please enter your name'),
-                    FormBuilderValidators.minLength(2, errorText: 'Name is too short'),
-                  ]),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppText(
+                            text: 'First Name',
+                            textSize: 14,
+                            fontWeight: FontWeight.w600,
+                            textColor: colors.onSurface,
+                            textAlign: TextAlign.start,
+                          ),
+                          const SizedBox(height: 8),
+                          InputField(
+                            controller: firstNameController,
+                            hintText: 'First name',
+                            validator: FormBuilderValidators.compose([
+                              FormBuilderValidators.required(errorText: 'Required'),
+                              FormBuilderValidators.minLength(2, errorText: 'Too short'),
+                            ]),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppText(
+                            text: 'Last Name',
+                            textSize: 14,
+                            fontWeight: FontWeight.w600,
+                            textColor: colors.onSurface,
+                            textAlign: TextAlign.start,
+                          ),
+                          const SizedBox(height: 8),
+                          InputField(
+                            controller: lastNameController,
+                            hintText: 'Last name',
+                            validator: FormBuilderValidators.compose([
+                              FormBuilderValidators.required(errorText: 'Required'),
+                              FormBuilderValidators.minLength(2, errorText: 'Too short'),
+                            ]),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(height: 20),
@@ -108,6 +149,33 @@ class SignupLayout extends StatelessWidget {
                     FormBuilderValidators.required(errorText: 'Please enter your email'),
                     FormBuilderValidators.email(errorText: 'Enter a valid email'),
                   ]),
+                ),
+
+                const SizedBox(height: 20),
+
+                AppText(
+                  text: 'Phone Number',
+                  textSize: 14,
+                  fontWeight: FontWeight.w600,
+                  textColor: colors.onSurface,
+                  textAlign: TextAlign.start,
+                ),
+                const SizedBox(height: 8),
+                InputField(
+                  controller: phoneController,
+                  hintText: '79 123 4567',
+                  keyboardType: TextInputType.phone,
+                  prefixText: '+962 ',
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(9),
+                  ],
+                  validator: (value) {
+                    final digits = value?.trim() ?? '';
+                    if (digits.isEmpty) return 'Please enter your phone number';
+                    if (digits.length != 9) return 'Enter a valid 9-digit phone number';
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 20),

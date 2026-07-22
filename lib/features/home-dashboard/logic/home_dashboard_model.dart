@@ -36,7 +36,17 @@ class ClassificationSummary {
   final String label;
   const ClassificationSummary({required this.code, required this.label});
 
-  String get display => 'Class $code · $label';
+  // Backend sometimes sends label already formatted as "Class A" instead of
+  // just "Large Enterprise" — prepending "Class $code ·" unconditionally
+  // then reads as "Class A · Class A". Only prepend it when label doesn't
+  // already include the code.
+  String get display {
+    final trimmedLabel = label.trim();
+    if (trimmedLabel.toLowerCase().contains('class $code'.toLowerCase())) {
+      return trimmedLabel;
+    }
+    return 'Class $code · $trimmedLabel';
+  }
 
   factory ClassificationSummary.fromJson(Map<String, dynamic> json) =>
       ClassificationSummary(code: json['code'] as String, label: json['label'] as String);

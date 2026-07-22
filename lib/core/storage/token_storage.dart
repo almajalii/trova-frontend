@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class TokenStorage {
   static const _tokenKey = 'auth_token';
   static const _biometricEnabledKey = 'biometric_enabled';
+  static const _pushNotificationsEnabledKey = 'push_notifications_enabled';
 
   final FlutterSecureStorage _storage;
 
@@ -23,4 +24,12 @@ class TokenStorage {
 
   Future<bool> isBiometricEnabled() async =>
       (await _storage.read(key: _biometricEnabledKey)) == 'true';
+
+  Future<void> setPushNotificationsEnabled(bool enabled) =>
+      _storage.write(key: _pushNotificationsEnabledKey, value: enabled.toString());
+
+  // Defaults to enabled (matches the Settings screen's toggle default) when
+  // nothing has been stored yet, rather than defaulting new users to off.
+  Future<bool> isPushNotificationsEnabled() async =>
+      (await _storage.read(key: _pushNotificationsEnabledKey)) != 'false';
 }

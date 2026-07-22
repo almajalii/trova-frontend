@@ -29,6 +29,7 @@ class GalleryApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       home: const ScreensGallery(),
       onGenerateRoute: AppRoutes.generateRoute,
+      //onUnknownRoute: AppRoutes.onUnknownRoute,
     );
   }
 }

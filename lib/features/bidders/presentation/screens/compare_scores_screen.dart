@@ -6,6 +6,7 @@ import 'package:trova/features/bidders/logic/bidders_service.dart';
 import 'package:trova/features/bidders/presentation/bloc/award_bloc.dart';
 import 'package:trova/features/bidders/presentation/bloc/award_event.dart';
 import 'package:trova/features/bidders/presentation/bloc/award_state.dart';
+import 'package:trova/features/bidders/presentation/screens/bidder_profile_screen.dart';
 import 'package:trova/features/bidders/presentation/widget/compare_scores_layout.dart';
 import 'package:trova/features/guarantee-review/presentation/screens/project_awarded_screen.dart';
 
@@ -60,6 +61,8 @@ class _CompareScoresScreenState extends State<CompareScoresScreen> {
               isAwarding: state is AwardLoading,
               onBack: () => Navigator.of(context).maybePop(),
               onSelectBidder: (b) => setState(() => _selected = b),
+              onViewProfile: (b) =>
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => BidderProfileScreen(bidder: b))),
               onAward: () {
                 final selected = _selected;
                 if (selected == null) return;

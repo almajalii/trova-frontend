@@ -19,8 +19,9 @@ class SignupService {
       final response = await dio.post(
         '/auth/register',
         data: {
-          'name': data.name,
+          'name': '${data.firstName} ${data.lastName}',
           'email': data.workEmail,
+          'phone': data.phoneNumber,
           'password': data.password,
           'confirmPassword': data.confirmPassword,
         },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InputField extends StatefulWidget {
   final TextEditingController controller;
@@ -7,6 +8,10 @@ class InputField extends StatefulWidget {
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
+  final String? prefixText;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool readOnly;
+  final VoidCallback? onTap;
 
   const InputField({
     super.key,
@@ -16,6 +21,10 @@ class InputField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.validator,
     this.onChanged,
+    this.prefixText,
+    this.inputFormatters,
+    this.readOnly = false,
+    this.onTap,
   });
 
   @override
@@ -35,10 +44,33 @@ class _InputFieldState extends State<InputField> {
       keyboardType: widget.keyboardType,
       validator: widget.validator,
       onChanged: widget.onChanged,
+      inputFormatters: widget.inputFormatters,
+      readOnly: widget.readOnly,
+      onTap: widget.onTap,
+      showCursor: widget.onTap == null ? null : false,
       style: TextStyle(color: colors.onSurface, fontSize: 15),
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: TextStyle(color: colors.surfaceBright, fontSize: 15, fontWeight: FontWeight.w500),
+        // prefixIcon (not prefixText) — prefixText only renders once the
+        // field's floating-label animation kicks in (i.e. after focus),
+        // since there's no labelText here to drive it. prefixIcon has no
+        // such dependency and is always visible.
+        prefixIcon: widget.prefixText == null
+            ? null
+            : Padding(
+                padding: const EdgeInsets.only(left: 16, right: 4),
+                child: Center(
+                  widthFactor: 1,
+                  child: Text(
+                    widget.prefixText!,
+                    style: TextStyle(color: colors.onSurface, fontSize: 15, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+        prefixIconConstraints: widget.prefixText == null
+            ? null
+            : const BoxConstraints(minWidth: 0, minHeight: 0),
         filled: true,
         fillColor: colors.surface,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -69,7 +101,9 @@ class _InputFieldState extends State<InputField> {
                   setState(() => _obscureText = !_obscureText);
                 },
               )
-            : null,
+            : widget.onTap != null
+                ? Icon(Icons.keyboard_arrow_down, color: colors.onSurfaceVariant)
+                : null,
       ),
     );
   }

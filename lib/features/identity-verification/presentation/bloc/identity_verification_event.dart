@@ -7,5 +7,9 @@ abstract class IdentityVerificationEvent extends Equatable {
 }
 
 class SanadVerificationRequested extends IdentityVerificationEvent {
-  const SanadVerificationRequested();
+  final String fullName;
+  const SanadVerificationRequested({required this.fullName});
+
+  @override
+  List<Object?> get props => [fullName];
 }

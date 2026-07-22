@@ -14,6 +14,9 @@
 //   review-work       -> mock  (no backend endpoint yet)
 //   repost-project    -> mock  (no backend endpoint yet)
 //   leave-review      -> mock  (no backend endpoint yet)
+//   company-reviews   -> mock  (no backend endpoint yet — Company Profile screen)
+//   notifications     -> mock  (no backend endpoint yet)
+//   bidder-profile    -> mock  (no backend endpoint yet — public profile of another company, viewed from Compare Scores)
 
 const bool kUseMockPostProject = false;
 
@@ -27,3 +30,6 @@ const bool kUseMockGuaranteeReview = true;
 const bool kUseMockReviewWork = true;
 const bool kUseMockRepostProject = true;
 const bool kUseMockLeaveReview = true;
+const bool kUseMockCompanyReviews = true;
+const bool kUseMockNotifications = true;
+const bool kUseMockBidderProfiles = true;

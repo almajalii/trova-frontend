@@ -11,8 +11,9 @@ import 'package:trova/features/identity-verification/presentation/widget/identit
 import 'package:trova/features/identity-verification/presentation/widget/sanad_modal.dart';
 
 class IdentityVerificationScreen extends StatelessWidget {
-  final VoidCallback? onVerified;
-  const IdentityVerificationScreen({super.key, this.onVerified});
+  final String fullName;
+  final ValueChanged<String>? onVerified;
+  const IdentityVerificationScreen({super.key, required this.fullName, this.onVerified});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class IdentityVerificationScreen extends StatelessWidget {
                   onSanadTap: () async {
                     final confirmed = await showSanadModal(context);
                     if (confirmed == true && context.mounted) {
-                      context.read<IdentityVerificationBloc>().add(const SanadVerificationRequested());
+                      context.read<IdentityVerificationBloc>().add(SanadVerificationRequested(fullName: fullName));
                     }
                   },
                   onScanTap: () =>

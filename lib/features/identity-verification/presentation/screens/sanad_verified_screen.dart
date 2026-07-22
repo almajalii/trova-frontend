@@ -7,7 +7,7 @@ import 'package:trova/features/identity-verification/presentation/widget/identit
 
 class SanadVerifiedScreen extends StatefulWidget {
   final IdentityInfo info;
-  final VoidCallback? onVerified;
+  final ValueChanged<String>? onVerified;
 
   const SanadVerifiedScreen({super.key, required this.info, this.onVerified});
 
@@ -27,7 +27,7 @@ class _SanadVerifiedScreenState extends State<SanadVerifiedScreen> {
         nationalId: widget.info.nationalId,
         method: 'sanad',
       );
-      widget.onVerified?.call();
+      widget.onVerified?.call(widget.info.fullName);
     } on ApiException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));

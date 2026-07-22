@@ -9,10 +9,11 @@ import 'package:trova/features/bidders/logic/bidder_model.dart';
 
 class CompareScoresLayout extends StatelessWidget {
   final List<Bidder> bidders; // up to 3 selected bidders
-  final Bidder? selectedBidder; // tapped by the user — award target
+  final Bidder? selectedBidder; // checked by the user — award target
   final bool isAwarding;
   final VoidCallback onBack;
   final ValueChanged<Bidder> onSelectBidder;
+  final ValueChanged<Bidder> onViewProfile;
   final VoidCallback onAward;
 
   const CompareScoresLayout({
@@ -22,6 +23,7 @@ class CompareScoresLayout extends StatelessWidget {
     required this.isAwarding,
     required this.onBack,
     required this.onSelectBidder,
+    required this.onViewProfile,
     required this.onAward,
   });
 
@@ -60,7 +62,8 @@ class CompareScoresLayout extends StatelessWidget {
                         child: _CompareColumn(
                           bidder: bidders[i],
                           selected: selectedBidder?.bidId == bidders[i].bidId,
-                          onTap: () => onSelectBidder(bidders[i]),
+                          onSelect: () => onSelectBidder(bidders[i]),
+                          onTap: () => onViewProfile(bidders[i]),
                         ),
                       ),
                     ],
@@ -92,9 +95,10 @@ class CompareScoresLayout extends StatelessWidget {
 class _CompareColumn extends StatelessWidget {
   final Bidder bidder;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback onSelect; // checkbox — award target
+  final VoidCallback onTap; // rest of the card — view profile
 
-  const _CompareColumn({required this.bidder, required this.selected, required this.onTap});
+  const _CompareColumn({required this.bidder, required this.selected, required this.onSelect, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -106,49 +110,78 @@ class _CompareColumn extends StatelessWidget {
       (Match m) => '${m[1]},',
     );
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primaryTint : null,
-          border: Border.all(color: selected ? colors.primary : colors.surfaceBright, width: selected ? 2 : 1),
+    // Stack (not a nested GestureDetector inside the InkWell's own child
+    // tree) so the checkbox unambiguously wins hit-testing over the card's
+    // InkWell wherever the two would otherwise overlap — a plain nested
+    // GestureDetector left both taps resolving as "select" instead of
+    // splitting select vs. view-profile.
+    return Stack(
+      children: [
+        InkWell(
+          onTap: onTap,
           borderRadius: BorderRadius.circular(14),
-        ),
-        child: Column(
-          children: [
-            AppText(
-              text: bidder.companyName,
-              textSize: 13,
-              fontWeight: FontWeight.w700,
-              textColor: colors.onSurface,
-              textAlign: TextAlign.center,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+            decoration: BoxDecoration(
+              color: selected ? AppColors.primaryTint : null,
+              border: Border.all(color: selected ? colors.primary : colors.surfaceBright, width: selected ? 2 : 1),
+              borderRadius: BorderRadius.circular(14),
             ),
-            const SizedBox(height: 16),
-            ScoreCircleBadge(score: bidder.capabilityScore, size: 56, fontSize: 20, tinted: true),
-            const SizedBox(height: 16),
+            child: Column(
+              children: [
+                const SizedBox(height: 26),
+                AppText(
+                  text: bidder.companyName,
+                  textSize: 13,
+                  fontWeight: FontWeight.w700,
+                  textColor: colors.onSurface,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ScoreCircleBadge(score: bidder.capabilityScore, size: 56, fontSize: 20, tinted: true),
+                const SizedBox(height: 16),
 
-            // New Bid Section
-            AppText(text: 'Bid Submitted', textSize: 10, textColor: colors.onSurfaceVariant),
-            const SizedBox(height: 4),
-            AppText(text: 'JOD $formattedBid', textSize: 14, fontWeight: FontWeight.w700, textColor: colors.onSurface),
-            const SizedBox(height: 12),
-            Divider(color: colors.surfaceBright, height: 1),
-            const SizedBox(height: 4),
+                // New Bid Section
+                AppText(text: 'Bid Submitted', textSize: 10, textColor: colors.onSurfaceVariant),
+                const SizedBox(height: 4),
+                AppText(text: 'JOD $formattedBid', textSize: 14, fontWeight: FontWeight.w700, textColor: colors.onSurface),
+                const SizedBox(height: 12),
+                Divider(color: colors.surfaceBright, height: 1),
+                const SizedBox(height: 4),
 
-            // Updated SubFactors
-            _SubFactor(label: 'Current Debts', value: bidder.currentDebtsPct),
-            _SubFactor(label: 'Debt Capacity', value: bidder.debtCapacityPct),
-            _SubFactor(label: 'Assets Value', value: bidder.assetsValuePct),
-            _SubFactor(label: 'Delinquent Debts', value: bidder.delinquentDebtsPct),
-            _SubFactor(label: 'Payment History', value: bidder.paymentHistoryPct),
-            _SubFactor(label: 'Current Workload', value: bidder.currentWorkloadPct),
-            _SubFactor(label: 'Delivery History', value: bidder.deliveryHistoryPct),
-            _SubFactor(label: 'Cashflow Trends', value: bidder.cashflowTrendsPct),
-          ],
+                // Updated SubFactors
+                _SubFactor(label: 'Current Debts', value: bidder.currentDebtsPct),
+                _SubFactor(label: 'Debt Capacity', value: bidder.debtCapacityPct),
+                _SubFactor(label: 'Assets Value', value: bidder.assetsValuePct),
+                _SubFactor(label: 'Delinquent Debts', value: bidder.delinquentDebtsPct),
+                _SubFactor(label: 'Payment History', value: bidder.paymentHistoryPct),
+                _SubFactor(label: 'Current Workload', value: bidder.currentWorkloadPct),
+                _SubFactor(label: 'Delivery History', value: bidder.deliveryHistoryPct),
+                _SubFactor(label: 'Cashflow Trends', value: bidder.cashflowTrendsPct),
+              ],
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          top: 8,
+          right: 8,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onSelect,
+            child: Container(
+              width: 22,
+              height: 22,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: selected ? colors.primary : Colors.transparent,
+                border: Border.all(color: selected ? colors.primary : colors.surfaceBright, width: 1.5),
+              ),
+              child: selected ? const Icon(Icons.check, size: 14, color: Colors.white) : null,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
