@@ -23,6 +23,4 @@ class ProjectDetailService {
       throw ApiException.fromDioException(e);
     }
   }
-
-  Future<void> submitBid({required String projectId, required double bidAmount}) async {}
 }

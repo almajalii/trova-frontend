@@ -12,7 +12,7 @@ import 'package:trova/features/home-dashboard/presentation/screens/home_dashboar
 import 'package:trova/features/bank-connection/presentation/screens/connect_bank_account_screen.dart';
 import 'package:trova/features/post-project/presentation/screens/post_a_project_screen.dart';
 import 'package:trova/features/my-projects/presentation/screens/my_projects_screen.dart';
-import 'package:trova/features/project-bid-detail/logic/projectdetailbid_model.dart';
+import 'package:trova/features/company-profile/presentation/screens/company_profile_screen.dart';
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -27,6 +27,7 @@ class AppRoutes {
   static const String browseProjects = '/browse-projects'; 
   static const String projectDetail = '/project-detail'; // NEW
   static const String myBids = '/my-bids'; // NEW
+  static const String companyProfile = '/company-profile'; // NEW
 
   // NOTE: verify-email and the identity-confirm screens require constructor
   // params (email, IdentityInfo, callbacks) that don't fit this simple named-
@@ -65,10 +66,12 @@ class AppRoutes {
         case browseProjects:
   return MaterialPageRoute(builder: (_) => const BrowseProjectsScreen());
       case projectDetail:
-        final project = settings.arguments as Project;
-        return MaterialPageRoute(builder: (_) => ProjectDetailScreen(project: project));
+        final projectId = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => ProjectDetailScreen(projectId: projectId));
       case myBids:
         return MaterialPageRoute(builder: (_) => const MyBidsScreen());
+      case companyProfile:
+        return MaterialPageRoute(builder: (_) => const CompanyProfileScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(body: Center(child: Text('404 - Route not found'))),

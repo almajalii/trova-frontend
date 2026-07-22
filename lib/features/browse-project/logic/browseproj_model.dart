@@ -1,34 +1,34 @@
 class ProjectModel {
-  final String id;
+  final String projectId;
   final String title;
-  final String companyName;
-  final String category;
-  final double budget;
-  final String budgetDisplay;
-  final int minScore;
-  final int daysLeft;
+  final String postedByCompanyName;
+  final String sector;
+  final double contractValueJod;
+  final int minimumRequiredScore;
+  final String minimumClassification;
+  final String daysLeftText;
 
   ProjectModel({
-    required this.id,
+    required this.projectId,
     required this.title,
-    required this.companyName,
-    required this.category,
-    required this.budget,
-    required this.budgetDisplay,
-    required this.minScore,
-    required this.daysLeft,
+    required this.postedByCompanyName,
+    required this.sector,
+    required this.contractValueJod,
+    required this.minimumRequiredScore,
+    required this.minimumClassification,
+    required this.daysLeftText,
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
     return ProjectModel(
-      id: json['id'] as String,
+      projectId: json['projectId'] as String,
       title: json['title'] as String,
-      companyName: json['companyName'] as String,
-      category: json['category'] as String,
-      budget: (json['budget'] as num).toDouble(),
-      budgetDisplay: json['budgetDisplay'] as String,
-      minScore: json['minScore'] as int,
-      daysLeft: json['daysLeft'] as int,
+      postedByCompanyName: json['postedByCompanyName'] as String,
+      sector: json['sector'] as String,
+      contractValueJod: (json['contractValueJod'] as num).toDouble(),
+      minimumRequiredScore: json['minimumRequiredScore'] as int,
+      minimumClassification: json['minimumClassification'] as String,
+      daysLeftText: json['daysLeftText'] as String,
     );
   }
 }

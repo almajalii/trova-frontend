@@ -93,7 +93,7 @@ class BidCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AppText(text: bid.note, textSize: 12, fontWeight: FontWeight.w600, textColor: const Color(0xFFB8760B)),
+                  AppText(text: bid.note ?? '', textSize: 12, fontWeight: FontWeight.w600, textColor: const Color(0xFFB8760B)),
                   AppText(
                     text: 'Expires in ${bid.guaranteeExpiresInDays} days',
                     textSize: 12,
@@ -104,7 +104,7 @@ class BidCard extends StatelessWidget {
             )
           else
             AppText(
-              text: bid.note,
+              text: bid.note ?? '',
               textSize: 12,
               textColor: bid.status == 'guaranteeRejected' ? const Color(0xFFC82333) : colors.secondary.withValues(alpha: 0.6),
               textAlign: TextAlign.start,

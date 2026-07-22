@@ -120,6 +120,54 @@ class CompanyProfileLayout extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
+          if (score != null) ...[
+            _SectionHeader('TRACK RECORD'),
+            Row(
+              children: [
+                Expanded(
+                  child: _StatTile(
+                    value: '${score.trackRecordStats.totalProjects}',
+                    label: 'Total Projects',
+                    bg: AppColors.neutralStatBg,
+                    valueColor: colors.onSurface,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _StatTile(
+                    value: '${score.trackRecordStats.currentProjects}',
+                    label: 'Current Projects',
+                    bg: AppColors.warningBg,
+                    valueColor: AppColors.warning,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: _StatTile(
+                    value: '${score.trackRecordStats.failedProjects}',
+                    label: 'Failed Projects',
+                    bg: AppColors.dangerBg,
+                    valueColor: AppColors.danger,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _StatTile(
+                    value: score.trackRecordStats.avgRating.toStringAsFixed(1),
+                    label: 'Avg. Rating',
+                    bg: AppColors.successBg,
+                    valueColor: AppColors.success,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+
           _SectionHeader('REVIEWS'),
           _ReviewsSummaryCard(reviews: profile.reviews),
           const SizedBox(height: 12),
@@ -206,6 +254,29 @@ class _DetailCard extends StatelessWidget {
             ),
             if (i != rows.length - 1) Divider(height: 1, color: colors.surfaceBright),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _StatTile extends StatelessWidget {
+  final String value;
+  final String label;
+  final Color bg;
+  final Color valueColor;
+  const _StatTile({required this.value, required this.label, required this.bg, required this.valueColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        children: [
+          Text(value, style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w700, fontSize: 18, color: valueColor)),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontFamily: 'Inter', fontSize: 10, color: Colors.grey)),
         ],
       ),
     );

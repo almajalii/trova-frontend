@@ -43,8 +43,7 @@ class TrovaBottomNav extends StatelessWidget {
     AppRoutes.homeDashboard,
     AppRoutes.myProjects,
     AppRoutes.myBids,
-    null,
-  
+    AppRoutes.companyProfile,
   ];
 
   void _onTabTapped(BuildContext context, int index) {

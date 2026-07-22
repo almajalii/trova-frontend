@@ -6,6 +6,14 @@ abstract class ProjectDetailEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class LoadProjectDetail extends ProjectDetailEvent {
+  final String projectId;
+  const LoadProjectDetail(this.projectId);
+
+  @override
+  List<Object?> get props => [projectId];
+}
+
 class BidAmountChanged extends ProjectDetailEvent {
   final String bidAmount;
   const BidAmountChanged(this.bidAmount);

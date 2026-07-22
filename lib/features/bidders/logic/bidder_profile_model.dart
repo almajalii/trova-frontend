@@ -17,7 +17,7 @@ import 'package:trova/features/company-profile/logic/company_reviews_model.dart'
 //   "primaryEmail": "ahmad.khalil@alfahad.jo", "primaryPhoneNumber": "+962 79 123 4567",
 //   "businessLicenseNumber": "JO-LIC-55291", "contractorClassificationGrade": "Grade A",
 //   "sectors": ["Construction", "MEP"], "yearsOfExperience": 11,
-//   "trackRecordStats": { "totalProjects": 13, "failedProjects": 1, "avgRating": 4.8 },
+//   "trackRecordStats": { "totalProjects": 13, "failedProjects": 1, "currentProjects": 3, "avgRating": 4.8 },
 //   "scoreBreakdown": { "financialSolvency": 96, "projectTrackRecord": 92, "pastProjectRatings": 95 },
 //   "reviews": { "averageRating": 4.8, "totalReviews": 11, "items": [...] }
 // }
@@ -142,6 +142,7 @@ class BidderFullProfile {
     final score = bidder.capabilityScore;
     final totalProjects = (score / 7).round().clamp(3, 30);
     final failedProjects = ((100 - score) / 6).round().clamp(0, 5);
+    final currentProjects = (score / 20).round().clamp(0, 5);
     final avgRating = double.parse((3.0 + (score / 100) * 2.0).clamp(1.0, 5.0).toStringAsFixed(1));
     final slug = bidder.companyName.toLowerCase().replaceAll(RegExp(r'[^a-z]+'), '.');
 
@@ -164,7 +165,12 @@ class BidderFullProfile {
         sectors: const ['Construction'],
         yearsOfExperience: 5 + (bidder.companyName.hashCode.abs() % 20),
       ),
-      trackRecordStats: TrackRecordStats(totalProjects: totalProjects, failedProjects: failedProjects, avgRating: avgRating),
+      trackRecordStats: TrackRecordStats(
+        totalProjects: totalProjects,
+        failedProjects: failedProjects,
+        currentProjects: currentProjects,
+        avgRating: avgRating,
+      ),
       scoreBreakdown: BidderProfileScoreBreakdown.fromBidder(bidder),
       reviews: CompanyReviewsSummary(
         averageRating: avgRating,
