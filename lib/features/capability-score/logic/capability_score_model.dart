@@ -5,7 +5,7 @@
 //   "overallScore": 94,
 //   "tierLabel": "Strong Capability",
 //   "classification": { "code": "A", "label": "Large Enterprise" },
-//   "trackRecordStats": { "totalProjects": 13, "failedProjects": 1, "avgRating": 4.8 },
+//   "trackRecordStats": { "totalProjects": 13, "failedProjects": 1, "currentProjects": 3, "avgRating": 4.8 },
 //   "factors": {
 //     "numberOfCurrentDebts": { "percentage": 8, "description": "..." },
 //     "debtCapacity": { "percentage": 12, "description": "..." },
@@ -43,12 +43,19 @@ class ScoreClassification {
 class TrackRecordStats {
   final int totalProjects;
   final int failedProjects;
+  final int currentProjects;
   final double avgRating;
-  const TrackRecordStats({required this.totalProjects, required this.failedProjects, required this.avgRating});
+  const TrackRecordStats({
+    required this.totalProjects,
+    required this.failedProjects,
+    required this.currentProjects,
+    required this.avgRating,
+  });
 
   factory TrackRecordStats.fromJson(Map<String, dynamic> json) => TrackRecordStats(
         totalProjects: json['totalProjects'] as int,
         failedProjects: json['failedProjects'] as int,
+        currentProjects: json['currentProjects'] as int? ?? 0,
         avgRating: (json['avgRating'] as num).toDouble(),
       );
 }
@@ -115,7 +122,7 @@ class CapabilityScore {
         overallScore: 94,
         tierLabel: 'Strong Capability',
         classification: ScoreClassification(code: 'A', label: 'Large Enterprise'),
-        trackRecordStats: TrackRecordStats(totalProjects: 13, failedProjects: 1, avgRating: 4.8),
+        trackRecordStats: TrackRecordStats(totalProjects: 13, failedProjects: 1, currentProjects: 3, avgRating: 4.8),
         numberOfCurrentDebts: ScoreFactor(label: 'Number of Current Debts', percentage: 8, description: '2 active debts on record'),
         debtCapacity: ScoreFactor(label: 'Debt Capacity', percentage: 12, description: 'Additional borrowing capacity of JOD 120,000'),
         companyAssetsValue: ScoreFactor(label: 'Company Assets Value', percentage: 10, description: 'Verified assets valued at JOD 310,000'),

@@ -123,6 +123,12 @@ class BidderProfileLayout extends StatelessWidget {
             children: [
               Expanded(child: _StatTile(value: '${stats.totalProjects}', label: 'Total Projects', bg: AppColors.neutralStatBg, valueColor: colors.onSurface)),
               const SizedBox(width: 10),
+              Expanded(child: _StatTile(value: '${stats.currentProjects}', label: 'Current Projects', bg: AppColors.warningBg, valueColor: AppColors.warning)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
               Expanded(child: _StatTile(value: '${stats.failedProjects}', label: 'Failed Projects', bg: AppColors.dangerBg, valueColor: AppColors.danger)),
               const SizedBox(width: 10),
               Expanded(child: _StatTile(value: stats.avgRating.toStringAsFixed(1), label: 'Avg. Rating', bg: AppColors.successBg, valueColor: AppColors.success)),

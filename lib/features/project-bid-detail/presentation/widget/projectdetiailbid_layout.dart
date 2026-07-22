@@ -61,6 +61,18 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
           }
         },
         builder: (context, state) {
+          if (state is ProjectDetailInitial || state is ProjectDetailLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is ProjectDetailError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: AppText(text: state.message, textAlign: TextAlign.center),
+              ),
+            );
+          }
+
           Project? project;
           bool isSubmitting = false;
 
@@ -72,6 +84,7 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
 
           if (project == null) return const SizedBox.shrink();
           final bloc = context.read<ProjectBidDetailBloc>();
+          final alreadyBid = project.alreadyBid;
 
           return Form(
             key: _formKey,
@@ -85,7 +98,7 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
                 children: [
                   ProjectPosterHeader(
                     title: project.title,
-                    postedBy: project.postedBy,
+                    postedBy: project.postedByCompanyName,
                   ),
                   const SizedBox(height: 16),
                   ProjectInfoCard(project: project),
@@ -101,48 +114,55 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
                   AppText(
                     text: project.description,
                     textSize: 13,
-                    textColor: colors.onSecondary.withValues(alpha: 0.7),
+                    textColor: const Color(0xFF6B7280),
                     textAlign: TextAlign.start,
                   ),
                   const SizedBox(height: 20),
-                  AppText(
-                    text: 'Your Bid Amount (JOD)',
-                    textSize: 14,
-                    fontWeight: FontWeight.w600,
-                    textColor: colors.secondary,
-                    textAlign: TextAlign.start,
-                  ),
-                  const SizedBox(height: 8),
-                  InputField(
-                    controller: _bidController,
-                    hintText: 'e.g. 238,000',
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Enter your bid amount';
-                      }
-                      final cleanVal = value.replaceAll(',', '');
-                      if (double.tryParse(cleanVal) == null) {
-                        return 'Enter a valid number';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) => bloc.add(BidAmountChanged(value)),
-                  ),
-                  const SizedBox(height: 16),
-                  BidWarningBox(postedBy: project.postedBy),
-                  const SizedBox(height: 20),
+                  if (alreadyBid) ...[
+                    _AlreadyBidNotice(),
+                    const SizedBox(height: 20),
+                  ] else ...[
+                    AppText(
+                      text: 'Your Bid Amount (JOD)',
+                      textSize: 14,
+                      fontWeight: FontWeight.w600,
+                      textColor: colors.secondary,
+                      textAlign: TextAlign.start,
+                    ),
+                    const SizedBox(height: 8),
+                    InputField(
+                      controller: _bidController,
+                      hintText: 'e.g. 238,000',
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'Enter your bid amount';
+                        }
+                        final cleanVal = value.replaceAll(',', '');
+                        if (double.tryParse(cleanVal) == null) {
+                          return 'Enter a valid number';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) => bloc.add(BidAmountChanged(value)),
+                    ),
+                    const SizedBox(height: 16),
+                    BidWarningBox(postedBy: project.postedByCompanyName),
+                    const SizedBox(height: 20),
+                  ],
                   Button(
-                    text: isSubmitting ? 'Submitting...' : 'Submit Bid',
-                    textColor: Colors.white,
-                    buttonColor: const Color(0xFFC82333),
+                    text: alreadyBid
+                        ? 'Bid Already Submitted'
+                        : (isSubmitting ? 'Submitting...' : 'Submit Bid'),
+                    textColor: alreadyBid ? colors.onSurfaceVariant : Colors.white,
+                    buttonColor: alreadyBid ? colors.surfaceBright : const Color(0xFFC82333),
                     borderRadius: 12,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     buttonWidth: double.infinity,
                     buttonHeight: context.buttonSizeH,
                     elevation: 0,
-                    onPressed: isSubmitting
+                    onPressed: (alreadyBid || isSubmitting)
                         ? null
                         : () {
                             if (_formKey.currentState?.validate() ?? false) {
@@ -155,6 +175,28 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _AlreadyBidNotice extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colors.surfaceBright, width: 1),
+      ),
+      child: AppText(
+        text: 'You have already submitted a bid for this project.',
+        textSize: 13,
+        textColor: colors.onSurfaceVariant,
+        textAlign: TextAlign.start,
       ),
     );
   }
@@ -187,7 +229,7 @@ class ProjectPosterHeader extends StatelessWidget {
         AppText(
           text: 'Posted by $postedBy',
           textSize: 13,
-          textColor: colors.onSecondary.withValues(alpha: 0.6),
+          textColor: const Color(0xFF6B7280),
           textAlign: TextAlign.start,
         ),
       ],
@@ -218,18 +260,18 @@ class ProjectInfoCard extends StatelessWidget {
           _buildRow(
             context,
             'Contract Value',
-            'JOD ${project.contractValue.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+            'JOD ${project.contractValueJod.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
           ),
-          _buildRow(context, 'Timeline', project.timeline),
+          _buildRow(context, 'Timeline', project.timelineText),
           _buildRow(context, 'Milestones', project.milestones),
           _buildRow(context, 'Guarantee Type Required', project.guaranteeTypeRequired),
           _buildRow(context, 'Payment Terms', project.paymentTerms),
-          _buildRow(context, 'Minimum Score', '${project.minimumScore}+'),
-          _buildRow(context, 'Minimum Classification', project.minimumClassification),
+          _buildRow(context, 'Minimum Score', '${project.minimumRequiredScore}+'),
+          _buildRow(context, 'Minimum Classification', project.minimumClassificationText),
           _buildRow(
             context,
             'Bid Deadline',
-            '${_monthName(project.bidDeadline.month)} ${project.bidDeadline.day}, ${project.bidDeadline.year}',
+            project.bidDeadlineText,
             isLast: true,
           ),
         ],
@@ -249,7 +291,7 @@ class ProjectInfoCard extends StatelessWidget {
             child: AppText(
               text: label,
               textSize: 12,
-              textColor: colors.onSecondary.withValues(alpha: 0.6),
+              textColor: const Color(0xFF6B7280),
               textAlign: TextAlign.start,
             ),
           ),
@@ -267,14 +309,6 @@ class ProjectInfoCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _monthName(int month) {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return months[month - 1];
   }
 }
 

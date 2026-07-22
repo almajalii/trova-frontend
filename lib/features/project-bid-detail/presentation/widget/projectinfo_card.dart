@@ -23,17 +23,17 @@ class ProjectInfoCard extends StatelessWidget {
           _buildRow('Location', project.location),
           _buildRow(
             'Contract Value',
-            'JOD ${project.contractValue.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+            'JOD ${project.contractValueJod.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
           ),
-          _buildRow('Timeline', project.timeline),
+          _buildRow('Timeline', project.timelineText),
           _buildRow('Milestones', project.milestones),
           _buildRow('Guarantee Type Required', project.guaranteeTypeRequired),
           _buildRow('Payment Terms', project.paymentTerms),
-          _buildRow('Minimum Score', '${project.minimumScore}+'),
-          _buildRow('Minimum Classification', project.minimumClassification),
+          _buildRow('Minimum Score', '${project.minimumRequiredScore}+'),
+          _buildRow('Minimum Classification', project.minimumClassificationText),
           _buildRow(
             'Bid Deadline',
-            '${_monthName(project.bidDeadline.month)} ${project.bidDeadline.day}, ${project.bidDeadline.year}',
+            project.bidDeadlineText,
             isLast: true,
           ),
         ],
@@ -74,14 +74,6 @@ class ProjectInfoCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _monthName(int month) {
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    return months[month - 1];
   }
 }
 

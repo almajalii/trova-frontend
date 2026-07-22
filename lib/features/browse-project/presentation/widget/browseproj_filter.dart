@@ -15,8 +15,6 @@ class FilterProjectsSheet extends StatefulWidget {
 class _FilterProjectsSheetState extends State<FilterProjectsSheet> {
   static const _sectors = ['Construction', 'Infrastructure', 'Industrial', 'MEP', 'Renovation & Fit-out'];
   static const _sortOptions = {
-    'deadline_asc': 'Deadline: Soonest first',
-    'deadline_desc': 'Deadline: Latest first',
     'value_desc': 'Contract Value: High to Low',
     'value_asc': 'Contract Value: Low to High',
   };
@@ -51,7 +49,7 @@ class _FilterProjectsSheetState extends State<FilterProjectsSheet> {
       _selectedSector = null;
       _minController.clear();
       _maxController.clear();
-      _sortBy = 'deadline_asc';
+      _sortBy = 'value_desc';
     });
   }
 

@@ -10,7 +10,6 @@ import 'package:trova/features/browse-project/presentation/bloc/browseproj_bloc.
 import 'package:trova/features/browse-project/presentation/bloc/browseproj_event.dart';
 import 'package:trova/features/browse-project/presentation/bloc/browseproj_state.dart';
 import 'package:trova/features/browse-project/presentation/widget/project_page.dart';
-import 'package:trova/features/project-bid-detail/logic/projectdetailbid_service.dart';
 
 class BrowseProjectsScreen extends StatelessWidget {
   const BrowseProjectsScreen({super.key});
@@ -120,11 +119,10 @@ class BrowseProjectsScreen extends StatelessWidget {
                         return ProjectsListView(
                           projects: successState.projects,
                           onBidTap: (project) {
-                          final detailProject = ProjectBidDetailService().getProjectById(project.id);
                                 Navigator.pushNamed(
                                   context,
                                   AppRoutes.projectDetail,
-                                  arguments: detailProject,
+                                  arguments: project.projectId,
                                 );
 
                           },

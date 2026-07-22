@@ -4,6 +4,7 @@ import 'package:trova/core/network/dio_client.dart';
 import 'package:trova/core/services/biometric_auth_service.dart';
 import 'package:trova/core/storage/token_storage.dart';
 import 'package:trova/features/browse-project/logic/browseproj_service.dart';
+import 'package:trova/features/project-bid-detail/logic/projectdetailbid_service.dart';
 import 'package:trova/features/guarantee-review/logic/guarantee_review_service.dart';
 import 'package:trova/features/leave-review/logic/leave_review_service.dart';
 import 'package:trova/features/log-in/logic/biometric_login_service.dart';
@@ -30,6 +31,8 @@ import 'package:trova/features/bidders/logic/bidder_profile_service.dart';
 import 'package:trova/features/bidders/logic/bidders_service.dart';
 import 'package:trova/features/guarantees/logic/guarantee_service.dart';
 import 'package:trova/features/my-projects/logic/my_projects_service.dart';
+import 'package:trova/features/mybids/logic/mybid_service.dart';
+import 'package:trova/features/notifications/logic/notification_service.dart';
 
 /// Global service locator. Call `setupLocator()` once in main() before
 /// runApp(). Access anything registered here via `sl<Type>()`.
@@ -96,5 +99,8 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<ReviewWorkService>(() => ReviewWorkService(dio: sl<Dio>()));
   sl.registerLazySingleton<RepostProjectService>(() => RepostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<LeaveReviewService>(() => LeaveReviewService(dio: sl<Dio>()));
-  sl.registerLazySingleton(() => ProjectsService());
+  sl.registerLazySingleton(() => ProjectsService(dio: sl<Dio>()));
+  sl.registerLazySingleton<ProjectBidDetailService>(() => ProjectBidDetailService(dio: sl<Dio>()));
+  sl.registerLazySingleton<BidsService>(() => BidsService(dio: sl<Dio>()));
+  sl.registerLazySingleton<NotificationService>(() => NotificationService(dio: sl<Dio>()));
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
 import 'package:trova/features/browse-project/logic/browseproj_model.dart';
@@ -41,7 +42,7 @@ class ProjectCardbrowse extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               _Badge(
-                text: project.category,
+                text: project.sector,
                 backgroundColor: colors.surfaceBright,
                 textColor: colors.onSurface,
               ),
@@ -49,7 +50,7 @@ class ProjectCardbrowse extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           AppText(
-            text: project.companyName,
+            text: project.postedByCompanyName,
             textSize: 13,
             textColor: colors.onSurfaceVariant,
             textAlign: TextAlign.left,
@@ -60,17 +61,17 @@ class ProjectCardbrowse extends StatelessWidget {
             runSpacing: 8,
             children: [
               _Badge(
-                text: project.budgetDisplay,
+                text: 'JOD ${NumberFormat('#,##0').format(project.contractValueJod)}',
                 backgroundColor: colors.primary.withValues(alpha: 0.1),
                 textColor: colors.primary,
               ),
               _Badge(
-                text: 'Min score ${project.minScore}+',
+                text: 'Min score ${project.minimumRequiredScore}+',
                 backgroundColor: colors.surfaceBright,
                 textColor: colors.onSurface,
               ),
               _Badge(
-                text: '${project.daysLeft} days left',
+                text: project.daysLeftText,
                 backgroundColor: colors.surfaceBright,
                 textColor: colors.onSurface,
               ),

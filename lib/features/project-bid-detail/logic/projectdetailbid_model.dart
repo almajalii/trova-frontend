@@ -1,71 +1,78 @@
 class Project {
-  final String id;
+  final String projectId;
   final String title;
-  final String postedBy;
+  final String postedByCompanyName;
   final String sector;
   final String location;
-  final double contractValue;
-  final String timeline;
+  final double contractValueJod;
+  final String timelineText;
   final String milestones;
   final String guaranteeTypeRequired;
   final String paymentTerms;
-  final int minimumScore;
+  final int minimumRequiredScore;
   final String minimumClassification;
-  final DateTime bidDeadline;
+  final String minimumClassificationText;
+  final String bidDeadlineText;
   final String description;
+  final bool alreadyBid;
 
   const Project({
-    required this.id,
+    required this.projectId,
     required this.title,
-    required this.postedBy,
+    required this.postedByCompanyName,
     required this.sector,
     required this.location,
-    required this.contractValue,
-    required this.timeline,
+    required this.contractValueJod,
+    required this.timelineText,
     required this.milestones,
     required this.guaranteeTypeRequired,
     required this.paymentTerms,
-    required this.minimumScore,
+    required this.minimumRequiredScore,
     required this.minimumClassification,
-    required this.bidDeadline,
+    required this.minimumClassificationText,
+    required this.bidDeadlineText,
     required this.description,
+    required this.alreadyBid,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
     return Project(
-      id: json['id'] as String,
+      projectId: json['projectId'] as String,
       title: json['title'] as String,
-      postedBy: json['postedBy'] as String,
+      postedByCompanyName: json['postedByCompanyName'] as String,
       sector: json['sector'] as String,
       location: json['location'] as String,
-      contractValue: (json['contractValue'] as num).toDouble(),
-      timeline: json['timeline'] as String,
+      contractValueJod: (json['contractValueJod'] as num).toDouble(),
+      timelineText: json['timelineText'] as String,
       milestones: json['milestones'] as String,
       guaranteeTypeRequired: json['guaranteeTypeRequired'] as String,
       paymentTerms: json['paymentTerms'] as String,
-      minimumScore: json['minimumScore'] as int,
+      minimumRequiredScore: json['minimumRequiredScore'] as int,
       minimumClassification: json['minimumClassification'] as String,
-      bidDeadline: DateTime.parse(json['bidDeadline'] as String),
+      minimumClassificationText: json['minimumClassificationText'] as String,
+      bidDeadlineText: json['bidDeadlineText'] as String,
       description: json['description'] as String,
+      alreadyBid: json['alreadyBid'] as bool,
     );
   }
+}
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'postedBy': postedBy,
-      'sector': sector,
-      'location': location,
-      'contractValue': contractValue,
-      'timeline': timeline,
-      'milestones': milestones,
-      'guaranteeTypeRequired': guaranteeTypeRequired,
-      'paymentTerms': paymentTerms,
-      'minimumScore': minimumScore,
-      'minimumClassification': minimumClassification,
-      'bidDeadline': bidDeadline.toIso8601String(),
-      'description': description,
-    };
+class SubmitBidResponse {
+  final String bidId;
+  final String projectId;
+  final String status;
+
+  const SubmitBidResponse({
+    required this.bidId,
+    required this.projectId,
+    required this.status,
+  });
+
+  factory SubmitBidResponse.fromJson(Map<String, dynamic> json) {
+    return SubmitBidResponse(
+      bidId: json['bidId'] as String,
+      projectId: json['projectId'] as String,
+      status: json['status'] as String,
+    );
   }
 }

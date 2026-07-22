@@ -8,6 +8,6 @@ class ProjectsFilter {
     this.sector,
     this.minValue,
     this.maxValue,
-    this.sortBy = 'deadline_asc',
+    this.sortBy = 'value_desc',
   });
 }
