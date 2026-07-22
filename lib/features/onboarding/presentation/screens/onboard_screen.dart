@@ -36,8 +36,8 @@ class _OnboardScreenState extends State<OnboardScreen> {
               if (_pageController.hasClients) {
                 _pageController.animateToPage(
                   state.currentIndex,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.ease,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.fastOutSlowIn,
                 );
               }
             }

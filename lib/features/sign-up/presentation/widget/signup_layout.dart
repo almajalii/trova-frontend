@@ -51,7 +51,7 @@ class SignupLayout extends StatelessWidget {
                 SizedBox(height: context.vertical),
 
                 IconButton(
-                  onPressed: onBack,
+                  onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(Icons.arrow_back, color: colors.onSurface),
                   padding: EdgeInsets.zero,
                   alignment: Alignment.centerLeft,

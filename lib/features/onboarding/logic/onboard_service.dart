@@ -7,8 +7,8 @@ class OnboardService {
 	List<OnboardingItem> get onboardData =>
 		 [
 			OnboardingItem(title: "Instant Financial Capability Scores", description: "We analyze real-time banking data through Open Finance to score contractor risk and capability — no paperwork required.", imagePath: "assets/images/auth/Ring_Badge1.svg"),
-			OnboardingItem(title: "Instant Financial Capability Scores", description: "We analyze real-time banking data through Open Finance to score contractor risk and capability — no paperwork required.", imagePath: "assets/images/auth/Ring_Badge2.svg"),
-			OnboardingItem(title: "Instant Financial Capability Scores", description: "We analyze real-time banking data through Open Finance to score contractor risk and capability — no paperwork required.", imagePath: "assets/images/auth/Ring_Badge3.svg"),
+			OnboardingItem(title: "Digital Bank Guarantees, Instantly Verified", description: "Issue, manage, and verify bank guarantees and sureties digitally the moment a project is awarded.", imagePath: "assets/images/auth/Ring_Badge2.svg"),
+			OnboardingItem(title: "Faster, Transparent Project Awarding", description: "Cut approval time and paperwork while building trust between project owners and contractors.", imagePath: "assets/images/auth/Ring_Badge3.svg"),
 	];
 
   Future<void> setOnboardingSeen() async {

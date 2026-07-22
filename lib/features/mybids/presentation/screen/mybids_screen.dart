@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/app_title.dart';
 import 'package:trova/core/di/service_locator.dart';
+import 'package:trova/features/bid-detail/presentation/screen/bid_detail_screen.dart';
+import 'package:trova/features/bid-detail/presentation/widget/contract_agreement_screen.dart';
 import 'package:trova/features/mybids/logic/mybid_model.dart';
 import 'package:trova/features/mybids/logic/mybid_service.dart';
 import 'package:trova/features/mybids/presentation/bloc/mybids_bloc.dart';
@@ -152,6 +154,17 @@ class _MyBidsView extends StatelessWidget {
             bid: bid,
             onPrimaryAction: () => _onPrimaryAction(context, bid),
             onSecondaryAction: () => _onSecondaryAction(context, bid),
+            onTap: () {
+        if (bid.status == 'selected') {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => ContractAgreementScreen(bidId: bid.id),
+          ));
+        } else {
+          Navigator.push(context, MaterialPageRoute(
+            builder: (_) => BidDetailScreen(bidId: bid.id),
+          ));
+        }
+      }
           )),
       const SizedBox(height: 8),
     ];

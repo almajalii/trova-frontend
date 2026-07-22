@@ -7,12 +7,14 @@ class BidCard extends StatelessWidget {
   final BidModel bid;
   final VoidCallback? onPrimaryAction;
   final VoidCallback? onSecondaryAction;
+   final VoidCallback? onTap;
 
   const BidCard({
     super.key,
     required this.bid,
     this.onPrimaryAction,
-    this.onSecondaryAction,
+    this.onSecondaryAction, 
+    this.onTap,
   });
 
   _StatusStyle get _style {

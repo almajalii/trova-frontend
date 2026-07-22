@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:trova/core/network/dio_client.dart';
 import 'package:trova/core/services/biometric_auth_service.dart';
 import 'package:trova/core/storage/token_storage.dart';
+import 'package:trova/features/bid-detail/logic/bid_detail_service.dart';
 import 'package:trova/features/browse-project/logic/browseproj_service.dart';
 import 'package:trova/features/guarantee-review/logic/guarantee_review_service.dart';
 import 'package:trova/features/leave-review/logic/leave_review_service.dart';
@@ -97,4 +98,5 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<RepostProjectService>(() => RepostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<LeaveReviewService>(() => LeaveReviewService(dio: sl<Dio>()));
   sl.registerLazySingleton(() => ProjectsService());
+  sl.registerLazySingleton<BidDetailService>(() => BidDetailService());
 }
