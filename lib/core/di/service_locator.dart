@@ -88,7 +88,7 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<PostProjectService>(() => PostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<BiddersService>(() => BiddersService(dio: sl<Dio>()));
   sl.registerLazySingleton<BidderProfileService>(() => BidderProfileService(dio: sl<Dio>()));
-  sl.registerLazySingleton<GuaranteeService>(() => GuaranteeService(dio: sl<Dio>()));
+  sl.registerLazySingleton<GuaranteeService>(() => GuaranteeService());
   sl.registerLazySingleton<MyProjectsService>(() => MyProjectsService(dio: sl<Dio>()));
   sl.registerLazySingleton<ProjectHistoryService>(() => ProjectHistoryService(dio: sl<Dio>()));
   sl.registerLazySingleton<ProjectDetailService>(() => ProjectDetailService(dio: sl<Dio>()));

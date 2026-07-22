@@ -1,37 +1,51 @@
-import 'package:dio/dio.dart';
-import 'package:trova/core/mock_mode.dart';
-import 'package:trova/core/network/api_exception.dart';
+import 'package:http/http.dart' as http;
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
+import 'guarantee_request_model.dart';
 
 class GuaranteeService {
-  final Dio dio;
-  GuaranteeService({required this.dio});
+  // TODO: replace with your real .NET Web API base URL / shared ApiClient
+  static const _baseUrl = 'https://YOUR_API_BASE_URL/api/guarantees';
 
-  Future<Guarantee> requestGuarantee({
-    required String projectId,
-    required double amountJod,
-    required GuaranteeType type,
-  }) async {
-    if (kUseMockGuarantees) {
-      await Future.delayed(const Duration(milliseconds: 400));
-      final now = DateTime.now();
-      return Guarantee(
-        id: 'TRV-GT-88213',
-        amountJod: amountJod,
-        type: type,
-        issuingBank: 'Arab Bank',
-        validUntil: DateTime(now.year + 1, now.month, now.day),
-        status: 'ACTIVE',
+  Future<void> submitGuaranteeRequest(GuaranteeRequestModel model) async {
+    final request = http.MultipartRequest('POST', Uri.parse(_baseUrl));
+
+    request.fields.addAll({
+      'contractorId': model.contractorId ?? '',
+      'projectId': model.projectId ?? '',
+      'guaranteeType': model.guaranteeType?.name ?? '',
+      'guaranteedAmount': model.guaranteedAmount?.toString() ?? '',
+      'currency': model.currency,
+      'validityStart': model.validityStart?.toIso8601String() ?? '',
+      'validityExpiry': model.validityExpiry?.toIso8601String() ?? '',
+      'specialConditions': model.specialConditions ?? '',
+      'beneficiaryId': model.beneficiaryId ?? '',
+      'confirmAccurate': model.confirmAccurate.toString(),
+      'agreeIndemnify': model.agreeIndemnify.toString(),
+      'acceptTerms': model.acceptTerms.toString(),
+      'signatureName': model.signatureName ?? '',
+    });
+
+    if (model.signedContractFile != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath('signedContract', model.signedContractFile!.path),
       );
     }
-    try {
-      final response = await dio.post(
-        '/projects/$projectId/guarantees',
-        data: {'amountJod': amountJod, 'type': type.apiValue},
+    if (model.letterOfAwardFile != null) {
+      request.files.add(
+        await http.MultipartFile.fromPath('letterOfAward', model.letterOfAwardFile!.path),
       );
-      return Guarantee.fromJson(response.data['data'] as Map<String, dynamic>);
-    } on DioException catch (e) {
-      throw ApiException.fromDioException(e);
+    }
+    for (var i = 0; i < model.otherDocuments.length; i++) {
+      request.files.add(
+        await http.MultipartFile.fromPath('otherDocuments[$i]', model.otherDocuments[i].path),
+      );
+    }
+
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception('Failed to submit guarantee request: ${response.body}');
     }
   }
 }

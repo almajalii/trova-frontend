@@ -1,19 +1,21 @@
 import 'package:equatable/equatable.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
 
-abstract class GuaranteeEvent extends Equatable {
-  const GuaranteeEvent();
+abstract class GuaranteeRequestEvent extends Equatable {
+  const GuaranteeRequestEvent();
   @override
   List<Object?> get props => [];
 }
 
-class GuaranteeRequested extends GuaranteeEvent {
-  final String projectId;
-  final double amountJod;
-  final GuaranteeType type;
-
-  const GuaranteeRequested({required this.projectId, required this.amountJod, required this.type});
-
+class GuaranteeStepDataChanged extends GuaranteeRequestEvent {
+  final GuaranteeRequestModel updatedModel;
+  const GuaranteeStepDataChanged(this.updatedModel);
   @override
-  List<Object?> get props => [projectId, amountJod, type];
+  List<Object?> get props => [updatedModel];
 }
+
+class GuaranteeNextStep extends GuaranteeRequestEvent {}
+
+class GuaranteeBackStep extends GuaranteeRequestEvent {}
+
+class GuaranteeSubmitRequested extends GuaranteeRequestEvent {}

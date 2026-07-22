@@ -3,21 +3,38 @@ import 'package:trova/features/guarantees/logic/guarantee_service.dart';
 import 'package:trova/features/guarantees/presentation/bloc/guarantee_event.dart';
 import 'package:trova/features/guarantees/presentation/bloc/guarantee_state.dart';
 
-class GuaranteeBloc extends Bloc<GuaranteeEvent, GuaranteeState> {
-  final GuaranteeService guaranteeService;
 
-  GuaranteeBloc({required this.guaranteeService}) : super(const GuaranteeInitial()) {
-    on<GuaranteeRequested>((event, emit) async {
-      emit(const GuaranteeLoading());
+class GuaranteeRequestBloc extends Bloc<GuaranteeRequestEvent, GuaranteeRequestState> {
+  final GuaranteeService service;
+  static const _lastStepIndex = 5; // 6 steps, 0-indexed
+
+  GuaranteeRequestBloc(this.service) : super(const GuaranteeRequestState()) {
+    on<GuaranteeStepDataChanged>((event, emit) {
+      emit(state.copyWith(model: event.updatedModel));
+    });
+
+    on<GuaranteeNextStep>((event, emit) {
+      if (state.currentStep < _lastStepIndex) {
+        emit(state.copyWith(currentStep: state.currentStep + 1));
+      }
+    });
+
+    on<GuaranteeBackStep>((event, emit) {
+      if (state.currentStep > 0) {
+        emit(state.copyWith(currentStep: state.currentStep - 1));
+      }
+    });
+
+    on<GuaranteeSubmitRequested>((event, emit) async {
+      emit(state.copyWith(status: GuaranteeStatus.loading));
       try {
-        final guarantee = await guaranteeService.requestGuarantee(
-          projectId: event.projectId,
-          amountJod: event.amountJod,
-          type: event.type,
-        );
-        emit(GuaranteeSuccess(guarantee: guarantee));
+        await service.submitGuaranteeRequest(state.model);
+        emit(state.copyWith(status: GuaranteeStatus.success));
       } catch (e) {
-        emit(GuaranteeError(message: e.toString()));
+        emit(state.copyWith(
+          status: GuaranteeStatus.error,
+          errorMessage: e.toString(),
+        ));
       }
     });
   }

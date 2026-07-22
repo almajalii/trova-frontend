@@ -1,32 +1,35 @@
 import 'package:equatable/equatable.dart';
 import 'package:trova/features/guarantees/logic/guarantee_model.dart';
 
-abstract class GuaranteeState extends Equatable {
-  const GuaranteeState();
+enum GuaranteeStatus { init, loading, success, error }
+
+class GuaranteeRequestState extends Equatable {
+  final GuaranteeStatus status;
+  final int currentStep;
+  final GuaranteeRequestModel model;
+  final String? errorMessage;
+
+  const GuaranteeRequestState({
+    this.status = GuaranteeStatus.init,
+    this.currentStep = 0,
+    this.model = const GuaranteeRequestModel(),
+    this.errorMessage,
+  });
+
+  GuaranteeRequestState copyWith({
+    GuaranteeStatus? status,
+    int? currentStep,
+    GuaranteeRequestModel? model,
+    String? errorMessage,
+  }) {
+    return GuaranteeRequestState(
+      status: status ?? this.status,
+      currentStep: currentStep ?? this.currentStep,
+      model: model ?? this.model,
+      errorMessage: errorMessage,
+    );
+  }
+
   @override
-  List<Object?> get props => [];
-}
-
-class GuaranteeInitial extends GuaranteeState {
-  const GuaranteeInitial();
-}
-
-class GuaranteeLoading extends GuaranteeState {
-  const GuaranteeLoading();
-}
-
-class GuaranteeSuccess extends GuaranteeState {
-  final Guarantee guarantee;
-  const GuaranteeSuccess({required this.guarantee});
-
-  @override
-  List<Object?> get props => [guarantee];
-}
-
-class GuaranteeError extends GuaranteeState {
-  final String message;
-  const GuaranteeError({required this.message});
-
-  @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [status, currentStep, model, errorMessage];
 }
