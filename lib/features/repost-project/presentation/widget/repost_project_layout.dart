@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:trova/features/repost-project/logic/repost_project_model.dart';
 
-/// Pure UI for the "Edit & Re-post Project" form. No bloc references — the
-/// screen wires callbacks to bloc events and passes the current [draft]
-/// down.
-///
-/// NOTE ON COLORS: several values here (`#fafafa` field fill, `#d9d9de`
-/// field border, `#f7e5e7`/`#c8202e` notice banner, `#1a1a1a`/`#333338`
-/// text) come straight from the Figma frame and don't have an obvious
-/// match in the existing `colors.*` tokens used elsewhere in this codebase
-/// (e.g. they're closer to but not identical to `colors.surfaceBright` /
-/// `colors.error`). Left as literal hex below — swap for named theme
-/// tokens if/when they exist so this doesn't drift from the rest of the
-/// app's palette.
 class RepostProjectLayout extends StatelessWidget {
   static const _fieldFill = Color(0xFFFAFAFA);
   static const _fieldBorder = Color(0xFFD9D9DE);
@@ -28,8 +17,15 @@ class RepostProjectLayout extends StatelessWidget {
   final ValueChanged<String> onSectorChanged;
   final ValueChanged<double> onContractValueChanged;
   final ValueChanged<int> onMinRequiredScoreChanged;
-  final ValueChanged<String> onMinContractorClassificationChanged;
+  final ValueChanged<ContractorClassification> onMinContractorClassificationChanged;
   final ValueChanged<String> onDescriptionChanged;
+  final ValueChanged<String> onLocationChanged;
+  final ValueChanged<String> onCurrencyChanged;
+  final ValueChanged<String> onTimelineChanged;
+  final ValueChanged<List<String>> onMilestonesChanged;
+  final ValueChanged<String> onGuaranteeTypeChanged;
+  final ValueChanged<String> onPaymentTermsChanged;
+  final ValueChanged<DateTime> onBidDeadlineChanged;
   final VoidCallback onSubmit;
 
   const RepostProjectLayout({
@@ -43,6 +39,13 @@ class RepostProjectLayout extends StatelessWidget {
     required this.onMinRequiredScoreChanged,
     required this.onMinContractorClassificationChanged,
     required this.onDescriptionChanged,
+    required this.onLocationChanged,
+    required this.onCurrencyChanged,
+    required this.onTimelineChanged,
+    required this.onMilestonesChanged,
+    required this.onGuaranteeTypeChanged,
+    required this.onPaymentTermsChanged,
+    required this.onBidDeadlineChanged,
     required this.onSubmit,
   });
 
@@ -74,14 +77,41 @@ class RepostProjectLayout extends StatelessWidget {
                     _FieldLabel('Sector'),
                     _TextInput(initialValue: draft.sector, onChanged: onSectorChanged),
                     const SizedBox(height: 14),
-                    _FieldLabel('Contract Value (JOD)'),
-                    _TextInput(
-                      initialValue: _formatContractValue(draft.contractValueJod),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        final parsed = double.tryParse(value.replaceAll(',', ''));
-                        if (parsed != null) onContractValueChanged(parsed);
-                      },
+                    _FieldLabel('Location'),
+                    _TextInput(initialValue: draft.location, onChanged: onLocationChanged),
+                    const SizedBox(height: 14),
+                    _FieldLabel('Contract Value'),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: _TextInput(
+                            initialValue: _formatContractValue(draft.contractValueJod),
+                            keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              final parsed = double.tryParse(value.replaceAll(',', ''));
+                              if (parsed != null) onContractValueChanged(parsed);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          flex: 2,
+                          child: _TextInput(
+                            initialValue: draft.currency,
+                            onChanged: onCurrencyChanged,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                    _FieldLabel('Timeline / Duration'),
+                    _TextInput(initialValue: draft.timelineText, onChanged: onTimelineChanged),
+                    const SizedBox(height: 14),
+                    _FieldLabel('Bid Submission Deadline'),
+                    _DatePickerField(
+                      value: draft.bidSubmissionDeadline,
+                      onChanged: onBidDeadlineChanged,
                     ),
                     const SizedBox(height: 14),
                     _FieldLabel('Minimum Required Score'),
@@ -95,9 +125,38 @@ class RepostProjectLayout extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
                     _FieldLabel('Minimum Contractor Classification'),
-                    _TextInput(
-                      initialValue: draft.minContractorClassification,
+                    _ClassificationDropdown(
+                      value: draft.minContractorClassification,
                       onChanged: onMinContractorClassificationChanged,
+                    ),
+                    const SizedBox(height: 14),
+                    _FieldLabel('Guarantee Type Required'),
+                    _TextInput(
+                      initialValue: draft.guaranteeTypeRequired,
+                      onChanged: onGuaranteeTypeChanged,
+                    ),
+                    const SizedBox(height: 14),
+                    _FieldLabel('Payment Terms'),
+                    _TextInput(
+                      initialValue: draft.paymentTerms,
+                      onChanged: onPaymentTermsChanged,
+                      maxLines: 2,
+                      minLines: 1,
+                    ),
+                    const SizedBox(height: 14),
+                    _FieldLabel('Milestones (one per line)'),
+                    _TextInput(
+                      initialValue: draft.milestones.join('\n'),
+                      onChanged: (value) {
+                        final lines = value
+                            .split('\n')
+                            .map((line) => line.trim())
+                            .where((line) => line.isNotEmpty)
+                            .toList();
+                        onMilestonesChanged(lines);
+                      },
+                      maxLines: 6,
+                      minLines: 3,
                     ),
                     const SizedBox(height: 14),
                     _FieldLabel('Project Description'),
@@ -120,9 +179,6 @@ class RepostProjectLayout extends StatelessWidget {
   }
 
   static String _formatContractValue(double value) {
-    // Full comma-grouped, e.g. 71000 -> "71,000" (matches detail/document
-    // view convention, not the abbreviated list-view JOD 71K style — this
-    // is an editable field, not a summary card).
     final intValue = value.toInt();
     final s = intValue.toString();
     final buffer = StringBuffer();
@@ -237,6 +293,90 @@ class _TextInput extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+        ),
+      ),
+    );
+  }
+}
+
+class _ClassificationDropdown extends StatelessWidget {
+  final ContractorClassification value;
+  final ValueChanged<ContractorClassification> onChanged;
+
+  const _ClassificationDropdown({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<ContractorClassification>(
+      initialValue: value,
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: RepostProjectLayout._valueText),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: RepostProjectLayout._fieldFill,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: RepostProjectLayout._fieldBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: RepostProjectLayout._fieldBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+        ),
+      ),
+      items: ContractorClassification.values
+          .map((c) => DropdownMenuItem(value: c, child: Text(c.displayLabel)))
+          .toList(),
+      onChanged: (newValue) {
+        if (newValue != null) onChanged(newValue);
+      },
+    );
+  }
+}
+
+class _DatePickerField extends StatelessWidget {
+  final DateTime value;
+  final ValueChanged<DateTime> onChanged;
+
+  const _DatePickerField({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () async {
+        final picked = await showDatePicker(
+          context: context,
+          initialDate: value.isAfter(DateTime.now()) ? value : DateTime.now().add(const Duration(days: 1)),
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(const Duration(days: 365)),
+        );
+        if (picked != null) onChanged(picked);
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: RepostProjectLayout._fieldFill,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: RepostProjectLayout._fieldBorder),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              DateFormat('dd MMM yyyy').format(value),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: RepostProjectLayout._valueText,
+              ),
+            ),
+            const Icon(Icons.calendar_today_outlined, size: 18, color: RepostProjectLayout._labelText),
+          ],
         ),
       ),
     );
