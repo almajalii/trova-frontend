@@ -36,13 +36,13 @@ class ReviewWorkService {
     }
   }
 
-  Future<void> flagIssue(String projectId) async {
+  Future<void> flagIssue(String projectId, String reason) async {
     if (kUseMockReviewWork) {
       await Future.delayed(const Duration(milliseconds: 400));
       return;
     }
     try {
-      await dio.post('/projects/$projectId/flag-issue');
+      await dio.post('/projects/$projectId/flag-issue', data: {'reason': reason});
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

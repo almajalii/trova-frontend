@@ -399,7 +399,9 @@ class ProjectDetail {
       title: 'Marka Logistics Center',
       status: DetailStatus.disputed,
       statusLabel: 'Disputed',
-      subtitle: "You flagged Cedar Construction's submitted work over quality concerns. Trova's team is reviewing.",
+      // Matches the real endpoint's format now that it sends the actual
+      // flagged reason here instead of generic "under review" copy.
+      subtitle: "You flagged this project's submitted work: quality concerns with the completed work.",
       awardedBidder: Bidder.contractorRef(bidId: '8f3c2a1b-4d5e-4f60-8a7b-9c0d1e2f3a4b', companyName: 'Cedar Construction', classification: 'C', eligible: false),
       sector: 'Industrial',
       contractValueJod: 62000,
@@ -420,6 +422,13 @@ class ProjectDetail {
       ],
       actionLabel: 'View Dispute Status',
     ),
+    // NOTE: the backend never actually produces DetailStatus.failed today —
+    // every dispute resolution (favorable or not) lands on `completed`,
+    // distinguished only by `subtitle`/`timeline` copy ("Dispute resolved:
+    // ..."). This entry (and the failed-status UI it exercises) is kept for
+    // whenever the backend adds a real "resolved against the owner, guarantee
+    // claimed" outcome, but isn't reachable from live data right now — not
+    // worth polishing further until that exists.
     ProjectDetail(
       id: 'TRV-PRJ-08821',
       title: 'Old Amman Retail Fitout',

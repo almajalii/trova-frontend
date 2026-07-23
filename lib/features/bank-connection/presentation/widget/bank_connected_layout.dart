@@ -33,7 +33,7 @@ class BankConnectedLayout extends StatelessWidget {
             ),
             const Spacer(flex: 5),
             Button(
-              text: 'Go to Dashboard',
+              text: 'Continue',
               textColor: Colors.white,
               borderRadius: 10,
               fontSize: 16,

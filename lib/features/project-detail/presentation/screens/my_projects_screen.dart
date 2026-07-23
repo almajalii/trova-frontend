@@ -90,10 +90,15 @@ class ProjectDetailScreen extends StatelessWidget {
                 DetailStatus.guaranteeRejectedByYou => () => Navigator.of(
                   context,
                 ).push(MaterialPageRoute(builder: (_) => RepostProjectScreen(projectId: project.id))),
-                _ => () {
-                  // TODO: route to the right screen per project.actionLabel once each
-                  // exists — View Dispute Status. Next increments.
-                },
+                // Disputed projects' "View Dispute Status" action was left
+                // unresolved pending a dedicated screen. It doesn't need one:
+                // the dispute reason (and, once resolved, the resolution
+                // message) now arrive as this same GET response's `subtitle` +
+                // `timeline`, which this exact screen already renders above —
+                // so there's nowhere further to navigate to. See
+                // ProjectDetailLayout, which suppresses the button itself for
+                // this status rather than leaving a dead tap target.
+                _ => null,
               },
             );
           },

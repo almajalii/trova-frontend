@@ -16,7 +16,7 @@
 //   repost-project    -> LIVE  (GET /api/owner/projects/{id}/repost-draft, POST /api/owner/projects/{id}/repost)
 //   leave-review      -> LIVE  (GET /api/owner/projects/{id}/review-context, POST /api/owner/projects/{id}/review)
 //   company-reviews   -> LIVE  (GET /api/company-profile/reviews)
-//   notifications     -> mock  (no backend endpoint yet)
+//   notifications     -> LIVE  (GET /api/notifications)
 //   bidder-profile    -> LIVE   (GET /api/bids/{id}/company-profile)
 
 const bool kUseMockPostProject = false;
@@ -33,5 +33,5 @@ const bool kUseMockReviewWork = false;
 const bool kUseMockRepostProject = false;
 const bool kUseMockLeaveReview = false;
 const bool kUseMockCompanyReviews = false;
-const bool kUseMockNotifications = true;
+const bool kUseMockNotifications = false;
 const bool kUseMockBidderProfiles = false;

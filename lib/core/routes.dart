@@ -13,6 +13,8 @@ import 'package:trova/features/bank-connection/presentation/screens/connect_bank
 import 'package:trova/features/post-project/presentation/screens/post_a_project_screen.dart';
 import 'package:trova/features/my-projects/presentation/screens/my_projects_screen.dart';
 import 'package:trova/features/company-profile/presentation/screens/company_profile_screen.dart';
+import 'package:trova/features/account-status/presentation/screens/account_pending_screen.dart';
+import 'package:trova/features/account-status/presentation/screens/account_rejected_screen.dart';
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -28,6 +30,8 @@ class AppRoutes {
   static const String projectDetail = '/project-detail'; // NEW
   static const String myBids = '/my-bids'; // NEW
   static const String companyProfile = '/company-profile'; // NEW
+  static const String accountPending = '/account-pending'; // NEW — account approvalStatus == pending
+  static const String accountRejected = '/account-rejected'; // NEW — account approvalStatus == rejected
 
   // NOTE: verify-email and the identity-confirm screens require constructor
   // params (email, IdentityInfo, callbacks) that don't fit this simple named-
@@ -72,6 +76,11 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const MyBidsScreen());
       case companyProfile:
         return MaterialPageRoute(builder: (_) => const CompanyProfileScreen());
+      case accountPending:
+        return MaterialPageRoute(builder: (_) => const AccountPendingScreen());
+      case accountRejected:
+        final rejectionReason = settings.arguments as String?;
+        return MaterialPageRoute(builder: (_) => AccountRejectedScreen(rejectionReason: rejectionReason));
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(body: Center(child: Text('404 - Route not found'))),

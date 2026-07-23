@@ -19,7 +19,12 @@ class ConfirmCompleteRequested extends ReviewWorkEvent {
   const ConfirmCompleteRequested();
 }
 
-/// Flags whatever submitted work is currently loaded.
+/// Flags whatever submitted work is currently loaded, with the owner's
+/// required explanation of what's wrong.
 class FlagIssueRequested extends ReviewWorkEvent {
-  const FlagIssueRequested();
+  final String reason;
+  const FlagIssueRequested({required this.reason});
+
+  @override
+  List<Object?> get props => [reason];
 }

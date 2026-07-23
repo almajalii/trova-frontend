@@ -60,7 +60,7 @@ class ReviewSubmittedWorkScreen extends StatelessWidget {
               work: work,
               isSubmitting: state is ReviewWorkSubmitting,
               onBack: () => Navigator.of(context).maybePop(),
-              onFlagIssue: () => context.read<ReviewWorkBloc>().add(const FlagIssueRequested()),
+              onFlagIssue: (reason) => context.read<ReviewWorkBloc>().add(FlagIssueRequested(reason: reason)),
               onConfirmComplete: () => context.read<ReviewWorkBloc>().add(const ConfirmCompleteRequested()),
             );
           },

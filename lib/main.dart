@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trova/core/di/service_locator.dart';
+import 'package:trova/core/navigation/app_navigator.dart';
 import 'package:trova/core/routes.dart';
 import 'package:trova/core/theme.dart';
 
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Trova',
+      navigatorKey: appNavigatorKey,
       theme: AppTheme.lightTheme,
       initialRoute: AppRoutes.onboarding,
       onGenerateRoute: AppRoutes.generateRoute,

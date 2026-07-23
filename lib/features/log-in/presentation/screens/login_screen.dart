@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/di/service_locator.dart';
+import 'package:trova/core/navigation/approval_redirect.dart';
+import 'package:trova/core/routes.dart';
 import 'package:trova/core/services/biometric_auth_service.dart';
 import 'package:trova/core/storage/token_storage.dart';
 import 'package:trova/features/log-in/logic/biometric_login_service.dart';
@@ -9,7 +11,6 @@ import 'package:trova/features/log-in/presentation/bloc/login_bloc.dart';
 import 'package:trova/features/log-in/presentation/bloc/login_event.dart';
 import 'package:trova/features/log-in/presentation/bloc/login_state.dart';
 import 'package:trova/features/log-in/presentation/widget/login_layout.dart';
-import 'package:trova/core/routes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -100,11 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 await _maybeOfferBiometricEnrollment(context);
               }
               if (context.mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  AppRoutes.homeDashboard,
-                  (route) => false,
-                );
+                await navigateByApprovalStatus(context, state.result.user);
               }
             }
           },

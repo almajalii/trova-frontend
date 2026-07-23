@@ -34,7 +34,7 @@ class ReviewWorkBloc extends Bloc<ReviewWorkEvent, ReviewWorkState> {
       if (current is! ReviewWorkLoaded) return;
       emit(ReviewWorkSubmitting(work: current.work));
       try {
-        await reviewWorkService.flagIssue(current.work.projectId);
+        await reviewWorkService.flagIssue(current.work.projectId, event.reason);
         emit(const WorkIssueFlagged());
       } catch (e) {
         emit(ReviewWorkError(message: e.toString()));

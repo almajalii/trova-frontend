@@ -26,7 +26,10 @@ class ReviewSubmittedWorkLayout extends StatelessWidget {
   final SubmittedWork work;
   final bool isSubmitting;
   final VoidCallback onBack;
-  final VoidCallback onFlagIssue;
+
+  /// Called with the owner's required explanation once they confirm the
+  /// flag-issue dialog.
+  final ValueChanged<String> onFlagIssue;
   final VoidCallback onConfirmComplete;
 
   const ReviewSubmittedWorkLayout({
@@ -37,6 +40,57 @@ class ReviewSubmittedWorkLayout extends StatelessWidget {
     required this.onFlagIssue,
     required this.onConfirmComplete,
   });
+
+  Future<void> _showFlagIssueDialog(BuildContext context) async {
+    final controller = TextEditingController();
+    String? errorText;
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setState) => AlertDialog(
+          title: const Text("I'm Not Satisfied"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Let us know what\'s wrong with the submitted work.'),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller,
+                maxLines: 3,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Reason',
+                  border: const OutlineInputBorder(),
+                  errorText: errorText,
+                ),
+                onChanged: (_) {
+                  if (errorText != null) setState(() => errorText = null);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(dialogContext), child: const Text('Cancel')),
+            TextButton(
+              onPressed: () {
+                final trimmed = controller.text.trim();
+                if (trimmed.isEmpty) {
+                  setState(() => errorText = 'Please describe the issue');
+                  return;
+                }
+                Navigator.pop(dialogContext, trimmed);
+              },
+              child: const Text('Flag Issue', style: TextStyle(color: AppColors.danger)),
+            ),
+          ],
+        ),
+      ),
+    );
+    controller.dispose();
+    if (reason == null || reason.isEmpty) return;
+    onFlagIssue(reason);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +169,7 @@ class ReviewSubmittedWorkLayout extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: isSubmitting ? null : onFlagIssue,
+                  onPressed: isSubmitting ? null : () => _showFlagIssueDialog(context),
                   style: OutlinedButton.styleFrom(
                     minimumSize: Size(double.infinity, context.buttonSizeH),
                     side: BorderSide(color: colors.surfaceBright),

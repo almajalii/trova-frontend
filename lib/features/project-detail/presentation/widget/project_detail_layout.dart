@@ -108,7 +108,11 @@ class ProjectDetailLayout extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         DetailTimelineStepper(steps: project.timeline),
-        if (project.actionLabel != null) ...[
+        // Disputed is excluded even when the backend sends an actionLabel
+        // for it ("View Dispute Status") — the dispute reason/resolution
+        // already renders above via `subtitle` + `timeline` on this exact
+        // screen, so a button here would have nowhere to navigate to.
+        if (project.actionLabel != null && project.status != DetailStatus.disputed) ...[
           const SizedBox(height: 24),
           Button(
             text: project.actionLabel!,

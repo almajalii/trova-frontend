@@ -22,7 +22,7 @@ enum NotificationType {
         'GUARANTEE_EXPIRING' => NotificationType.guaranteeExpiring,
         'REVIEW_RECEIVED' => NotificationType.reviewReceived,
         'BID_UNDER_REVIEW' => NotificationType.bidUnderReview,
-        _ => NotificationType.bidUnderReview,
+        _ => throw ArgumentError('Unknown notification type: $value'),
       };
 }
 
