@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:trova/features/repost-project/logic/repost_project_model.dart';
 
 abstract class RepostProjectEvent extends Equatable {
   const RepostProjectEvent();
@@ -7,10 +8,8 @@ abstract class RepostProjectEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Fired on screen init to load the prefilled draft for [projectId].
 class LoadRepostDraft extends RepostProjectEvent {
   final String projectId;
-
   const LoadRepostDraft(this.projectId);
 
   @override
@@ -19,7 +18,6 @@ class LoadRepostDraft extends RepostProjectEvent {
 
 class RepostTitleChanged extends RepostProjectEvent {
   final String title;
-
   const RepostTitleChanged(this.title);
 
   @override
@@ -28,7 +26,6 @@ class RepostTitleChanged extends RepostProjectEvent {
 
 class RepostSectorChanged extends RepostProjectEvent {
   final String sector;
-
   const RepostSectorChanged(this.sector);
 
   @override
@@ -37,7 +34,6 @@ class RepostSectorChanged extends RepostProjectEvent {
 
 class RepostContractValueChanged extends RepostProjectEvent {
   final double contractValueJod;
-
   const RepostContractValueChanged(this.contractValueJod);
 
   @override
@@ -46,7 +42,6 @@ class RepostContractValueChanged extends RepostProjectEvent {
 
 class RepostMinRequiredScoreChanged extends RepostProjectEvent {
   final int minRequiredScore;
-
   const RepostMinRequiredScoreChanged(this.minRequiredScore);
 
   @override
@@ -54,8 +49,7 @@ class RepostMinRequiredScoreChanged extends RepostProjectEvent {
 }
 
 class RepostMinContractorClassificationChanged extends RepostProjectEvent {
-  final String minContractorClassification;
-
+  final ContractorClassification minContractorClassification;
   const RepostMinContractorClassificationChanged(this.minContractorClassification);
 
   @override
@@ -64,14 +58,68 @@ class RepostMinContractorClassificationChanged extends RepostProjectEvent {
 
 class RepostDescriptionChanged extends RepostProjectEvent {
   final String description;
-
   const RepostDescriptionChanged(this.description);
 
   @override
   List<Object?> get props => [description];
 }
 
-/// Fired when "Re-post Project" is tapped.
+class RepostLocationChanged extends RepostProjectEvent {
+  final String location;
+  const RepostLocationChanged(this.location);
+
+  @override
+  List<Object?> get props => [location];
+}
+
+class RepostCurrencyChanged extends RepostProjectEvent {
+  final String currency;
+  const RepostCurrencyChanged(this.currency);
+
+  @override
+  List<Object?> get props => [currency];
+}
+
+class RepostTimelineChanged extends RepostProjectEvent {
+  final String timelineText;
+  const RepostTimelineChanged(this.timelineText);
+
+  @override
+  List<Object?> get props => [timelineText];
+}
+
+class RepostMilestonesChanged extends RepostProjectEvent {
+  final List<String> milestones;
+  const RepostMilestonesChanged(this.milestones);
+
+  @override
+  List<Object?> get props => [milestones];
+}
+
+class RepostGuaranteeTypeChanged extends RepostProjectEvent {
+  final String guaranteeTypeRequired;
+  const RepostGuaranteeTypeChanged(this.guaranteeTypeRequired);
+
+  @override
+  List<Object?> get props => [guaranteeTypeRequired];
+}
+
+class RepostPaymentTermsChanged extends RepostProjectEvent {
+  final String paymentTerms;
+  const RepostPaymentTermsChanged(this.paymentTerms);
+
+  @override
+  List<Object?> get props => [paymentTerms];
+}
+
+class RepostBidDeadlineChanged extends RepostProjectEvent {
+  final DateTime bidSubmissionDeadline;
+  const RepostBidDeadlineChanged(this.bidSubmissionDeadline);
+
+  @override
+  List<Object?> get props => [bidSubmissionDeadline];
+}
+
 class SubmitRepost extends RepostProjectEvent {
   const SubmitRepost();
 }
