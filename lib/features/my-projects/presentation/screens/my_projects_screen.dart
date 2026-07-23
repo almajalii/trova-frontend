@@ -43,44 +43,43 @@ class MyProjectsScreen extends StatelessWidget {
             }
 
             final projects = (state as MyProjectsLoaded).projects;
+
+            void refresh() => context.read<MyProjectsBloc>().add(const MyProjectsLoadRequested());
+
             return MyProjectsLayout(
               projects: projects,
-              onRefresh: () async => context.read<MyProjectsBloc>().add(const MyProjectsLoadRequested()),
-              onAddPressed: () =>
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PostAProjectScreen())),
+              onRefresh: () async => refresh(),
+              onAddPressed: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => const PostAProjectScreen()))
+                  .then((_) => refresh()),
               onHistoryPressed: () =>
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProjectHistoryScreen())),
-              onProjectTap: (project) => Navigator.of(
-                context,
-              ).push(MaterialPageRoute(builder: (_) => ProjectDetailScreen(projectId: project.id))),
+              onProjectTap: (project) => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (_) => ProjectDetailScreen(projectId: project.id)))
+                  .then((_) => refresh()),
               onActionPressed: (project) {
-                // Awarded cards' button is "Review Guarantee" — goes straight to the
-                // approve/reject screen. Pending Review cards' button is "Review Work"
-                // — goes straight to the confirm/flag screen. Every other status's
-                // action (Post Project Again) doesn't have its own screen yet, so it
-                // falls back to Project Detail for now.
                 if (project.status == ProjectStatus.awarded) {
-                  Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (_) => ReviewGuaranteeScreen(projectId: project.id)));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => ReviewGuaranteeScreen(projectId: project.id)))
+                      .then((_) => refresh());
                   return;
                 }
                 if (project.status == ProjectStatus.pendingReview) {
-                  Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (_) => ReviewSubmittedWorkScreen(projectId: project.id)));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => ReviewSubmittedWorkScreen(projectId: project.id)))
+                      .then((_) => refresh());
                   return;
                 }
                 if (project.status == ProjectStatus.contractorBackedOff ||
                     project.status == ProjectStatus.guaranteeRejectedByYou) {
-                  Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (_) => RepostProjectScreen(projectId: project.id)));
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => RepostProjectScreen(projectId: project.id)))
+                      .then((_) => refresh());
                   return;
                 }
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => ProjectDetailScreen(projectId: project.id)));
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => ProjectDetailScreen(projectId: project.id)))
+                    .then((_) => refresh());
               },
             );
           },
