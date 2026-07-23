@@ -50,81 +50,81 @@ class BidCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colors.surfaceBright),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: AppText(
-                  text: bid.projectTitle,
-                  fontWeight: FontWeight.bold,
-                  textSize: 15,
-                  textAlign: TextAlign.start,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(color: style.bg, borderRadius: BorderRadius.circular(20)),
-                child: AppText(
-                  text: style.label,
-                  textSize: 11,
-                  fontWeight: FontWeight.w600,
-                  textColor: style.text,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          AppText(
-            text: '${bid.companyName} · Bid JOD ${bid.bidAmount.toStringAsFixed(0)}',
-            textSize: 13,
-            textColor: colors.secondary.withValues(alpha: 0.6),
-            textAlign: TextAlign.start,
-          ),
-          const SizedBox(height: 10),
-
-          if (bid.status == 'inProgress')
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFCEFD8),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  AppText(text: bid.note ?? '', textSize: 12, fontWeight: FontWeight.w600, textColor: const Color(0xFFB8760B)),
-                  AppText(
-                    text: 'Expires in ${bid.guaranteeExpiresInDays} days',
-                    textSize: 12,
-                    textColor: const Color(0xFFB8760B),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: colors.surfaceBright),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: AppText(
+                    text: bid.projectTitle,
+                    fontWeight: FontWeight.bold,
+                    textSize: 15,
+                    textAlign: TextAlign.start,
                   ),
-                ],
-              ),
-            )
-          else
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(color: style.bg, borderRadius: BorderRadius.circular(20)),
+                  child: AppText(
+                    text: style.label,
+                    textSize: 11,
+                    fontWeight: FontWeight.w600,
+                    textColor: style.text,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
             AppText(
-              text: bid.status == 'workSubmitted' ? 'Waiting for the owner to confirm your work.' : (bid.note ?? ''),
-              textSize: 12,
-              textColor: bid.status == 'guaranteeRejected' ? const Color(0xFFC82333) : colors.secondary.withValues(alpha: 0.6),
+              text: '${bid.companyName} · Bid JOD ${bid.bidAmount.toStringAsFixed(0)}',
+              textSize: 13,
+              textColor: colors.secondary.withValues(alpha: 0.6),
               textAlign: TextAlign.start,
             ),
+            const SizedBox(height: 10),
 
-          const SizedBox(height: 12),
+            if (bid.status == 'inProgress')
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFCEFD8),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AppText(text: bid.note ?? '', textSize: 12, fontWeight: FontWeight.w600, textColor: const Color(0xFFB8760B)),
+                    AppText(
+                      text: 'Expires in ${bid.guaranteeExpiresInDays} days',
+                      textSize: 12,
+                      textColor: const Color(0xFFB8760B),
+                    ),
+                  ],
+                ),
+              )
+            else
+              AppText(
+                text: bid.status == 'workSubmitted' ? 'Waiting for the owner to confirm your work.' : (bid.note ?? ''),
+                textSize: 12,
+                textColor: bid.status == 'guaranteeRejected' ? const Color(0xFFC82333) : colors.secondary.withValues(alpha: 0.6),
+                textAlign: TextAlign.start,
+              ),
 
-          _buildActions(colors),
-        ],
-      ),
+            const SizedBox(height: 12),
+
+            _buildActions(colors),
+          ],
+        ),
       ),
     );
   }
