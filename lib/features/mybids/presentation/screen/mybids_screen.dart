@@ -161,6 +161,7 @@ class _MyBidsView extends StatelessWidget {
             bid: bid,
             onPrimaryAction: () => _onPrimaryAction(context, bid),
             onSecondaryAction: () => _onSecondaryAction(context, bid),
+            onBackOffAction: () => _onBackOffAction(context, bid),
             onTap: () {
               if (bid.status == 'selected') {
                 Navigator.push(context, MaterialPageRoute(
@@ -234,6 +235,16 @@ class _MyBidsView extends StatelessWidget {
       case 'selected':
         bloc.add(CancelBid(bid.id));
         break;
+      default:
+        break;
+    }
+  }
+
+  void _onBackOffAction(BuildContext context, BidModel bid) {
+    switch (bid.status) {
+      case 'selected':
+      case 'confirmed':
+      case 'inProgress':
       case 'guaranteeRejected':
         _runActionWithConfirmation(
           context,
