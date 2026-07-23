@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trova/core/app_colors.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
+import 'package:trova/core/contractor_tap_target.dart';
 import 'package:trova/core/responsive_utils.dart';
 import 'package:trova/core/status_pill.dart';
 import 'package:trova/features/project-detail/logic/project_detail_model.dart';
@@ -85,11 +86,14 @@ class ProjectDetailLayout extends StatelessWidget {
         ),
         if (project.subtitle != null) ...[
           const SizedBox(height: 8),
-          AppText(
-            text: project.subtitle!,
-            textSize: 13,
-            textColor: colors.onSurfaceVariant,
-            textAlign: TextAlign.start,
+          ContractorTapTarget(
+            contractor: project.awardedBidder,
+            child: AppText(
+              text: project.subtitle!,
+              textSize: 13,
+              textColor: project.awardedBidder != null ? colors.primary : colors.onSurfaceVariant,
+              textAlign: TextAlign.start,
+            ),
           ),
         ],
         const SizedBox(height: 18),

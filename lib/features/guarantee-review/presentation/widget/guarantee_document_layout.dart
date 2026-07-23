@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:trova/core/app_colors.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
+import 'package:trova/core/contractor_tap_target.dart';
 import 'package:trova/core/responsive_utils.dart';
 import 'package:trova/core/status_pill.dart';
+import 'package:trova/features/bidders/logic/bidder_model.dart';
 import 'package:trova/features/guarantee-review/logic/guarantee_review_model.dart';
 import 'package:trova/features/guarantee-review/presentation/widget/review_guarantee_layout.dart'
     show formatGuaranteeAmount, formatGuaranteeDate;
@@ -111,7 +113,12 @@ class GuaranteeDocumentLayout extends StatelessWidget {
                 const SizedBox(height: 10),
                 _Row(label: 'Beneficiary', value: guarantee.beneficiary, colors: colors),
                 const SizedBox(height: 10),
-                _Row(label: 'Principal', value: guarantee.contractorName, colors: colors),
+                _Row(
+                  label: 'Principal',
+                  value: guarantee.contractorName,
+                  colors: colors,
+                  contractor: guarantee.awardedBidder,
+                ),
                 const SizedBox(height: 10),
                 _Row(label: 'Project', value: guarantee.projectTitle, colors: colors),
                 const SizedBox(height: 10),
@@ -182,7 +189,8 @@ class _Row extends StatelessWidget {
   final String label;
   final String value;
   final ColorScheme colors;
-  const _Row({required this.label, required this.value, required this.colors});
+  final Bidder? contractor;
+  const _Row({required this.label, required this.value, required this.colors, this.contractor});
 
   @override
   Widget build(BuildContext context) {
@@ -192,12 +200,15 @@ class _Row extends StatelessWidget {
         AppText(text: label, textSize: 13, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
         const SizedBox(width: 12),
         Expanded(
-          child: AppText(
-            text: value,
-            textSize: 13,
-            fontWeight: FontWeight.w600,
-            textColor: colors.onSurface,
-            textAlign: TextAlign.end,
+          child: ContractorTapTarget(
+            contractor: contractor,
+            child: AppText(
+              text: value,
+              textSize: 13,
+              fontWeight: FontWeight.w600,
+              textColor: contractor != null ? colors.primary : colors.onSurface,
+              textAlign: TextAlign.end,
+            ),
           ),
         ),
       ],

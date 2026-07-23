@@ -12,8 +12,9 @@ class GuaranteeRejectedScreen extends StatelessWidget {
       body: ConfirmationLayout(
         isSuccess: false,
         title: 'Guarantee Rejected',
-        message:
-            '${guarantee.contractorName} has been notified. They can resubmit a new guarantee, or you can post the project again.',
+        message: guarantee.rejectionReason != null
+            ? 'Reason: "${guarantee.rejectionReason}". ${guarantee.contractorName} has been notified and can resubmit a new guarantee.'
+            : '${guarantee.contractorName} has been notified. They can resubmit a new guarantee, or you can post the project again.',
         buttonLabel: 'Done',
         onButtonPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
       ),

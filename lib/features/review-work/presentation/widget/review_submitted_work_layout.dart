@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:trova/core/app_colors.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
+import 'package:trova/core/contractor_tap_target.dart';
 import 'package:trova/core/responsive_utils.dart';
 import 'package:trova/core/status_pill.dart';
+import 'package:trova/features/bidders/logic/bidder_model.dart';
 import 'package:trova/features/review-work/logic/submitted_work_model.dart';
 
 const _months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -64,11 +66,14 @@ class ReviewSubmittedWorkLayout extends StatelessWidget {
             textAlign: TextAlign.start,
           ),
           const SizedBox(height: 8),
-          AppText(
-            text: '${work.contractorName} has marked this project as complete. Review before confirming.',
-            textSize: 13,
-            textColor: colors.onSurfaceVariant,
-            textAlign: TextAlign.start,
+          ContractorTapTarget(
+            contractor: work.awardedBidder,
+            child: AppText(
+              text: '${work.contractorName} has marked this project as complete. Review before confirming.',
+              textSize: 13,
+              textColor: work.awardedBidder != null ? colors.primary : colors.onSurfaceVariant,
+              textAlign: TextAlign.start,
+            ),
           ),
           const SizedBox(height: 18),
           Container(
@@ -95,7 +100,7 @@ class ReviewSubmittedWorkLayout extends StatelessWidget {
                 const SizedBox(height: 10),
                 _Row(label: 'Payment Terms', value: work.paymentTerms, colors: colors),
                 const SizedBox(height: 10),
-                _Row(label: 'Contractor', value: work.contractorName, colors: colors),
+                _Row(label: 'Contractor', value: work.contractorName, colors: colors, contractor: work.awardedBidder),
                 const SizedBox(height: 10),
                 _Row(label: 'Submitted', value: _formatDate(work.submittedDate), colors: colors),
                 if (work.guaranteeRowText != null) ...[
@@ -152,7 +157,8 @@ class _Row extends StatelessWidget {
   final String label;
   final String value;
   final ColorScheme colors;
-  const _Row({required this.label, required this.value, required this.colors});
+  final Bidder? contractor;
+  const _Row({required this.label, required this.value, required this.colors, this.contractor});
 
   @override
   Widget build(BuildContext context) {
@@ -162,12 +168,15 @@ class _Row extends StatelessWidget {
         AppText(text: label, textSize: 13, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
         const SizedBox(width: 12),
         Expanded(
-          child: AppText(
-            text: value,
-            textSize: 13,
-            fontWeight: FontWeight.w600,
-            textColor: colors.onSurface,
-            textAlign: TextAlign.end,
+          child: ContractorTapTarget(
+            contractor: contractor,
+            child: AppText(
+              text: value,
+              textSize: 13,
+              fontWeight: FontWeight.w600,
+              textColor: contractor != null ? colors.primary : colors.onSurface,
+              textAlign: TextAlign.end,
+            ),
           ),
         ),
       ],

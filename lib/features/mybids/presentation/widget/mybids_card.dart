@@ -27,6 +27,8 @@ class BidCard extends StatelessWidget {
         return _StatusStyle(label: 'Confirmed', bg: const Color(0xFFDFF3E3), text: const Color(0xFF1E8E3E));
       case 'guaranteePendingReview':
         return _StatusStyle(label: 'Pending Bank Review', bg: const Color(0xFFFCEFD8), text: const Color(0xFFB8760B));
+      case 'guaranteeIssued':
+        return _StatusStyle(label: 'Awaiting Owner Confirmation', bg: const Color(0xFFFCEFD8), text: const Color(0xFFB8760B));
       case 'inProgress':
         return _StatusStyle(label: 'In Progress', bg: const Color(0xFFFCEFD8), text: const Color(0xFFB8760B));
       case 'workSubmitted':
@@ -179,6 +181,7 @@ class BidCard extends StatelessWidget {
         );
 
       case 'guaranteePendingReview':
+      case 'guaranteeIssued':
         return const SizedBox.shrink();
 
       case 'inProgress':

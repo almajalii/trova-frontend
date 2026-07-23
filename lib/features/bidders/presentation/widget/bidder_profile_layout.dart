@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:trova/core/app_colors.dart';
 import 'package:trova/core/app_text.dart';
-import 'package:trova/core/factor_progress_bar.dart';
 import 'package:trova/core/responsive_utils.dart';
-import 'package:trova/core/score_ring.dart';
 import 'package:trova/core/status_pill.dart';
 import 'package:trova/features/bidders/logic/bidder_profile_model.dart';
 import 'package:trova/features/company-profile/logic/company_reviews_model.dart';
 
-/// Full profile of a bidding company, reached by tapping a card on Compare
-/// Scores. Legal/contact/qualifications info, track record stats, and
-/// reviews are mocked (no public-profile endpoint exists yet — see
-/// bidder_profile_service.dart), but the score breakdown is derived from
-/// the same subFactors already shown on Compare Scores, so it can never
-/// disagree with what the user just compared.
 class BidderProfileLayout extends StatelessWidget {
   final BidderFullProfile profile;
   final VoidCallback onBack;
@@ -26,7 +18,6 @@ class BidderProfileLayout extends StatelessWidget {
     final bidder = profile.bidder;
     final details = profile.details;
     final stats = profile.trackRecordStats;
-    final breakdown = profile.scoreBreakdown;
 
     return SafeArea(
       child: ListView(
@@ -65,19 +56,8 @@ class BidderProfileLayout extends StatelessWidget {
               text: bidder.eligible
                   ? 'Class ${bidder.classification}'
                   : 'Class ${bidder.classification} - Below required tier',
-              background: bidder.eligible ? AppColors.neutralTagBg : AppColors.dangerBg,
-              foreground: bidder.eligible ? colors.onSurfaceVariant : AppColors.danger,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Center(child: ScoreRing(score: bidder.capabilityScore, size: 140, strokeWidth: 11, fontSize: 34)),
-          const SizedBox(height: 10),
-          Center(
-            child: AppText(
-              text: _tierLabelFor(bidder.capabilityScore),
-              textSize: 14,
-              fontWeight: FontWeight.w600,
-              textColor: colors.primary,
+              background: bidder.eligible ? AppColors.primaryTint : AppColors.dangerBg,
+              foreground: bidder.eligible ? colors.primary : AppColors.danger,
             ),
           ),
           const SizedBox(height: 24),
@@ -136,15 +116,6 @@ class BidderProfileLayout extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          AppText(text: 'Score Breakdown', textSize: 15, fontWeight: FontWeight.w600, textColor: colors.onSurface, textAlign: TextAlign.start),
-          const SizedBox(height: 14),
-          FactorProgressBar(label: 'Financial Solvency', percentage: breakdown.financialSolvencyPct),
-          const SizedBox(height: 18),
-          FactorProgressBar(label: 'Project Track Record', percentage: breakdown.projectTrackRecordPct),
-          const SizedBox(height: 18),
-          FactorProgressBar(label: 'Past Project Ratings', percentage: breakdown.pastProjectRatingsPct),
-          const SizedBox(height: 24),
-
           AppText(text: 'Recent Reviews', textSize: 15, fontWeight: FontWeight.w600, textColor: colors.onSurface, textAlign: TextAlign.start),
           const SizedBox(height: 12),
           for (final review in profile.reviews.items) ...[
@@ -162,12 +133,6 @@ class BidderProfileLayout extends StatelessWidget {
     return initials.isEmpty ? '?' : initials;
   }
 
-  static String _tierLabelFor(int score) {
-    if (score >= 90) return 'Strong Capability';
-    if (score >= 75) return 'Good Capability';
-    if (score >= 60) return 'Moderate Capability';
-    return 'Needs Improvement';
-  }
 }
 
 class _SectionHeader extends StatelessWidget {

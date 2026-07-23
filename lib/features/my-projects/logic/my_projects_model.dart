@@ -11,6 +11,7 @@
 //       "guaranteeStripLabel": null,
 //       "guaranteeStripSubtext": null,
 //       "guaranteeStripTone": null,
+//       "guaranteeStatus": null,
 //       "note": null,
 //       "actionLabel": null
 //     },
@@ -19,21 +20,39 @@
 //       "title": "Al-Noor Tower Construction",
 //       "status": "AWARDED",
 //       "contractValueJod": 240000,
-//       "detailText": "Awarded to Al-Fahad Contracting",
-//       "guaranteeStripLabel": "Guarantee: Ready for Review",
-//       "guaranteeStripSubtext": "Bank has issued it",
+//       "detailText": "Awarded to Al-Fahad Contracting — guarantee pending bank review",
+//       "guaranteeStripLabel": "Guarantee: Pending Bank Review",
+//       "guaranteeStripSubtext": "Waiting on bank decision",
 //       "guaranteeStripTone": "WARNING",
+//       "guaranteeStatus": "PENDING_REVIEW",
 //       "note": null,
-//       "actionLabel": "Review Guarantee"
+//       "actionLabel": null
 //     }
 //   ]
 // }
+//
+// `guaranteeStatus` (PENDING_REVIEW | ISSUED | ACTIVE | REJECTED | CLAIMED |
+// null) is the same enum as OwnerGuaranteeDto.status on the guarantee detail
+// endpoint — null exactly when no guarantee application exists yet for this
+// project (regardless of `status`). It's a supplement for client-side
+// branching/logic, not a replacement for the strip text above — the strip
+// fields remain the source of truth for what's displayed.
 //
 // `status` drives badge color + which optional pieces (guarantee strip /
 // note / action button) render — see ProjectStatusX below. History-only
 // statuses (Completed / Disputed / Failed) live on the separate Project
 // History screen, not here.
+//
+// To make the contractor named in `detailText` tappable (opens their bidder
+// profile), also include an `awardedBidder` object shaped like the Compare
+// Scores bid entry (see bidder_model.dart) whenever `detailText` names a
+// specific contractor — just `bidId`/`companyName` are required:
+//   "awardedBidder": { "bidId": "...", "companyName": "Al-Fahad Contracting" }
+// Omit it when `detailText` doesn't name a bidder (e.g. "5 bidders").
 // ───────────────────────────────────────────────────────────────────────
+
+import 'package:trova/features/bidders/logic/bidder_model.dart';
+import 'package:trova/features/guarantee-review/logic/guarantee_review_model.dart';
 
 enum ProjectStatus { openForBids, awarded, contractorBackedOff, guaranteeRejectedByYou, inProgress, pendingReview }
 
@@ -125,10 +144,22 @@ class ProjectSummary {
   /// "Awarded to Al-Fahad Contracting".
   final String detailText;
 
+  /// The contractor named in [detailText], when there is one — lets the UI
+  /// make that mention tappable to open the bidder's profile.
+  final Bidder? awardedBidder;
+
   /// Optional colored strip (Awarded + In Progress cards only).
   final String? guaranteeStripLabel;
   final String? guaranteeStripSubtext;
   final GuaranteeStripTone? guaranteeStripTone;
+
+  /// Same enum as OwnerGuaranteeDto.status (GET /projects/{id}/guarantee).
+  /// Null whenever no GuaranteeApplication exists yet for this project —
+  /// not gated on [status], so e.g. an awarded project the contractor
+  /// hasn't applied for a guarantee on yet is null here too. Supplements
+  /// the strip text above for branching/logic; the strip text remains the
+  /// source of truth for display copy.
+  final OwnerGuaranteeStatus? guaranteeStatus;
 
   /// Optional extra note rendered in danger color, e.g. the
   /// "You rejected their guarantee..." line.
@@ -144,9 +175,11 @@ class ProjectSummary {
     required this.status,
     required this.contractValueJod,
     required this.detailText,
+    this.awardedBidder,
     this.guaranteeStripLabel,
     this.guaranteeStripSubtext,
     this.guaranteeStripTone,
+    this.guaranteeStatus,
     this.note,
     this.actionLabel,
   });
@@ -157,6 +190,7 @@ class ProjectSummary {
     status: ProjectStatusX.fromApiValue(json['status'] as String),
     contractValueJod: (json['contractValueJod'] as num).toDouble(),
     detailText: json['detailText'] as String,
+    awardedBidder: Bidder.fromJsonOrNull(json['awardedBidder'] as Map<String, dynamic>?),
     guaranteeStripLabel: json['guaranteeStripLabel'] as String?,
     guaranteeStripSubtext: json['guaranteeStripSubtext'] as String?,
     guaranteeStripTone: switch (json['guaranteeStripTone'] as String?) {
@@ -164,6 +198,9 @@ class ProjectSummary {
       'WARNING' => GuaranteeStripTone.warning,
       _ => null,
     },
+    guaranteeStatus: json['guaranteeStatus'] != null
+        ? OwnerGuaranteeStatusX.fromApiValue(json['guaranteeStatus'] as String)
+        : null,
     note: json['note'] as String?,
     actionLabel: json['actionLabel'] as String?,
   );
@@ -184,10 +221,11 @@ class ProjectSummary {
       status: ProjectStatus.awarded,
       contractValueJod: 240000,
       detailText: 'Awarded to Al-Fahad Contracting',
-      guaranteeStripLabel: 'Guarantee: Ready for Review',
-      guaranteeStripSubtext: 'Bank has issued it',
+      awardedBidder: Bidder.contractorRef(bidId: '51651ada-1711-4a99-81dc-00c076f726ba', companyName: 'Al-Fahad Contracting'),
+      guaranteeStripLabel: 'Guarantee: Pending Bank Review',
+      guaranteeStripSubtext: 'Waiting on bank decision',
       guaranteeStripTone: GuaranteeStripTone.warning,
-      actionLabel: 'Review Guarantee',
+      guaranteeStatus: OwnerGuaranteeStatus.pendingReview,
     ),
     ProjectSummary(
       id: 'TRV-PRJ-71205',
@@ -195,6 +233,7 @@ class ProjectSummary {
       status: ProjectStatus.contractorBackedOff,
       contractValueJod: 71000,
       detailText: 'Al-Fahad Contracting declined after selection',
+      awardedBidder: Bidder.contractorRef(bidId: '51651ada-1711-4a99-81dc-00c076f726ba', companyName: 'Al-Fahad Contracting'),
       actionLabel: 'Post Project Again',
     ),
     ProjectSummary(
@@ -203,7 +242,9 @@ class ProjectSummary {
       status: ProjectStatus.guaranteeRejectedByYou,
       contractValueJod: 44000,
       detailText: 'Awarded to Al-Manara Group',
+      awardedBidder: Bidder.contractorRef(bidId: '2c7e9f10-3b4a-4d5c-8e6f-1a2b3c4d5e60', companyName: 'Al-Manara Group', classification: 'C', eligible: false),
       note: 'You rejected their guarantee. Waiting for them to resubmit or withdraw.',
+      guaranteeStatus: OwnerGuaranteeStatus.rejected,
     ),
     ProjectSummary(
       id: 'TRV-PRJ-60214',
@@ -211,9 +252,11 @@ class ProjectSummary {
       status: ProjectStatus.inProgress,
       contractValueJod: 95000,
       detailText: 'Awarded to Horizon Engineering',
+      awardedBidder: Bidder.contractorRef(bidId: 'd4a9f712-55e3-4b8a-9c60-1a2b3c4d5e6f', companyName: 'Horizon Engineering'),
       guaranteeStripLabel: 'Guarantee: Active',
       guaranteeStripSubtext: 'Expires Sep 2027',
       guaranteeStripTone: GuaranteeStripTone.success,
+      guaranteeStatus: OwnerGuaranteeStatus.active,
     ),
     ProjectSummary(
       id: 'TRV-PRJ-33871',
@@ -221,6 +264,7 @@ class ProjectSummary {
       status: ProjectStatus.pendingReview,
       contractValueJod: 152000,
       detailText: 'Marked complete by Al-Fahad Contracting',
+      awardedBidder: Bidder.contractorRef(bidId: '51651ada-1711-4a99-81dc-00c076f726ba', companyName: 'Al-Fahad Contracting'),
       actionLabel: 'Review Work',
     ),
   ];

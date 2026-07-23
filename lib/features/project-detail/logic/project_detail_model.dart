@@ -18,6 +18,7 @@
 //     "paymentTerms": "20% upfront / 60% milestones / 20% completion",
 //     "guaranteeRowText": "Active · Expires Sep 2027",
 //     "biddersRowText": null,
+//     "guaranteeStatus": "ACTIVE",
 //     "timeline": [
 //       { "label": "Posted", "date": "2026-06-28", "state": "DONE" },
 //       { "label": "Awarded (Contract Signed)", "date": "2026-07-05", "state": "DONE" },
@@ -36,7 +37,27 @@
 // list card — so it's sent/stored as its own field rather than derived).
 // `timeline[].state` is one of DONE | ACTIVE | UPCOMING | FAILED — see
 // DetailStepState below for what each renders as.
+// `guaranteeStatus` (PENDING_REVIEW | ISSUED | ACTIVE | REJECTED | CLAIMED |
+// null) is the same enum as OwnerGuaranteeDto.status on the guarantee detail
+// endpoint — null exactly when no guarantee application exists yet for this
+// project. It's a supplement for client-side branching/logic, not a
+// replacement for `guaranteeRowText`, which remains the source of truth for
+// what's displayed.
 // ───────────────────────────────────────────────────────────────────────
+//
+// To make the contractor named in `subtitle` tappable (opens their bidder
+// profile), the backend should also include an `awardedBidder` object
+// shaped like the Compare Scores bid entry (see bidder_model.dart) whenever
+// `subtitle` names a specific contractor — just `bidId`/`companyName` are
+// required, the rest default to 0/true if omitted:
+//   "awardedBidder": { "bidId": "...", "companyName": "Al-Fahad Contracting",
+//                       "classification": "A", "eligible": true }
+// Omit it (or send null) when the subtitle doesn't name a specific bidder
+// (e.g. the "5 contractors have submitted bids" Open for Bids copy).
+// ───────────────────────────────────────────────────────────────────────
+
+import 'package:trova/features/bidders/logic/bidder_model.dart';
+import 'package:trova/features/guarantee-review/logic/guarantee_review_model.dart';
 
 /// Drives badge tone only (see the widget layer for the actual colors).
 /// Covers both the six "My Projects" active statuses and the three
@@ -122,6 +143,11 @@ class ProjectDetail {
   final String statusLabel;
   final String? subtitle;
 
+  /// The contractor named in [subtitle], when there is one — lets the UI
+  /// make that mention tappable to open the bidder's profile. Null when
+  /// [subtitle] doesn't name a specific contractor (e.g. Open for Bids).
+  final Bidder? awardedBidder;
+
   final String sector;
   final double contractValueJod;
   final String location;
@@ -132,6 +158,13 @@ class ProjectDetail {
   final String projectId; // display code, e.g. "TRV-PRJ-60214"
   final String? guaranteeRowText;
   final String? biddersRowText;
+
+  /// Same enum as OwnerGuaranteeDto.status (GET /projects/{id}/guarantee).
+  /// Null whenever no GuaranteeApplication exists yet for this project —
+  /// not gated on [status]. Supplements [guaranteeRowText] for
+  /// branching/logic; the row text remains the source of truth for display
+  /// copy.
+  final OwnerGuaranteeStatus? guaranteeStatus;
 
   final List<DetailTimelineStep> timeline;
 
@@ -144,6 +177,7 @@ class ProjectDetail {
     required this.status,
     required this.statusLabel,
     this.subtitle,
+    this.awardedBidder,
     required this.sector,
     required this.contractValueJod,
     required this.location,
@@ -154,6 +188,7 @@ class ProjectDetail {
     required this.projectId,
     this.guaranteeRowText,
     this.biddersRowText,
+    this.guaranteeStatus,
     required this.timeline,
     this.actionLabel,
     this.actionIsDanger = false,
@@ -165,6 +200,7 @@ class ProjectDetail {
     status: DetailStatusX.fromApiValue(json['status'] as String),
     statusLabel: json['statusLabel'] as String,
     subtitle: json['subtitle'] as String?,
+    awardedBidder: Bidder.fromJsonOrNull(json['awardedBidder'] as Map<String, dynamic>?),
     sector: json['sector'] as String,
     contractValueJod: (json['contractValueJod'] as num).toDouble(),
     location: json['location'] as String,
@@ -175,6 +211,9 @@ class ProjectDetail {
     projectId: json['projectId'] as String,
     guaranteeRowText: json['guaranteeRowText'] as String?,
     biddersRowText: json['biddersRowText'] as String?,
+    guaranteeStatus: json['guaranteeStatus'] != null
+        ? OwnerGuaranteeStatusX.fromApiValue(json['guaranteeStatus'] as String)
+        : null,
     timeline: (json['timeline'] as List).map((e) => DetailTimelineStep.fromJson(e as Map<String, dynamic>)).toList(),
     actionLabel: json['actionLabel'] as String?,
     actionIsDanger: json['actionIsDanger'] as bool? ?? false,
@@ -213,6 +252,7 @@ class ProjectDetail {
       status: DetailStatus.awarded,
       statusLabel: 'Awarded',
       subtitle: 'Contract signed with Al-Fahad Contracting. Their bank guarantee is being processed.',
+      awardedBidder: Bidder.contractorRef(bidId: '51651ada-1711-4a99-81dc-00c076f726ba', companyName: 'Al-Fahad Contracting'),
       sector: 'Construction',
       contractValueJod: 240000,
       location: 'Abdali, Amman',
@@ -222,6 +262,7 @@ class ProjectDetail {
       paymentTerms: '20% upfront / 60% milestones / 20% completion',
       projectId: 'TRV-PRJ-40218',
       guaranteeRowText: 'Pending Bank Approval',
+      guaranteeStatus: OwnerGuaranteeStatus.pendingReview,
       timeline: [
         DetailTimelineStep(label: 'Posted', date: 'Jun 30, 2026', state: DetailStepState.done),
         DetailTimelineStep(label: 'Awarded (Contract Signed)', date: 'Jul 12, 2026', state: DetailStepState.active),
@@ -229,7 +270,6 @@ class ProjectDetail {
         DetailTimelineStep(label: 'In Progress', state: DetailStepState.upcoming),
         DetailTimelineStep(label: 'Pending Review → Completed', state: DetailStepState.upcoming),
       ],
-      actionLabel: 'Review Guarantee',
     ),
     ProjectDetail(
       id: 'TRV-PRJ-60214',
@@ -237,6 +277,7 @@ class ProjectDetail {
       status: DetailStatus.inProgress,
       statusLabel: 'In Progress',
       subtitle: 'Awarded to Horizon Engineering',
+      awardedBidder: Bidder.contractorRef(bidId: 'd4a9f712-55e3-4b8a-9c60-1a2b3c4d5e6f', companyName: 'Horizon Engineering'),
       sector: 'Industrial',
       contractValueJod: 95000,
       location: 'Wadi Al-Seer, Amman',
@@ -246,6 +287,7 @@ class ProjectDetail {
       paymentTerms: '20% upfront / 60% milestones / 20% completion',
       projectId: 'TRV-PRJ-60214',
       guaranteeRowText: 'Active · Expires Sep 2027',
+      guaranteeStatus: OwnerGuaranteeStatus.active,
       timeline: [
         DetailTimelineStep(label: 'Posted', date: 'Jun 28, 2026', state: DetailStepState.done),
         DetailTimelineStep(label: 'Awarded (Contract Signed)', date: 'Jul 5, 2026', state: DetailStepState.done),
@@ -260,6 +302,7 @@ class ProjectDetail {
       status: DetailStatus.pendingReview,
       statusLabel: 'Pending Review',
       subtitle: "Al-Fahad Contracting has marked this project as complete and it now needs your review.",
+      awardedBidder: Bidder.contractorRef(bidId: '51651ada-1711-4a99-81dc-00c076f726ba', companyName: 'Al-Fahad Contracting'),
       sector: 'Real Estate',
       contractValueJod: 152000,
       location: 'Al-Salam, Amman',
@@ -269,6 +312,7 @@ class ProjectDetail {
       paymentTerms: '15% upfront / 70% milestones / 15% completion',
       projectId: 'TRV-PRJ-33871',
       guaranteeRowText: 'Active · TRV-GT-77104',
+      guaranteeStatus: OwnerGuaranteeStatus.active,
       timeline: [
         DetailTimelineStep(label: 'Posted', date: 'Jun 20, 2026', state: DetailStepState.done),
         DetailTimelineStep(label: 'Awarded (Contract Signed)', date: 'Jun 25, 2026', state: DetailStepState.done),
@@ -285,6 +329,7 @@ class ProjectDetail {
       status: DetailStatus.contractorBackedOff,
       statusLabel: 'Contractor Backed Off',
       subtitle: 'Al-Fahad Contracting withdrew after being selected. Update your details and post again.',
+      awardedBidder: Bidder.contractorRef(bidId: '51651ada-1711-4a99-81dc-00c076f726ba', companyName: 'Al-Fahad Contracting'),
       sector: 'Industrial',
       contractValueJod: 71000,
       location: 'Sahab Industrial Zone, Amman',
@@ -306,6 +351,7 @@ class ProjectDetail {
       status: DetailStatus.guaranteeRejectedByYou,
       statusLabel: 'Guarantee Rejected',
       subtitle: 'Awarded to Al-Manara Group',
+      awardedBidder: Bidder.contractorRef(bidId: '2c7e9f10-3b4a-4d5c-8e6f-1a2b3c4d5e60', companyName: 'Al-Manara Group', classification: 'C', eligible: false),
       sector: 'Industrial',
       contractValueJod: 44000,
       location: 'Sahab, Amman',
@@ -313,6 +359,7 @@ class ProjectDetail {
       guaranteeTypeRequired: 'Performance Guarantee',
       paymentTerms: '20% upfront / 60% milestones / 20% completion',
       projectId: 'TRV-PRJ-91027',
+      guaranteeStatus: OwnerGuaranteeStatus.rejected,
       timeline: [
         DetailTimelineStep(label: 'Posted', date: 'Jun 10, 2026', state: DetailStepState.done),
         DetailTimelineStep(label: 'Awarded (Contract Signed)', date: 'Jun 18, 2026', state: DetailStepState.done),
@@ -328,6 +375,7 @@ class ProjectDetail {
       status: DetailStatus.completed,
       statusLabel: 'Completed',
       subtitle: 'Project completed successfully by Zaytoonah Group. You left a 4.8-star review.',
+      awardedBidder: Bidder.contractorRef(bidId: 'a1b2c3d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d', companyName: 'Zaytoonah Group'),
       sector: 'Renovation & Fit-out',
       contractValueJod: 85000,
       location: 'Downtown, Amman',
@@ -352,6 +400,7 @@ class ProjectDetail {
       status: DetailStatus.disputed,
       statusLabel: 'Disputed',
       subtitle: "You flagged Cedar Construction's submitted work over quality concerns. Trova's team is reviewing.",
+      awardedBidder: Bidder.contractorRef(bidId: '8f3c2a1b-4d5e-4f60-8a7b-9c0d1e2f3a4b', companyName: 'Cedar Construction', classification: 'C', eligible: false),
       sector: 'Industrial',
       contractValueJod: 62000,
       location: 'Marka, Amman',
@@ -377,6 +426,7 @@ class ProjectDetail {
       status: DetailStatus.failed,
       statusLabel: 'Failed',
       subtitle: 'The dispute was resolved against Al-Manara Group. The bank guarantee was claimed on your behalf.',
+      awardedBidder: Bidder.contractorRef(bidId: '2c7e9f10-3b4a-4d5c-8e6f-1a2b3c4d5e60', companyName: 'Al-Manara Group', classification: 'C', eligible: false),
       sector: 'Renovation & Fit-out',
       contractValueJod: 34000,
       location: 'Old Amman, Amman',
@@ -386,6 +436,7 @@ class ProjectDetail {
       paymentTerms: '30% upfront / 50% milestones / 20% completion',
       projectId: 'TRV-PRJ-08821',
       guaranteeRowText: 'Claimed · JOD 3,400 recovered',
+      guaranteeStatus: OwnerGuaranteeStatus.claimed,
       timeline: [
         DetailTimelineStep(label: 'Posted', date: 'Mar 1, 2026', state: DetailStepState.done),
         DetailTimelineStep(label: 'Awarded (Contract Signed)', date: 'Mar 8, 2026', state: DetailStepState.done),

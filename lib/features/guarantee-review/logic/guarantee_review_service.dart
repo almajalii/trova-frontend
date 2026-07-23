@@ -24,28 +24,28 @@ class GuaranteeReviewService {
     }
   }
 
-  Future<OwnerGuarantee> approveGuarantee(OwnerGuarantee guarantee) async {
+  Future<OwnerGuarantee> confirmGuarantee(OwnerGuarantee guarantee) async {
     if (kUseMockGuaranteeReview) {
       await Future.delayed(const Duration(milliseconds: 400));
       return guarantee.copyWith(status: OwnerGuaranteeStatus.active);
     }
 
     try {
-      final response = await dio.post('/guarantees/${guarantee.guaranteeId}/approve');
+      final response = await dio.post('/projects/${guarantee.projectId}/guarantee/confirm');
       return OwnerGuarantee.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }
   }
 
-  Future<OwnerGuarantee> rejectGuarantee(OwnerGuarantee guarantee) async {
+  Future<OwnerGuarantee> rejectGuarantee(OwnerGuarantee guarantee, {String? reason}) async {
     if (kUseMockGuaranteeReview) {
       await Future.delayed(const Duration(milliseconds: 400));
-      return guarantee.copyWith(status: OwnerGuaranteeStatus.rejected);
+      return guarantee.copyWith(status: OwnerGuaranteeStatus.rejected, rejectionReason: reason);
     }
 
     try {
-      final response = await dio.post('/guarantees/${guarantee.guaranteeId}/reject');
+      final response = await dio.post('/projects/${guarantee.projectId}/guarantee/reject', data: {'reason': reason});
       return OwnerGuarantee.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);

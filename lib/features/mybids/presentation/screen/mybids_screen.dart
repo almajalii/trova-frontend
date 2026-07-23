@@ -120,6 +120,7 @@ class _MyBidsView extends StatelessWidget {
                         .where((b) =>
                             b.status == 'confirmed' ||
                             b.status == 'guaranteePendingReview' ||
+                            b.status == 'guaranteeIssued' ||
                             b.status == 'inProgress' ||
                             b.status == 'workSubmitted' ||
                             b.status == 'guaranteeRejected')

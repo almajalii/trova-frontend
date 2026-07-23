@@ -54,6 +54,8 @@ class _BidDetailViewState extends State<_BidDetailView> {
         return _StatusStyle('Confirmed', const Color(0xFFDFF3E3), const Color(0xFF1E8E3E));
       case 'guaranteePendingReview':
         return _StatusStyle('Pending Bank Review', const Color(0xFFFCEFD8), const Color(0xFFB8760B));
+      case 'guaranteeIssued':
+        return _StatusStyle('Awaiting Owner Confirmation', const Color(0xFFFCEFD8), const Color(0xFFB8760B));
       case 'inProgress':
         return _StatusStyle('In Progress', const Color(0xFFDFF3E3), const Color(0xFF1E8E3E));
       case 'workSubmitted':

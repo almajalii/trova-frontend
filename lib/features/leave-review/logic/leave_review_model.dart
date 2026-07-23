@@ -1,3 +1,5 @@
+import 'package:trova/features/bidders/logic/bidder_model.dart';
+
 /// The six rating categories shown on the "Leave a Review" screen, in the
 /// order they appear in Figma.
 enum ReviewCategory {
@@ -67,9 +69,15 @@ enum ReviewCategory {
 /// sample content, not a real default; a real user should have to tap each
 /// row. `0` means "no rating given yet" and is treated as invalid on
 /// submit (see [isComplete]).
+///
+/// To make `contractorName` tappable (opens their bidder profile), the
+/// backend should also send an `awardedBidder` object shaped like the
+/// Compare Scores bid entry (see bidder_model.dart) — just `bidId`/
+/// `companyName` are required.
 class LeaveReviewDraft {
   final String projectId;
   final String contractorName;
+  final Bidder? awardedBidder;
   final String projectTitle;
   final DateTime completedDate;
   final Map<ReviewCategory, int> ratings;
@@ -78,6 +86,7 @@ class LeaveReviewDraft {
   const LeaveReviewDraft({
     required this.projectId,
     required this.contractorName,
+    this.awardedBidder,
     required this.projectTitle,
     required this.completedDate,
     required this.ratings,
@@ -111,6 +120,7 @@ class LeaveReviewDraft {
     return LeaveReviewDraft(
       projectId: projectId,
       contractorName: contractorName,
+      awardedBidder: awardedBidder,
       projectTitle: projectTitle,
       completedDate: completedDate,
       ratings: ratings ?? this.ratings,
@@ -130,6 +140,7 @@ class LeaveReviewDraft {
     return LeaveReviewDraft(
       projectId: json['projectId'] as String,
       contractorName: json['contractorName'] as String,
+      awardedBidder: Bidder.fromJsonOrNull(json['awardedBidder'] as Map<String, dynamic>?),
       projectTitle: json['projectTitle'] as String,
       completedDate: DateTime.parse(json['completedDate'] as String),
       ratings: {for (final entry in ratingsJson.entries) ReviewCategory.fromJson(entry.key): entry.value as int},
@@ -158,6 +169,7 @@ class LeaveReviewDraft {
       LeaveReviewDraft(
         projectId: 'TRV-PRJ-33871',
         contractorName: 'Al-Fahad Contracting',
+        awardedBidder: Bidder.contractorRef(bidId: '51651ada-1711-4a99-81dc-00c076f726ba', companyName: 'Al-Fahad Contracting'),
         projectTitle: 'Al-Salam Mall',
         completedDate: DateTime(2026, 7, 18),
         ratings: const {},
@@ -165,6 +177,7 @@ class LeaveReviewDraft {
       LeaveReviewDraft(
         projectId: 'TRV-PRJ-19042',
         contractorName: 'Cedar Construction',
+        awardedBidder: Bidder.contractorRef(bidId: '8f3c2a1b-4d5e-4f60-8a7b-9c0d1e2f3a4b', companyName: 'Cedar Construction', classification: 'C', eligible: false),
         projectTitle: 'Downtown Office Renovation',
         completedDate: DateTime(2026, 6, 1),
         ratings: const {},

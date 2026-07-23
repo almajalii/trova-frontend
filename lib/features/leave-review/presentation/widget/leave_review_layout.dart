@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trova/core/contractor_tap_target.dart';
 import 'package:trova/features/leave-review/logic/leave_review_model.dart';
 
 /// Pure UI for the "Leave a Review" form. No bloc references — the screen
@@ -46,9 +47,12 @@ class LeaveReviewLayout extends StatelessWidget {
           children: [
             _BackRow(onBack: onBack),
             const SizedBox(height: 16),
-            Text(
-              'Rate ${draft.contractorName}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _valueText),
+            ContractorTapTarget(
+              contractor: draft.awardedBidder,
+              child: Text(
+                'Rate ${draft.contractorName}',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _valueText),
+              ),
             ),
             const SizedBox(height: 4),
             Text(draft.subtitle, style: const TextStyle(fontSize: 13, color: _subtitleText)),

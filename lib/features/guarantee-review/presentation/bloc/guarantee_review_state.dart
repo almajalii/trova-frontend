@@ -34,9 +34,9 @@ class GuaranteeReviewSubmitting extends GuaranteeReviewState {
   List<Object?> get props => [guarantee];
 }
 
-class GuaranteeApproved extends GuaranteeReviewState {
+class GuaranteeConfirmed extends GuaranteeReviewState {
   final OwnerGuarantee guarantee;
-  const GuaranteeApproved({required this.guarantee});
+  const GuaranteeConfirmed({required this.guarantee});
 
   @override
   List<Object?> get props => [guarantee];

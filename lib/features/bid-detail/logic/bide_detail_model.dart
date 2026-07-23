@@ -35,7 +35,7 @@ class BidDetailModel {
   final String id;
   final String projectTitle;
   final String companyName;
-  final String status; // 'pending' | 'selected' | 'confirmed' | 'inProgress' | 'workSubmitted' | 'guaranteeRejected' | 'rejected' | 'completed'
+  final String status; // 'pending' | 'selected' | 'confirmed' | 'guaranteePendingReview' | 'guaranteeIssued' | 'inProgress' | 'workSubmitted' | 'guaranteeRejected' | 'rejected' | 'completed'
   final String sector;
   final String location;
   final double contractValue;
@@ -118,6 +118,8 @@ class BidDetailModel {
         return 'confirmed';
       case 'GUARANTEE_PENDING_REVIEW':
         return 'guaranteePendingReview';
+      case 'GUARANTEE_ISSUED':
+        return 'guaranteeIssued';
       case 'GUARANTEE_REJECTED':
         return 'guaranteeRejected';
       case 'IN_PROGRESS':

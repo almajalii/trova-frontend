@@ -17,13 +17,13 @@ class GuaranteeReviewBloc extends Bloc<GuaranteeReviewEvent, GuaranteeReviewStat
       }
     });
 
-    on<GuaranteeApproveRequested>((event, emit) async {
+    on<GuaranteeConfirmRequested>((event, emit) async {
       final current = state;
       if (current is! GuaranteeReviewLoaded) return;
       emit(GuaranteeReviewSubmitting(guarantee: current.guarantee));
       try {
-        final updated = await guaranteeReviewService.approveGuarantee(current.guarantee);
-        emit(GuaranteeApproved(guarantee: updated));
+        final updated = await guaranteeReviewService.confirmGuarantee(current.guarantee);
+        emit(GuaranteeConfirmed(guarantee: updated));
       } catch (e) {
         emit(GuaranteeReviewError(message: e.toString()));
       }
@@ -34,7 +34,7 @@ class GuaranteeReviewBloc extends Bloc<GuaranteeReviewEvent, GuaranteeReviewStat
       if (current is! GuaranteeReviewLoaded) return;
       emit(GuaranteeReviewSubmitting(guarantee: current.guarantee));
       try {
-        final updated = await guaranteeReviewService.rejectGuarantee(current.guarantee);
+        final updated = await guaranteeReviewService.rejectGuarantee(current.guarantee, reason: event.reason);
         emit(GuaranteeRejected(guarantee: updated));
       } catch (e) {
         emit(GuaranteeReviewError(message: e.toString()));

@@ -58,15 +58,43 @@ class Bidder {
     required this.cashflowTrendsPct,
   });
 
+  /// Lightweight const constructor for contexts that only know the awarded
+  /// contractor's name/id (Project Detail, My Projects, guarantees, reviews,
+  /// etc.), not the full Compare Scores payload. Score-related fields are
+  /// zeroed — BidderProfileLayout no longer renders a score ring/breakdown,
+  /// so they're unused for this path. Kept `const` so demo lists elsewhere
+  /// can stay `const` too.
+  const Bidder.contractorRef({
+    required this.bidId,
+    required this.companyName,
+    this.classification = 'A',
+    this.eligible = true,
+  }) : capabilityScore = 0,
+       bidAmountJod = 0,
+       currentDebtsPct = 0,
+       debtCapacityPct = 0,
+       assetsValuePct = 0,
+       delinquentDebtsPct = 0,
+       paymentHistoryPct = 0,
+       currentWorkloadPct = 0,
+       deliveryHistoryPct = 0,
+       cashflowTrendsPct = 0;
+
+  /// `capabilityScore`/`bidAmountJod`/`classification`/`eligible`/`subFactors`
+  /// default when absent so this same shape can double as a lightweight
+  /// "awarded contractor" reference elsewhere (e.g. Project Detail,
+  /// My Projects) — those contexts only need `bidId` + `companyName` to
+  /// resolve a tap-through to the bidder's profile; they don't carry the
+  /// full Compare Scores payload.
   factory Bidder.fromJson(Map<String, dynamic> json) {
     final sub = json['subFactors'] as Map<String, dynamic>? ?? const {};
     return Bidder(
       bidId: json['bidId'] as String,
       companyName: json['companyName'] as String,
-      capabilityScore: json['capabilityScore'] as int,
-      bidAmountJod: (json['bidAmountJod'] as num).toDouble(),
-      classification: json['classification'] as String,
-      eligible: json['eligible'] as bool,
+      capabilityScore: (json['capabilityScore'] as num?)?.toInt() ?? 0,
+      bidAmountJod: (json['bidAmountJod'] as num?)?.toDouble() ?? 0,
+      classification: json['classification'] as String? ?? '',
+      eligible: json['eligible'] as bool? ?? true,
       currentDebtsPct: (sub['currentDebts'] as num?)?.toInt() ?? 0,
       debtCapacityPct: (sub['debtCapacity'] as num?)?.toInt() ?? 0,
       assetsValuePct: (sub['assetsValue'] as num?)?.toInt() ?? 0,
@@ -77,6 +105,8 @@ class Bidder {
       cashflowTrendsPct: (sub['cashflowTrends'] as num?)?.toInt() ?? 0,
     );
   }
+
+  static Bidder? fromJsonOrNull(Map<String, dynamic>? json) => json == null ? null : Bidder.fromJson(json);
 
   static List<Bidder> demoList() => const [
     Bidder(

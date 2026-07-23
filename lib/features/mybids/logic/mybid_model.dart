@@ -4,7 +4,7 @@ class BidModel {
   final String projectTitle;
   final String companyName;
   final double bidAmount;
-  final String status; // 'pending' | 'selected' | 'confirmed' | 'guaranteePendingReview' | 'guaranteeRejected' | 'inProgress' | 'workSubmitted'
+  final String status; // 'pending' | 'selected' | 'confirmed' | 'guaranteePendingReview' | 'guaranteeIssued' | 'guaranteeRejected' | 'inProgress' | 'workSubmitted'
   final String? note;
   final int? guaranteeExpiresInDays; // only used when status == 'inProgress'
   final String? workSubmittedAt; // "yyyy-MM-dd", only set when status == 'workSubmitted'
@@ -49,6 +49,8 @@ class BidModel {
         return 'confirmed';
       case 'GUARANTEE_PENDING_REVIEW':
         return 'guaranteePendingReview';
+      case 'GUARANTEE_ISSUED':
+        return 'guaranteeIssued';
       case 'GUARANTEE_REJECTED':
         return 'guaranteeRejected';
       case 'IN_PROGRESS':

@@ -25,7 +25,7 @@ class ReviewGuaranteeScreen extends StatelessWidget {
             if (state is GuaranteeReviewError) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
             }
-            if (state is GuaranteeApproved) {
+            if (state is GuaranteeConfirmed) {
               Navigator.of(
                 context,
               ).pushReplacement(MaterialPageRoute(builder: (_) => GuaranteeVerifiedScreen(guarantee: state.guarantee)));
@@ -62,8 +62,8 @@ class ReviewGuaranteeScreen extends StatelessWidget {
               guarantee: guarantee,
               isSubmitting: state is GuaranteeReviewSubmitting,
               onBack: () => Navigator.of(context).maybePop(),
-              onApprove: () => context.read<GuaranteeReviewBloc>().add(const GuaranteeApproveRequested()),
-              onReject: () => context.read<GuaranteeReviewBloc>().add(const GuaranteeRejectRequested()),
+              onConfirm: () => context.read<GuaranteeReviewBloc>().add(const GuaranteeConfirmRequested()),
+              onReject: (reason) => context.read<GuaranteeReviewBloc>().add(GuaranteeRejectRequested(reason: reason)),
             );
           },
         ),

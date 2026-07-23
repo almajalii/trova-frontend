@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trova/core/app_colors.dart';
 import 'package:trova/core/app_text.dart';
+import 'package:trova/core/contractor_tap_target.dart';
 import 'package:trova/core/status_pill.dart';
 import 'package:trova/features/project-history/logic/project_history_model.dart';
 
@@ -77,11 +78,14 @@ class HistoryProjectCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            AppText(
-              text: '${_formatValue(project.contractValueJod)} · ${project.detailText}',
-              textSize: 12,
-              textColor: colors.onSurfaceVariant,
-              textAlign: TextAlign.start,
+            ContractorTapTarget(
+              contractor: project.awardedBidder,
+              child: AppText(
+                text: '${_formatValue(project.contractValueJod)} · ${project.detailText}',
+                textSize: 12,
+                textColor: project.awardedBidder != null ? colors.primary : colors.onSurfaceVariant,
+                textAlign: TextAlign.start,
+              ),
             ),
             if (project.guaranteeStripLabel != null) ...[
               const SizedBox(height: 8),

@@ -15,9 +15,9 @@
 //   review-work       -> LIVE  (GET /api/projects/{id}/submitted-work, POST .../confirm-complete, POST .../flag-issue)
 //   repost-project    -> LIVE  (GET /api/owner/projects/{id}/repost-draft, POST /api/owner/projects/{id}/repost)
 //   leave-review      -> LIVE  (GET /api/owner/projects/{id}/review-context, POST /api/owner/projects/{id}/review)
-//   company-reviews   -> mock  (no backend endpoint yet — Company Profile screen)
+//   company-reviews   -> LIVE  (GET /api/company-profile/reviews)
 //   notifications     -> mock  (no backend endpoint yet)
-//   bidder-profile    -> mock  (no backend endpoint yet — public profile of another company, viewed from Compare Scores)
+//   bidder-profile    -> LIVE   (GET /api/bids/{id}/company-profile)
 
 const bool kUseMockPostProject = false;
 const bool kUseMockMyProjects = false;
@@ -32,6 +32,6 @@ const bool kUseMockGuaranteeReview = false;
 const bool kUseMockReviewWork = false;
 const bool kUseMockRepostProject = false;
 const bool kUseMockLeaveReview = false;
-const bool kUseMockCompanyReviews = true;
+const bool kUseMockCompanyReviews = false;
 const bool kUseMockNotifications = true;
-const bool kUseMockBidderProfiles = true;
+const bool kUseMockBidderProfiles = false;
