@@ -15,6 +15,13 @@ class RepostProjectBloc extends Bloc<RepostProjectEvent, RepostProjectState> {
     on<RepostMinRequiredScoreChanged>(_onMinRequiredScoreChanged);
     on<RepostMinContractorClassificationChanged>(_onMinContractorClassificationChanged);
     on<RepostDescriptionChanged>(_onDescriptionChanged);
+    on<RepostLocationChanged>(_onLocationChanged);
+    on<RepostCurrencyChanged>(_onCurrencyChanged);
+    on<RepostTimelineChanged>(_onTimelineChanged);
+    on<RepostMilestonesChanged>(_onMilestonesChanged);
+    on<RepostGuaranteeTypeChanged>(_onGuaranteeTypeChanged);
+    on<RepostPaymentTermsChanged>(_onPaymentTermsChanged);
+    on<RepostBidDeadlineChanged>(_onBidDeadlineChanged);
     on<SubmitRepost>(_onSubmitRepost);
   }
 
@@ -62,7 +69,9 @@ class RepostProjectBloc extends Bloc<RepostProjectEvent, RepostProjectState> {
   ) {
     final state = this.state;
     if (state is RepostProjectLoaded) {
-      emit(state.copyWith(draft: state.draft.copyWith(minContractorClassification: event.minContractorClassification)));
+      emit(state.copyWith(
+        draft: state.draft.copyWith(minContractorClassification: event.minContractorClassification),
+      ));
     }
   }
 
@@ -73,17 +82,63 @@ class RepostProjectBloc extends Bloc<RepostProjectEvent, RepostProjectState> {
     }
   }
 
+  void _onLocationChanged(RepostLocationChanged event, Emitter<RepostProjectState> emit) {
+    final state = this.state;
+    if (state is RepostProjectLoaded) {
+      emit(state.copyWith(draft: state.draft.copyWith(location: event.location)));
+    }
+  }
+
+  void _onCurrencyChanged(RepostCurrencyChanged event, Emitter<RepostProjectState> emit) {
+    final state = this.state;
+    if (state is RepostProjectLoaded) {
+      emit(state.copyWith(draft: state.draft.copyWith(currency: event.currency)));
+    }
+  }
+
+  void _onTimelineChanged(RepostTimelineChanged event, Emitter<RepostProjectState> emit) {
+    final state = this.state;
+    if (state is RepostProjectLoaded) {
+      emit(state.copyWith(draft: state.draft.copyWith(timelineText: event.timelineText)));
+    }
+  }
+
+  void _onMilestonesChanged(RepostMilestonesChanged event, Emitter<RepostProjectState> emit) {
+    final state = this.state;
+    if (state is RepostProjectLoaded) {
+      emit(state.copyWith(draft: state.draft.copyWith(milestones: event.milestones)));
+    }
+  }
+
+  void _onGuaranteeTypeChanged(RepostGuaranteeTypeChanged event, Emitter<RepostProjectState> emit) {
+    final state = this.state;
+    if (state is RepostProjectLoaded) {
+      emit(state.copyWith(draft: state.draft.copyWith(guaranteeTypeRequired: event.guaranteeTypeRequired)));
+    }
+  }
+
+  void _onPaymentTermsChanged(RepostPaymentTermsChanged event, Emitter<RepostProjectState> emit) {
+    final state = this.state;
+    if (state is RepostProjectLoaded) {
+      emit(state.copyWith(draft: state.draft.copyWith(paymentTerms: event.paymentTerms)));
+    }
+  }
+
+  void _onBidDeadlineChanged(RepostBidDeadlineChanged event, Emitter<RepostProjectState> emit) {
+    final state = this.state;
+    if (state is RepostProjectLoaded) {
+      emit(state.copyWith(draft: state.draft.copyWith(bidSubmissionDeadline: event.bidSubmissionDeadline)));
+    }
+  }
+
   Future<void> _onSubmitRepost(SubmitRepost event, Emitter<RepostProjectState> emit) async {
     final state = this.state;
     if (state is! RepostProjectLoaded) return;
-
     emit(state.copyWith(isSubmitting: true));
     try {
       final newProjectId = await _service.submitRepost(state.draft);
       emit(RepostProjectSubmitted(newProjectId));
     } on ApiException catch (e) {
-      // Carry the current draft along so the form re-renders with edits
-      // intact rather than reverting to the loaded snapshot.
       emit(RepostProjectError(e.message, draft: state.draft));
     }
   }
