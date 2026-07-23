@@ -2,7 +2,7 @@
 // API. Flip a feature's flag to false once its endpoint(s) are confirmed
 // wired up and tested against the real backend.
 //
-// Status (2026-07-21):
+// Status (2026-07-24):
 //   post-project      -> LIVE   (POST /api/projects)
 //   my-projects       -> LIVE   (GET /api/projects/mine)
 //   project-history   -> LIVE  (GET /api/projects/mine/history)
@@ -10,7 +10,7 @@
 //   bidders           -> LIVE   (GET /api/projects/{id}/bids, POST /api/projects/{id}/award)
 //   bid-detail        -> LIVE   (GET /api/bids/{id})
 //   home-dashboard    -> mock  (no backend endpoint yet)
-//   guarantees        -> mock  (no backend endpoint yet)
+//   guarantees        -> LIVE  (GET /guarantees/prefill, POST /guarantees)
 //   guarantee-review  -> LIVE  (GET /api/projects/{id}/guarantee, POST /api/guarantees/{id}/approve|reject)
 //   review-work       -> LIVE  (GET /api/projects/{id}/submitted-work, POST .../confirm-complete, POST .../flag-issue)
 //   repost-project    -> LIVE  (GET /api/owner/projects/{id}/repost-draft, POST /api/owner/projects/{id}/repost)
@@ -25,9 +25,8 @@ const bool kUseMockProjectHistory = false;
 const bool kUseMockProjectDetail = false;
 const bool kUseMockBidders = false;
 const bool kUseMockBidDetail = false;
-const bool kUseMockBidHistory = false; // GET /bids/mine/history — no backend endpoint yet
+const bool kUseMockBidHistory = false;
 const bool kUseMockHomeDashboard = true;
-const bool kUseMockGuarantees = true;
 const bool kUseMockGuaranteeReview = false;
 const bool kUseMockReviewWork = false;
 const bool kUseMockRepostProject = false;

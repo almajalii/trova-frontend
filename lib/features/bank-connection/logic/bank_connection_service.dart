@@ -29,6 +29,7 @@ class BankConnectionService {
     required String bankCode,
     required double remainingDebtCapacityJod,
     required int numberOfDelinquentDebts,
+    required int numberOfCurrentDebts,
   }) async {
     try {
       final response = await dio.post(
@@ -37,6 +38,7 @@ class BankConnectionService {
           'bankCode': bankCode,
           'remainingDebtCapacityJod': remainingDebtCapacityJod,
           'numberOfDelinquentDebts': numberOfDelinquentDebts,
+          'numberOfCurrentDebts': numberOfCurrentDebts,
         },
         options: suppressApprovalRedirectOptions,
       );

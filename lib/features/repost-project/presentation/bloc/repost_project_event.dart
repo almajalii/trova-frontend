@@ -89,7 +89,7 @@ class RepostTimelineChanged extends RepostProjectEvent {
 }
 
 class RepostMilestonesChanged extends RepostProjectEvent {
-  final List<String> milestones;
+  final String milestones;
   const RepostMilestonesChanged(this.milestones);
 
   @override

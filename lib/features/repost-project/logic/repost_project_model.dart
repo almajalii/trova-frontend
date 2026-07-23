@@ -2,7 +2,8 @@
 /// see [RepostProjectDraft.noticeMessage].
 enum RepostReason {
   contractorBackedOff,
-  guaranteeRejectedByOwner;
+  guaranteeRejectedByOwner,
+  guaranteeRejectedByBank;
 
   factory RepostReason.fromJson(String raw) {
     switch (raw) {
@@ -10,8 +11,13 @@ enum RepostReason {
         return RepostReason.contractorBackedOff;
       case 'guarantee_rejected_by_owner':
         return RepostReason.guaranteeRejectedByOwner;
+      case 'guarantee_rejected_by_bank':
+        return RepostReason.guaranteeRejectedByBank;
       default:
-        throw ArgumentError('Unknown RepostReason: $raw');
+        // Unknown/future backend value — fall back rather than crash the
+        // whole repost screen; this is the least-wrong default of the
+        // three since it doesn't claim the owner did anything.
+        return RepostReason.contractorBackedOff;
     }
   }
 
@@ -21,6 +27,8 @@ enum RepostReason {
         return 'contractor_backed_off';
       case RepostReason.guaranteeRejectedByOwner:
         return 'guarantee_rejected_by_owner';
+      case RepostReason.guaranteeRejectedByBank:
+        return 'guarantee_rejected_by_bank';
     }
   }
 }
@@ -94,7 +102,7 @@ class RepostProjectDraft {
   final String location;
   final String currency;
   final String timelineText;
-  final List<String> milestones;
+  final String milestones;
   final String guaranteeTypeRequired;
   final String paymentTerms;
   final DateTime bidSubmissionDeadline;
@@ -131,6 +139,10 @@ class RepostProjectDraft {
         return 'You rejected $contractorName\'s guarantee. '
             'Your project details are saved below — review or update '
             'anything before posting again.';
+      case RepostReason.guaranteeRejectedByBank:
+        return 'The bank rejected $contractorName\'s guarantee application. '
+            'Your project details are saved below — review or update '
+            'anything before posting again.';
     }
   }
 
@@ -144,7 +156,7 @@ class RepostProjectDraft {
     String? location,
     String? currency,
     String? timelineText,
-    List<String>? milestones,
+    String? milestones,
     String? guaranteeTypeRequired,
     String? paymentTerms,
     DateTime? bidSubmissionDeadline,
@@ -184,9 +196,7 @@ class RepostProjectDraft {
       location: json['location'] as String? ?? '',
       currency: json['currency'] as String? ?? 'JOD',
       timelineText: json['timelineText'] as String? ?? '',
-      milestones: (json['milestones'] as List<dynamic>? ?? [])
-          .map((e) => e.toString())
-          .toList(),
+      milestones: json['milestones'] as String? ?? '',
       guaranteeTypeRequired: json['guaranteeTypeRequired'] as String? ?? '',
       paymentTerms: json['paymentTerms'] as String? ?? '',
       bidSubmissionDeadline: json['bidSubmissionDeadline'] != null
@@ -237,7 +247,7 @@ class RepostProjectDraft {
         location: 'Zarqa, Jordan',
         currency: 'JOD',
         timelineText: '6 months',
-        milestones: const ['Site prep & electrical rough-in', 'HVAC install', 'Flooring & handover'],
+        milestones: 'Site prep & electrical rough-in, HVAC install, Flooring & handover',
         guaranteeTypeRequired: 'Performance Guarantee',
         paymentTerms: '30% upfront, 40% at midpoint, 30% on handover',
         bidSubmissionDeadline: DateTime.now().add(const Duration(days: 14)),
@@ -257,7 +267,7 @@ class RepostProjectDraft {
         location: 'Sahab, Amman',
         currency: 'JOD',
         timelineText: '5 months',
-        milestones: const ['Structure', 'Fit-out', 'Handover'],
+        milestones: 'Structure, Fit-out, Handover',
         guaranteeTypeRequired: 'Bid Bond',
         paymentTerms: '25% upfront, 50% at midpoint, 25% on handover',
         bidSubmissionDeadline: DateTime.now().add(const Duration(days: 14)),

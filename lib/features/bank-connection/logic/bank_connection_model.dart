@@ -3,7 +3,7 @@
 // [ { "code": "AB", "name": "Arab Bank" }, { "code": "HB", "name": "Housing Bank" }, ... ]
 //
 // POST /api/bank-connection/connect
-// { "bankCode": "AB", "remainingDebtCapacityJod": 5000.0, "numberOfDelinquentDebts": 0 }
+// { "bankCode": "AB", "remainingDebtCapacityJod": 5000.0, "numberOfDelinquentDebts": 0, "numberOfCurrentDebts": 0 }
 // → kicks off the Open Finance redirect/consent flow server-side; the
 //   consent bullets shown in the modal ("Account balances & assets",
 //   "Existing debt & repayment history", "Transaction history") are the

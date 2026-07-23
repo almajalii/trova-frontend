@@ -10,6 +10,17 @@ class RepostProjectLayout extends StatelessWidget {
   static const _labelText = Color(0xFF333338);
   static const _valueText = Color(0xFF1A1A1A);
 
+  // Mirrors the option lists in PostAProjectLayout so both forms constrain
+  // these fields the same way.
+  static const _sectorOptions = ['Construction', 'Engineering', 'IT', 'Consulting', 'Other'];
+  static const _currencyOptions = ['JOD', 'USD', 'EUR'];
+  static const _guaranteeTypeOptions = [
+    'Performance Guarantee',
+    'Advance Payment Guarantee',
+    'Bid Bond Guarantee',
+    'Retention Guarantee',
+  ];
+
   final RepostProjectDraft draft;
   final bool isSubmitting;
   final VoidCallback onBack;
@@ -22,7 +33,7 @@ class RepostProjectLayout extends StatelessWidget {
   final ValueChanged<String> onLocationChanged;
   final ValueChanged<String> onCurrencyChanged;
   final ValueChanged<String> onTimelineChanged;
-  final ValueChanged<List<String>> onMilestonesChanged;
+  final ValueChanged<String> onMilestonesChanged;
   final ValueChanged<String> onGuaranteeTypeChanged;
   final ValueChanged<String> onPaymentTermsChanged;
   final ValueChanged<DateTime> onBidDeadlineChanged;
@@ -75,7 +86,7 @@ class RepostProjectLayout extends StatelessWidget {
                     _TextInput(initialValue: draft.title, onChanged: onTitleChanged),
                     const SizedBox(height: 14),
                     _FieldLabel('Sector'),
-                    _TextInput(initialValue: draft.sector, onChanged: onSectorChanged),
+                    _AppDropdown(value: draft.sector, options: _sectorOptions, onChanged: onSectorChanged),
                     const SizedBox(height: 14),
                     _FieldLabel('Location'),
                     _TextInput(initialValue: draft.location, onChanged: onLocationChanged),
@@ -97,8 +108,9 @@ class RepostProjectLayout extends StatelessWidget {
                         const SizedBox(width: 10),
                         Expanded(
                           flex: 2,
-                          child: _TextInput(
-                            initialValue: draft.currency,
+                          child: _AppDropdown(
+                            value: draft.currency,
+                            options: _currencyOptions,
                             onChanged: onCurrencyChanged,
                           ),
                         ),
@@ -131,8 +143,9 @@ class RepostProjectLayout extends StatelessWidget {
                     ),
                     const SizedBox(height: 14),
                     _FieldLabel('Guarantee Type Required'),
-                    _TextInput(
-                      initialValue: draft.guaranteeTypeRequired,
+                    _AppDropdown(
+                      value: draft.guaranteeTypeRequired,
+                      options: _guaranteeTypeOptions,
                       onChanged: onGuaranteeTypeChanged,
                     ),
                     const SizedBox(height: 14),
@@ -144,19 +157,12 @@ class RepostProjectLayout extends StatelessWidget {
                       minLines: 1,
                     ),
                     const SizedBox(height: 14),
-                    _FieldLabel('Milestones (one per line)'),
+                    _FieldLabel('Milestones'),
                     _TextInput(
-                      initialValue: draft.milestones.join('\n'),
-                      onChanged: (value) {
-                        final lines = value
-                            .split('\n')
-                            .map((line) => line.trim())
-                            .where((line) => line.isNotEmpty)
-                            .toList();
-                        onMilestonesChanged(lines);
-                      },
-                      maxLines: 6,
-                      minLines: 3,
+                      initialValue: draft.milestones,
+                      onChanged: onMilestonesChanged,
+                      maxLines: 4,
+                      minLines: 2,
                     ),
                     const SizedBox(height: 14),
                     _FieldLabel('Project Description'),
@@ -295,6 +301,49 @@ class _TextInput extends StatelessWidget {
           borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
         ),
       ),
+    );
+  }
+}
+
+/// Fixed-option dropdown for Sector / Currency / Guarantee Type.
+///
+/// [value] may be a legacy/free-text value not present in [options] (existing
+/// drafts predate these fixed lists) — it's appended so the dropdown never
+/// crashes on an unmatched initial value.
+class _AppDropdown extends StatelessWidget {
+  final String value;
+  final List<String> options;
+  final ValueChanged<String> onChanged;
+
+  const _AppDropdown({required this.value, required this.options, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final items = options.contains(value) ? options : [value, ...options];
+    return DropdownButtonFormField<String>(
+      initialValue: value,
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: RepostProjectLayout._valueText),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: RepostProjectLayout._fieldFill,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: RepostProjectLayout._fieldBorder),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: RepostProjectLayout._fieldBorder),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+        ),
+      ),
+      items: items.map((o) => DropdownMenuItem(value: o, child: Text(o))).toList(),
+      onChanged: (newValue) {
+        if (newValue != null) onChanged(newValue);
+      },
     );
   }
 }

@@ -10,7 +10,6 @@ class BidsBloc extends Bloc<BidsEvent, BidsState> {
   BidsBloc({required this.service}) : super(const BidsInitial()) {
     on<FetchBids>(_onFetchBids);
     on<ConfirmBid>((event, emit) => _runAction(emit, () => service.confirmBid(event.id)));
-    on<CancelBid>((event, emit) => _runAction(emit, () => service.cancelBid(event.id)));
     on<MarkWorkAsDone>((event, emit) => _runAction(emit, () => service.markWorkAsDone(event.id)));
     on<BackOff>((event, emit) => _runAction(emit, () => service.backOff(event.id)));
   }

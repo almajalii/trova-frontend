@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trova/core/app_colors.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/app_title.dart';
 import 'package:trova/core/di/service_locator.dart';
@@ -230,22 +231,23 @@ class _MyBidsView extends StatelessWidget {
   }
 
   void _onSecondaryAction(BuildContext context, BidModel bid) {
-    final bloc = context.read<BidsBloc>();
     switch (bid.status) {
       case 'selected':
-        bloc.add(CancelBid(bid.id));
+        _onBackOffAction(context, bid);
         break;
       default:
         break;
     }
   }
 
-  void _onBackOffAction(BuildContext context, BidModel bid) {
+  void _onBackOffAction(BuildContext context, BidModel bid) async {
     switch (bid.status) {
       case 'selected':
       case 'confirmed':
       case 'inProgress':
       case 'guaranteeRejected':
+        final confirmed = await _confirmBackOff(context, bid);
+        if (!confirmed || !context.mounted) return;
         _runActionWithConfirmation(
           context,
           () => sl<BidsService>().backOff(bid.id),
@@ -255,5 +257,35 @@ class _MyBidsView extends StatelessWidget {
       default:
         break;
     }
+  }
+
+  /// Confirms the irreversible back-off / decline action before it's sent.
+  /// Wording differs for a still-unawarded 'selected' bid (declining kills
+  /// the owner's award and re-opens their project) vs. the post-award states
+  /// (backing off just ends the contract).
+  Future<bool> _confirmBackOff(BuildContext context, BidModel bid) async {
+    final isSelected = bid.status == 'selected';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(isSelected ? 'Decline this award?' : 'Back off from ${bid.projectTitle}?'),
+        content: Text(
+          isSelected
+              ? '${bid.companyName} will be notified and the project will be re-opened. This can\'t be undone.'
+              : 'This can\'t be undone.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(
+              isSelected ? 'Decline' : 'Back Off',
+              style: const TextStyle(color: AppColors.danger),
+            ),
+          ),
+        ],
+      ),
+    );
+    return confirmed ?? false;
   }
 }

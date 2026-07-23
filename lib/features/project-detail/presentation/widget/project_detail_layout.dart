@@ -40,6 +40,11 @@ class ProjectDetailLayout extends StatelessWidget {
         return (AppColors.warningBg, AppColors.warning);
       case DetailStatus.completed:
         return (AppColors.neutralTagBg, colors.onSurfaceVariant);
+      case DetailStatus.cancelled:
+        // Neutral, same as completed/history's cancelled tone — being
+        // reposted isn't a bad outcome, just a terminal one for this
+        // particular project (see HistoryProjectCard._tone).
+        return (AppColors.neutralTagBg, colors.onSurfaceVariant);
     }
   }
 

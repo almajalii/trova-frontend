@@ -12,6 +12,8 @@ class InputField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final bool readOnly;
   final VoidCallback? onTap;
+  final int? maxLines;
+  final int? minLines;
 
   const InputField({
     super.key,
@@ -25,6 +27,8 @@ class InputField extends StatefulWidget {
     this.inputFormatters,
     this.readOnly = false,
     this.onTap,
+    this.maxLines = 1,
+    this.minLines,
   });
 
   @override
@@ -47,6 +51,8 @@ class _InputFieldState extends State<InputField> {
       inputFormatters: widget.inputFormatters,
       readOnly: widget.readOnly,
       onTap: widget.onTap,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines,
       showCursor: widget.onTap == null ? null : false,
       style: TextStyle(color: colors.onSurface, fontSize: 15),
       decoration: InputDecoration(

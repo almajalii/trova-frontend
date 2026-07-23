@@ -10,7 +10,8 @@ import 'package:trova/features/bank-connection/logic/bank_connection_model.dart'
 class BankConsentModal extends StatefulWidget {
   final BankOption bank;
   final bool isAuthorizing;
-  final void Function(double remainingDebtCapacityJod, int numberOfDelinquentDebts) onAuthorize;
+  final void Function(double remainingDebtCapacityJod, int numberOfDelinquentDebts, int numberOfCurrentDebts)
+  onAuthorize;
   final VoidCallback onCancel;
 
   const BankConsentModal({
@@ -29,11 +30,13 @@ class _BankConsentModalState extends State<BankConsentModal> {
   final _formKey = GlobalKey<FormState>();
   final _remainingDebtCapacityController = TextEditingController();
   final _delinquentDebtsController = TextEditingController();
+  final _currentDebtsController = TextEditingController();
 
   @override
   void dispose() {
     _remainingDebtCapacityController.dispose();
     _delinquentDebtsController.dispose();
+    _currentDebtsController.dispose();
     super.dispose();
   }
 
@@ -53,11 +56,20 @@ class _BankConsentModalState extends State<BankConsentModal> {
     return null;
   }
 
+  String? _validateCurrentDebts(String? value) {
+    if (value == null || value.trim().isEmpty) return 'Required';
+    final parsed = int.tryParse(value.trim());
+    if (parsed == null) return 'Enter a whole number';
+    if (parsed < 0) return 'Must be non-negative';
+    return null;
+  }
+
   void _handleAuthorize() {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final remainingDebtCapacityJod = double.parse(_remainingDebtCapacityController.text.trim());
     final numberOfDelinquentDebts = int.parse(_delinquentDebtsController.text.trim());
-    widget.onAuthorize(remainingDebtCapacityJod, numberOfDelinquentDebts);
+    final numberOfCurrentDebts = int.parse(_currentDebtsController.text.trim());
+    widget.onAuthorize(remainingDebtCapacityJod, numberOfDelinquentDebts, numberOfCurrentDebts);
   }
 
   @override
@@ -137,6 +149,15 @@ class _BankConsentModalState extends State<BankConsentModal> {
                 hintText: 'e.g. 0',
                 keyboardType: TextInputType.number,
                 validator: _validateDelinquentDebts,
+              ),
+              const SizedBox(height: 12),
+              AppText(text: 'Number of Current Debts', textSize: 12, fontWeight: FontWeight.w600, textColor: colors.onSurface, textAlign: TextAlign.start),
+              const SizedBox(height: 6),
+              InputField(
+                controller: _currentDebtsController,
+                hintText: 'e.g. 2',
+                keyboardType: TextInputType.number,
+                validator: _validateCurrentDebts,
               ),
               const SizedBox(height: 16),
               Button(

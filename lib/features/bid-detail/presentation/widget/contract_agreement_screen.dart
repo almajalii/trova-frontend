@@ -163,7 +163,7 @@ class _ContractAgreementViewState extends State<_ContractAgreementView> {
                           elevation: 0,
                           onPressed: _isSubmitting
                               ? null
-                              : () => _respond(() => sl<BidsService>().cancelBid(detail.id)),
+                              : () => _respond(() => sl<BidsService>().backOff(detail.id)),
                         ),
                       ),
                       const SizedBox(width: 12),

@@ -162,6 +162,8 @@ class PostAProjectLayout extends StatelessWidget {
                     InputField(
                       controller: milestonesController,
                       hintText: 'e.g. Foundation – Month 2, Structure – Month 8...',
+                      maxLines: 4,
+                      minLines: 2,
                     ),
                     const SizedBox(height: 18),
 

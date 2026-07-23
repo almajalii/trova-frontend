@@ -28,13 +28,14 @@ class ConnectBankAccountScreen extends StatelessWidget {
               bank: bank,
               isAuthorizing: isAuthorizing,
               onCancel: () => Navigator.of(sheetContext).pop(),
-              onAuthorize: (remainingDebtCapacityJod, numberOfDelinquentDebts) async {
+              onAuthorize: (remainingDebtCapacityJod, numberOfDelinquentDebts, numberOfCurrentDebts) async {
                 setSheetState(() => isAuthorizing = true);
                 try {
                   final bankName = await sl<BankConnectionService>().connect(
                     bankCode: bank.code,
                     remainingDebtCapacityJod: remainingDebtCapacityJod,
                     numberOfDelinquentDebts: numberOfDelinquentDebts,
+                    numberOfCurrentDebts: numberOfCurrentDebts,
                   );
                   if (!sheetContext.mounted) return;
                   Navigator.of(sheetContext).pop();

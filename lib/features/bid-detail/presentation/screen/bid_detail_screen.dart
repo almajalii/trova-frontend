@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trova/core/app_colors.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
 import 'package:trova/core/di/service_locator.dart';
@@ -270,7 +271,7 @@ class _BidDetailViewState extends State<_BidDetailView> {
           children: [
             Expanded(
               child: Button(
-                text: 'Cancel',
+                text: 'Decline',
                 buttonColor: colors.surface,
                 textColor: colors.primary,
                 borderColor: colors.primary,
@@ -280,7 +281,7 @@ class _BidDetailViewState extends State<_BidDetailView> {
                 buttonWidth: double.infinity,
                 buttonHeight: 44,
                 elevation: 0,
-                onPressed: _isSubmitting ? null : () => _cancelBid(context, detail.id),
+                onPressed: _isSubmitting ? null : () => _backOff(context, detail),
               ),
             ),
             const SizedBox(width: 12),
@@ -301,29 +302,65 @@ class _BidDetailViewState extends State<_BidDetailView> {
         );
 
       case 'confirmed':
-        return Button(
-          text: 'Apply for Guarantee',
-          textColor: colors.onPrimary,
-          borderRadius: 12,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          buttonWidth: double.infinity,
-          buttonHeight: 44,
-          elevation: 0,
-          onPressed: _isSubmitting ? null : () => _openGuaranteeRequest(context, detail.projectId),
+        return Column(
+          children: [
+            Button(
+              text: 'Apply for Guarantee',
+              textColor: colors.onPrimary,
+              borderRadius: 12,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 44,
+              elevation: 0,
+              onPressed: _isSubmitting ? null : () => _openGuaranteeRequest(context, detail.projectId),
+            ),
+            const SizedBox(height: 12),
+            Button(
+              text: 'Back Off',
+              buttonColor: colors.surface,
+              textColor: colors.primary,
+              borderColor: colors.primary,
+              borderRadius: 12,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 44,
+              elevation: 0,
+              onPressed: _isSubmitting ? null : () => _backOff(context, detail),
+            ),
+          ],
         );
 
       case 'inProgress':
-        return Button(
-          text: 'Mark Work as Done',
-          textColor: colors.onPrimary,
-          borderRadius: 12,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          buttonWidth: double.infinity,
-          buttonHeight: 44,
-          elevation: 0,
-          onPressed: _isSubmitting ? null : () => _markWorkAsDone(context, detail),
+        return Column(
+          children: [
+            Button(
+              text: 'Mark Work as Done',
+              textColor: colors.onPrimary,
+              borderRadius: 12,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 44,
+              elevation: 0,
+              onPressed: _isSubmitting ? null : () => _markWorkAsDone(context, detail),
+            ),
+            const SizedBox(height: 12),
+            Button(
+              text: 'Back Off',
+              buttonColor: colors.surface,
+              textColor: colors.primary,
+              borderColor: colors.primary,
+              borderRadius: 12,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 44,
+              elevation: 0,
+              onPressed: _isSubmitting ? null : () => _backOff(context, detail),
+            ),
+          ],
         );
 
       case 'workSubmitted':
@@ -372,16 +409,47 @@ class _BidDetailViewState extends State<_BidDetailView> {
   Future<void> _confirmBid(BuildContext context, String bidId) =>
       _runAction(context, () => sl<BidsService>().confirmBid(bidId));
 
-  Future<void> _cancelBid(BuildContext context, String bidId) =>
-      _runAction(context, () => sl<BidsService>().cancelBid(bidId));
-
   /// Back Off closes the bid and shows the "You've Backed Off" confirmation
-  /// (Figma), which then rebuilds the My Bids stack.
-  Future<void> _backOff(BuildContext context, BidDetailModel detail) => _runAction(
-        context,
-        () => sl<BidsService>().backOff(detail.id),
-        confirmation: BackedOffScreen(companyName: detail.companyName),
-      );
+  /// (Figma), which then rebuilds the My Bids stack. Gated behind a
+  /// confirmation dialog since backing off is irreversible.
+  Future<void> _backOff(BuildContext context, BidDetailModel detail) async {
+    final confirmed = await _confirmBackOff(context, detail);
+    if (!confirmed || !context.mounted) return;
+    await _runAction(
+      context,
+      () => sl<BidsService>().backOff(detail.id),
+      confirmation: BackedOffScreen(companyName: detail.companyName),
+    );
+  }
+
+  /// Wording differs for a still-unawarded 'selected' bid (declining kills
+  /// the owner's award and re-opens their project) vs. the post-award
+  /// states (backing off just ends the contract).
+  Future<bool> _confirmBackOff(BuildContext context, BidDetailModel detail) async {
+    final isSelected = detail.status == 'selected';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(isSelected ? 'Decline this award?' : 'Back off from ${detail.projectTitle}?'),
+        content: Text(
+          isSelected
+              ? '${detail.companyName} will be notified and the project will be re-opened. This can\'t be undone.'
+              : 'This can\'t be undone.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(
+              isSelected ? 'Decline' : 'Back Off',
+              style: const TextStyle(color: AppColors.danger),
+            ),
+          ),
+        ],
+      ),
+    );
+    return confirmed ?? false;
+  }
 
   /// Mark Work as Done shows the "Submitted for Review" confirmation
   /// (Figma), which then rebuilds the My Bids stack.

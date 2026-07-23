@@ -135,54 +135,36 @@ class BidCard extends StatelessWidget {
         return const SizedBox.shrink();
 
       case 'selected':
-        return Column(
+        return Row(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Button(
-                    text: 'Cancel',
-                    buttonColor: colors.surface,
-                    textColor: colors.primary,
-                    borderColor: colors.primary,
-                    borderRadius: 12,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    buttonWidth: double.infinity,
-                    buttonHeight: 44,
-                    elevation: 0,
-                    onPressed: onSecondaryAction,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Button(
-                    text: 'Confirm',
-                    textColor: colors.onPrimary,
-                    borderRadius: 12,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    buttonWidth: double.infinity,
-                    buttonHeight: 44,
-                    elevation: 0,
-                    onPressed: onPrimaryAction,
-                  ),
-                ),
-              ],
+            Expanded(
+              child: Button(
+                text: 'Decline',
+                buttonColor: colors.surface,
+                textColor: colors.primary,
+                borderColor: colors.primary,
+                borderRadius: 12,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                buttonWidth: double.infinity,
+                buttonHeight: 44,
+                elevation: 0,
+                onPressed: onSecondaryAction,
+              ),
             ),
-            const SizedBox(height: 8),
-            Button(
-              text: 'Back Off',
-              buttonColor: colors.surface,
-              textColor: colors.secondary.withValues(alpha: 0.6),
-              borderColor: colors.surfaceBright,
-              borderRadius: 12,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              buttonWidth: double.infinity,
-              buttonHeight: 40,
-              elevation: 0,
-              onPressed: onBackOffAction,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Button(
+                text: 'Confirm',
+                textColor: colors.onPrimary,
+                borderRadius: 12,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                buttonWidth: double.infinity,
+                buttonHeight: 44,
+                elevation: 0,
+                onPressed: onPrimaryAction,
+              ),
             ),
           ],
         );

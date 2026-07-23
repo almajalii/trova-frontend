@@ -73,6 +73,7 @@ enum DetailStatus {
   completed,
   disputed,
   failed,
+  cancelled,
 }
 
 extension DetailStatusX on DetailStatus {
@@ -96,6 +97,8 @@ extension DetailStatusX on DetailStatus {
         return 'DISPUTED';
       case DetailStatus.failed:
         return 'FAILED';
+      case DetailStatus.cancelled:
+        return 'CANCELLED';
     }
   }
 

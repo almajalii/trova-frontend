@@ -17,13 +17,6 @@ class ConfirmBid extends BidsEvent {
   List<Object?> get props => [id];
 }
 
-class CancelBid extends BidsEvent {
-  final String id;
-  const CancelBid(this.id);
-  @override
-  List<Object?> get props => [id];
-}
-
 class MarkWorkAsDone extends BidsEvent {
   final String id;
   const MarkWorkAsDone(this.id);

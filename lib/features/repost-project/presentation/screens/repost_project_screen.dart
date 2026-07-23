@@ -87,6 +87,13 @@ class _RepostProjectView extends StatelessWidget {
             onMinContractorClassificationChanged: (v) => bloc.add(RepostMinContractorClassificationChanged(v)),
             onDescriptionChanged: (v) => bloc.add(RepostDescriptionChanged(v)),
             onSubmit: () => bloc.add(const SubmitRepost()),
+            onLocationChanged: (v) => bloc.add(RepostLocationChanged(v)),
+            onCurrencyChanged: (v) => bloc.add(RepostCurrencyChanged(v)),
+            onTimelineChanged: (v) => bloc.add(RepostTimelineChanged(v)),
+            onMilestonesChanged: (v) => bloc.add(RepostMilestonesChanged(v)),
+            onGuaranteeTypeChanged: (v) => bloc.add(RepostGuaranteeTypeChanged(v)),
+            onPaymentTermsChanged: (v) => bloc.add(RepostPaymentTermsChanged(v)),
+            onBidDeadlineChanged: (v) => bloc.add(RepostBidDeadlineChanged(v)),
           );
         },
       ),
