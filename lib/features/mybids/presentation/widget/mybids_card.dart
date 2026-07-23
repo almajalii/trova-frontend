@@ -8,6 +8,7 @@ class BidCard extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onPrimaryAction;
   final VoidCallback? onSecondaryAction;
+  final VoidCallback? onBackOffAction;
 
   const BidCard({
     super.key,
@@ -15,6 +16,7 @@ class BidCard extends StatelessWidget {
     this.onTap,
     this.onPrimaryAction,
     this.onSecondaryAction,
+    this.onBackOffAction,
   });
 
   _StatusStyle get _style {
@@ -133,51 +135,87 @@ class BidCard extends StatelessWidget {
         return const SizedBox.shrink();
 
       case 'selected':
-        return Row(
+        return Column(
           children: [
-            Expanded(
-              child: Button(
-                text: 'Cancel',
-                buttonColor: colors.surface,
-                textColor: colors.primary,
-                borderColor: colors.primary,
-                borderRadius: 12,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                buttonWidth: double.infinity,
-                buttonHeight: 44,
-                elevation: 0,
-                onPressed: onSecondaryAction,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Button(
+                    text: 'Cancel',
+                    buttonColor: colors.surface,
+                    textColor: colors.primary,
+                    borderColor: colors.primary,
+                    borderRadius: 12,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    buttonWidth: double.infinity,
+                    buttonHeight: 44,
+                    elevation: 0,
+                    onPressed: onSecondaryAction,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Button(
+                    text: 'Confirm',
+                    textColor: colors.onPrimary,
+                    borderRadius: 12,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    buttonWidth: double.infinity,
+                    buttonHeight: 44,
+                    elevation: 0,
+                    onPressed: onPrimaryAction,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Button(
-                text: 'Confirm',
-                textColor: colors.onPrimary,
-                borderRadius: 12,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                buttonWidth: double.infinity,
-                buttonHeight: 44,
-                elevation: 0,
-                onPressed: onPrimaryAction,
-              ),
+            const SizedBox(height: 8),
+            Button(
+              text: 'Back Off',
+              buttonColor: colors.surface,
+              textColor: colors.secondary.withValues(alpha: 0.6),
+              borderColor: colors.surfaceBright,
+              borderRadius: 12,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 40,
+              elevation: 0,
+              onPressed: onBackOffAction,
             ),
           ],
         );
 
       case 'confirmed':
-        return Button(
-          text: 'Apply for Guarantee',
-          textColor: colors.onPrimary,
-          borderRadius: 12,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          buttonWidth: double.infinity,
-          buttonHeight: 44,
-          elevation: 0,
-          onPressed: onPrimaryAction,
+        return Column(
+          children: [
+            Button(
+              text: 'Apply for Guarantee',
+              textColor: colors.onPrimary,
+              borderRadius: 12,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 44,
+              elevation: 0,
+              onPressed: onPrimaryAction,
+            ),
+            const SizedBox(height: 8),
+            Button(
+              text: 'Back Off',
+              buttonColor: colors.surface,
+              textColor: colors.secondary.withValues(alpha: 0.6),
+              borderColor: colors.surfaceBright,
+              borderRadius: 12,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 40,
+              elevation: 0,
+              onPressed: onBackOffAction,
+            ),
+          ],
         );
 
       case 'guaranteePendingReview':
@@ -185,16 +223,34 @@ class BidCard extends StatelessWidget {
         return const SizedBox.shrink();
 
       case 'inProgress':
-        return Button(
-          text: 'Mark Work as Done',
-          textColor: colors.onPrimary,
-          borderRadius: 12,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          buttonWidth: double.infinity,
-          buttonHeight: 44,
-          elevation: 0,
-          onPressed: onPrimaryAction,
+        return Column(
+          children: [
+            Button(
+              text: 'Mark Work as Done',
+              textColor: colors.onPrimary,
+              borderRadius: 12,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 44,
+              elevation: 0,
+              onPressed: onPrimaryAction,
+            ),
+            const SizedBox(height: 8),
+            Button(
+              text: 'Back Off',
+              buttonColor: colors.surface,
+              textColor: colors.secondary.withValues(alpha: 0.6),
+              borderColor: colors.surfaceBright,
+              borderRadius: 12,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              buttonWidth: double.infinity,
+              buttonHeight: 40,
+              elevation: 0,
+              onPressed: onBackOffAction,
+            ),
+          ],
         );
 
       case 'workSubmitted':
@@ -215,7 +271,7 @@ class BidCard extends StatelessWidget {
                 buttonWidth: double.infinity,
                 buttonHeight: 44,
                 elevation: 0,
-                onPressed: onSecondaryAction,
+                onPressed: onBackOffAction,
               ),
             ),
             const SizedBox(width: 12),
