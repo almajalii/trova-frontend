@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
+import 'package:trova/core/owner_tap_target.dart';
 import 'package:trova/features/mybids/logic/mybid_model.dart';
 
 class BidCard extends StatelessWidget {
@@ -85,11 +86,26 @@ class BidCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            AppText(
-              text: '${bid.companyName} · Bid JOD ${bid.bidAmount.toStringAsFixed(0)}',
-              textSize: 13,
-              textColor: colors.secondary.withValues(alpha: 0.6),
-              textAlign: TextAlign.start,
+            Row(
+              children: [
+                OwnerTapTarget(
+                  bidId: bid.id,
+                  companyName: bid.companyName,
+                  child: AppText(
+                    text: bid.companyName,
+                    textSize: 13,
+                    fontWeight: FontWeight.w600,
+                    textColor: colors.primary,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                AppText(
+                  text: ' · Bid JOD ${bid.bidAmount.toStringAsFixed(0)}',
+                  textSize: 13,
+                  textColor: colors.secondary.withValues(alpha: 0.6),
+                  textAlign: TextAlign.start,
+                ),
+              ],
             ),
             const SizedBox(height: 10),
 

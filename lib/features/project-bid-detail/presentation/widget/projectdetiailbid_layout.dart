@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
 import 'package:trova/core/inputfeild.dart';
+import 'package:trova/core/owner_tap_target.dart';
 import 'package:trova/core/responsive_utils.dart';
+import 'package:trova/features/capability-score/logic/capability_score_model.dart';
 import 'package:trova/features/project-bid-detail/logic/projectdetailbid_model.dart';
 import 'package:trova/features/project-bid-detail/presentation/bloc/projectdetailbid_bloc.dart';
 import 'package:trova/features/project-bid-detail/presentation/bloc/projectdetailbid_event.dart';
@@ -59,6 +61,11 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
               SnackBar(content: Text(state.message)),
             );
           }
+          if (state is ProjectDetailSubmitError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
         },
         builder: (context, state) {
           if (state is ProjectDetailInitial || state is ProjectDetailLoading) {
@@ -75,16 +82,27 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
 
           Project? project;
           bool isSubmitting = false;
+          CapabilityScore? myScore;
 
-          if (state is ProjectDetailSuccess) project = state.project;
+          if (state is ProjectDetailSuccess) {
+            project = state.project;
+            myScore = state.myScore;
+          }
           if (state is ProjectDetailSubmitting) {
             project = state.project;
             isSubmitting = true;
+          }
+          if (state is ProjectDetailSubmitError) {
+            project = state.project;
           }
 
           if (project == null) return const SizedBox.shrink();
           final bloc = context.read<ProjectBidDetailBloc>();
           final alreadyBid = project.alreadyBid;
+          // Unknown score (fetch failed / no bank connected) fails open —
+          // the backend's own check on submit is still the source of truth.
+          final ineligible = myScore != null && !_meetsRequirement(myScore, project);
+          final cannotBid = alreadyBid || ineligible;
 
           return Form(
             key: _formKey,
@@ -99,6 +117,7 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
                   ProjectPosterHeader(
                     title: project.title,
                     postedBy: project.postedByCompanyName,
+                    projectId: project.projectId,
                   ),
                   const SizedBox(height: 16),
                   ProjectInfoCard(project: project),
@@ -120,6 +139,9 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
                   const SizedBox(height: 20),
                   if (alreadyBid) ...[
                     _AlreadyBidNotice(),
+                    const SizedBox(height: 20),
+                  ] else if (ineligible) ...[
+                    _IneligibleNotice(project: project, myScore: myScore),
                     const SizedBox(height: 20),
                   ] else ...[
                     AppText(
@@ -153,16 +175,18 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
                   Button(
                     text: alreadyBid
                         ? 'Bid Already Submitted'
-                        : (isSubmitting ? 'Submitting...' : 'Submit Bid'),
-                    textColor: alreadyBid ? colors.onSurfaceVariant : Colors.white,
-                    buttonColor: alreadyBid ? colors.surfaceBright : const Color(0xFFC82333),
+                        : (ineligible
+                            ? 'Requirements Not Met'
+                            : (isSubmitting ? 'Submitting...' : 'Submit Bid')),
+                    textColor: cannotBid ? colors.onSurfaceVariant : Colors.white,
+                    buttonColor: cannotBid ? colors.surfaceBright : const Color(0xFFC82333),
                     borderRadius: 12,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     buttonWidth: double.infinity,
                     buttonHeight: context.buttonSizeH,
                     elevation: 0,
-                    onPressed: (alreadyBid || isSubmitting)
+                    onPressed: (cannotBid || isSubmitting)
                         ? null
                         : () {
                             if (_formKey.currentState?.validate() ?? false) {
@@ -175,6 +199,65 @@ class _ProjectDetailLayoutState extends State<ProjectDetailLayout> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// Mirrors the backend's exact ranking (A=3, B=2, C=1, anything else —
+/// empty/unset/unrecognized — = 0) so this can never silently drift from
+/// what the API enforces on submit. Applied identically to both the
+/// contractor's own classification and the project's minimum: an unset
+/// project minimum ranks 0 too (no requirement), not "A" — do not swap
+/// this for a "lower rank = better" scheme, that inverts the fallback
+/// for an unset minimum and wrongly requires "A" from everyone.
+const Map<String, int> _classificationRank = {'A': 3, 'B': 2, 'C': 1};
+
+/// True when the contractor's own score/classification meets this
+/// project's minimums. Mirrors the check the backend now enforces on
+/// submit — kept in sync so the proactive grey-out and the reactive 400
+/// never disagree. A contractor with no classification set at all (empty
+/// code — never submitted Company Details) ranks 0, same as backend, and
+/// correctly fails the check for any project that requires A/B/C; that's
+/// a *known, insufficient* rank, distinct from `myScore == null` (score
+/// fetch failed entirely), which fails open in the caller instead.
+bool _meetsRequirement(CapabilityScore myScore, Project project) {
+  final scoreOk = myScore.overallScore >= project.minimumRequiredScore;
+  final myRank = _classificationRank[myScore.classification.code] ?? 0;
+  final requiredRank = _classificationRank[project.minimumClassification] ?? 0;
+  final classificationOk = myRank >= requiredRank;
+  return scoreOk && classificationOk;
+}
+
+class _IneligibleNotice extends StatelessWidget {
+  final Project project;
+  final CapabilityScore myScore;
+  const _IneligibleNotice({required this.project, required this.myScore});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFDE8E8),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.info_outline, size: 18, color: Color(0xFFC82333)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: AppText(
+              text:
+                  'Your Capability Score (${myScore.overallScore}, Class ${myScore.classification.code}) doesn\'t meet this project\'s minimum requirement (${project.minimumRequiredScore}+, ${project.minimumClassificationText}).',
+              textSize: 12,
+              textColor: const Color(0xFFC82333),
+              textAlign: TextAlign.start,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -205,11 +288,13 @@ class _AlreadyBidNotice extends StatelessWidget {
 class ProjectPosterHeader extends StatelessWidget {
   final String title;
   final String postedBy;
+  final String projectId;
 
   const ProjectPosterHeader({
     super.key,
     required this.title,
     required this.postedBy,
+    required this.projectId,
   });
 
   @override
@@ -226,11 +311,16 @@ class ProjectPosterHeader extends StatelessWidget {
           textAlign: TextAlign.start,
         ),
         const SizedBox(height: 4),
-        AppText(
-          text: 'Posted by $postedBy',
-          textSize: 13,
-          textColor: const Color(0xFF6B7280),
-          textAlign: TextAlign.start,
+        OwnerTapTarget(
+          projectId: projectId,
+          companyName: postedBy,
+          child: AppText(
+            text: 'Posted by $postedBy',
+            textSize: 13,
+            fontWeight: FontWeight.w600,
+            textColor: colors.primary,
+            textAlign: TextAlign.start,
+          ),
         ),
       ],
     );

@@ -36,8 +36,16 @@ class ScoreClassification {
     return 'Class $code · $trimmedLabel';
   }
 
-  factory ScoreClassification.fromJson(Map<String, dynamic> json) =>
-      ScoreClassification(code: json['code'] as String, label: json['label'] as String);
+  /// Accepts a null/missing map (contractor never submitted Company Details,
+  /// so there's a score but no classification yet) and falls back to an
+  /// empty code rather than throwing — a thrown exception here would get
+  /// caught by the generic try/catch around the score fetch and collapse
+  /// this case into "score unknown, fail open", which is wrong: the score
+  /// IS known here, the classification is just legitimately unset, and
+  /// callers (e.g. the Submit Bid grey-out) need to see that as rank 0,
+  /// not as "unknown".
+  factory ScoreClassification.fromJson(Map<String, dynamic>? json) =>
+      ScoreClassification(code: json?['code'] as String? ?? '', label: json?['label'] as String? ?? '');
 }
 
 class TrackRecordStats {
@@ -104,7 +112,7 @@ class CapabilityScore {
     return CapabilityScore(
       overallScore: json['overallScore'] as int,
       tierLabel: json['tierLabel'] as String,
-      classification: ScoreClassification.fromJson(json['classification'] as Map<String, dynamic>),
+      classification: ScoreClassification.fromJson(json['classification'] as Map<String, dynamic>?),
       trackRecordStats: TrackRecordStats.fromJson(json['trackRecordStats'] as Map<String, dynamic>),
       numberOfCurrentDebts: ScoreFactor.fromJson('Number of Current Debts', factors['numberOfCurrentDebts'] as Map<String, dynamic>),
       debtCapacity: ScoreFactor.fromJson('Debt Capacity', factors['debtCapacity'] as Map<String, dynamic>),

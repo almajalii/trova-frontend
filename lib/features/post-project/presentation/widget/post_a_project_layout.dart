@@ -95,6 +95,8 @@ class PostAProjectLayout extends StatelessWidget {
                       textColor: colors.onSurfaceVariant,
                       textAlign: TextAlign.start,
                     ),
+                    const SizedBox(height: 16),
+                    _ContractNotice(),
                     const SizedBox(height: 20),
 
                     // --- Project Title ---
@@ -254,6 +256,38 @@ class PostAProjectLayout extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ContractNotice extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: colors.surfaceBright),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.description_outlined, size: 18, color: colors.onSurfaceVariant),
+          const SizedBox(width: 8),
+          Expanded(
+            child: AppText(
+              text:
+                  'The details you enter below will form the basis of the contract with whichever contractor you award this project to — please make sure they\'re accurate and complete.',
+              textSize: 12,
+              textColor: colors.onSurfaceVariant,
+              textAlign: TextAlign.start,
+            ),
+          ),
+        ],
       ),
     );
   }

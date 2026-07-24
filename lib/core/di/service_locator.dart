@@ -30,6 +30,7 @@ import 'package:trova/features/bank-connection/logic/bank_connection_service.dar
 import 'package:trova/features/post-project/logic/post_project_service.dart';
 import 'package:trova/features/bidders/logic/bidder_profile_service.dart';
 import 'package:trova/features/bidders/logic/bidders_service.dart';
+import 'package:trova/features/owner-profile/logic/owner_profile_service.dart';
 import 'package:trova/features/guarantees/logic/guarantee_service.dart';
 import 'package:trova/features/my-projects/logic/my_projects_service.dart';
 import 'package:trova/features/mybids/logic/mybid_service.dart';
@@ -93,6 +94,7 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<PostProjectService>(() => PostProjectService(dio: sl<Dio>()));
   sl.registerLazySingleton<BiddersService>(() => BiddersService(dio: sl<Dio>()));
   sl.registerLazySingleton<BidderProfileService>(() => BidderProfileService(dio: sl<Dio>()));
+  sl.registerLazySingleton<OwnerProfileService>(() => OwnerProfileService(dio: sl<Dio>()));
   sl.registerLazySingleton<GuaranteeService>(() => GuaranteeService(dio: sl<Dio>()));
   sl.registerLazySingleton<MyProjectsService>(() => MyProjectsService(dio: sl<Dio>()));
   sl.registerLazySingleton<ProjectHistoryService>(() => ProjectHistoryService(dio: sl<Dio>()));
