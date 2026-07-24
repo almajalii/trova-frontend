@@ -7,6 +7,7 @@ import 'package:trova/core/app_text.dart';
 import 'package:trova/core/button.dart';
 import 'package:trova/core/di/service_locator.dart';
 import 'package:trova/core/network/api_exception.dart';
+import 'package:trova/core/owner_tap_target.dart';
 import 'package:trova/features/bid-detail/logic/bid_detail_service.dart';
 import 'package:trova/features/bid-detail/logic/bide_detail_model.dart';
 import 'package:trova/features/bid-detail/presentation/bloc/bid_detail_bloc.dart';
@@ -123,11 +124,16 @@ class _BidDetailViewState extends State<_BidDetailView> {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  AppText(
-                    text: detail.companyName,
-                    textSize: 13,
-                    textColor: colors.secondary.withValues(alpha: 0.6),
-                    textAlign: TextAlign.start,
+                  OwnerTapTarget(
+                    bidId: detail.id,
+                    companyName: detail.companyName,
+                    child: AppText(
+                      text: detail.companyName,
+                      textSize: 13,
+                      fontWeight: FontWeight.w600,
+                      textColor: colors.primary,
+                      textAlign: TextAlign.start,
+                    ),
                   ),
                   const SizedBox(height: 16),
 
@@ -226,11 +232,15 @@ class _BidDetailViewState extends State<_BidDetailView> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              AppText(
-                                text: detail.companyName,
-                                textSize: 13,
-                                fontWeight: FontWeight.w600,
-                                textColor: colors.onSurface,
+                              OwnerTapTarget(
+                                bidId: detail.id,
+                                companyName: detail.companyName,
+                                child: AppText(
+                                  text: detail.companyName,
+                                  textSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  textColor: colors.primary,
+                                ),
                               ),
                               if (detail.reviewRating != null)
                                 AppText(

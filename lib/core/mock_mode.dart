@@ -18,6 +18,8 @@
 //   company-reviews   -> LIVE  (GET /api/company-profile/reviews)
 //   notifications     -> LIVE  (GET /api/notifications)
 //   bidder-profile    -> LIVE   (GET /api/bids/{id}/company-profile)
+//   owner-profile     -> LIVE  (GET /api/bids/{id}/owner-profile)
+//   owner-profile-by-project -> LIVE  (GET /api/projects/{id}/owner-profile)
 
 const bool kUseMockPostProject = false;
 const bool kUseMockMyProjects = false;
@@ -34,3 +36,5 @@ const bool kUseMockLeaveReview = false;
 const bool kUseMockCompanyReviews = false;
 const bool kUseMockNotifications = false;
 const bool kUseMockBidderProfiles = false;
+const bool kUseMockOwnerProfile = false;
+const bool kUseMockOwnerProfileByProject = false;

@@ -108,229 +108,233 @@ class CompanyDetailsLayout extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    AppTitle(
-                      title: 'Tell Us About Your Company',
-                      size: 22,
-                      weight: FontWeight.w700,
-                      titleColor: colors.onSurface,
-                      textAlign: TextAlign.start,
-                    ),
-                    const SizedBox(height: 8),
-                    AppText(
-                      text:
-                          'This information is used for your classification, capability score, and any bank guarantees you apply for.',
-                      textSize: 13,
-                      textColor: colors.onSurfaceVariant,
-                      textAlign: TextAlign.start,
-                    ),
-                    const SizedBox(height: 18),
-
-                    // ── Company Legal Info ──────────────────────────
-                    _SectionHeader('COMPANY LEGAL INFO'),
-                    _Label('Legal Company Name'),
-                    InputField(
-                      controller: legalCompanyNameController,
-                      hintText: 'e.g. Al-Fahad Contracting LLC',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Trading Name (DBA)'),
-                    InputField(controller: tradingNameController, hintText: 'e.g. Al-Fahad Contracting'),
-                    const SizedBox(height: 16),
-                    _Label('Company Registration Number (CR)'),
-                    InputField(
-                      controller: registrationNumberController,
-                      hintText: 'e.g. JO-CR-118820',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Tax / VAT Number'),
-                    InputField(
-                      controller: taxVatNumberController,
-                      hintText: 'e.g. JO-TAX-994512',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Company Legal Structure'),
-                    InputField(
-                      controller: legalStructureController,
-                      hintText: 'e.g. Limited Liability Company (LLC)',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Year of Establishment'),
-                    InputField(
-                      controller: yearOfEstablishmentController,
-                      hintText: 'e.g. 2015',
-                      keyboardType: TextInputType.number,
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Registered Address'),
-                    InputField(
-                      controller: registeredAddressController,
-                      hintText: 'e.g. Wadi Saqra, Amman, Jordan',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Country of Registration'),
-                    InputField(
-                      controller: countryOfRegistrationController,
-                      hintText: 'e.g. Jordan',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 20),
-
-                    // ── Contact Information ─────────────────────────
-                    _SectionHeader('CONTACT INFORMATION'),
-                    _Label('Primary Contact Person Name'),
-                    InputField(
-                      controller: primaryContactNameController,
-                      hintText: 'e.g. Ahmad Khalil',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Position / Title'),
-                    InputField(
-                      controller: positionTitleController,
-                      hintText: 'e.g. Operations Director',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Primary Email'),
-                    InputField(
-                      controller: primaryEmailController,
-                      hintText: 'e.g. ahmad.khalil@company.jo',
-                      keyboardType: TextInputType.emailAddress,
-                      validator: _email,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Primary Phone Number'),
-                    InputField(
-                      controller: primaryPhoneNumberController,
-                      hintText: 'e.g. +962 79 123 4567',
-                      keyboardType: TextInputType.phone,
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 20),
-
-                    // ── Business Qualifications ─────────────────────
-                    _SectionHeader('BUSINESS QUALIFICATIONS'),
-                    _Label('Business / Commercial License Number'),
-                    InputField(
-                      controller: businessLicenseNumberController,
-                      hintText: 'e.g. JO-LIC-55291',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Contractor Classification / Grade'),
-                    InputField(
-                      controller: contractorClassificationGradeController,
-                      hintText: 'e.g. Grade A (Ministry of Public Works)',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Main Areas of Expertise'),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: kAllowedSectors.map((sector) {
-                        final isSelected = selectedSectors.contains(sector);
-                        return FilterChip(
-                          label: Text(sector),
-                          selected: isSelected,
-                          showCheckmark: false,
-                          selectedColor: colors.primary.withValues(alpha: 0.15),
-                          backgroundColor: colors.surface,
-                          side: BorderSide(color: isSelected ? colors.primary : colors.surfaceBright, width: 1),
-                          labelStyle: TextStyle(
-                            color: isSelected ? colors.primary : colors.onSurfaceVariant,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          onSelected: (selected) {
-                            final updated = List<String>.from(selectedSectors);
-                            if (selected) {
-                              updated.add(sector);
-                            } else {
-                              updated.remove(sector);
-                            }
-                            onSectorsChanged(updated);
-                          },
-                        );
-                      }).toList(),
-                    ),
-                    if (sectorsErrorText != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: AppText(
-                          text: sectorsErrorText!,
-                          textSize: 12,
-                          textColor: colors.error,
-                          textAlign: TextAlign.start,
-                        ),
+                      AppTitle(
+                        title: 'Tell Us About Your Company',
+                        size: 22,
+                        weight: FontWeight.w700,
+                        titleColor: colors.onSurface,
+                        textAlign: TextAlign.start,
                       ),
-                    const SizedBox(height: 16),
-                    _Label('Years of Experience in Construction'),
-                    InputField(
-                      controller: yearsOfExperienceController,
-                      hintText: 'e.g. 11',
-                      keyboardType: TextInputType.number,
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Team Size'),
-                    InputField(
-                      controller: teamSizeController,
-                      hintText: 'Number of employees',
-                      keyboardType: TextInputType.number,
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Annual Revenue (JOD)'),
-                    InputField(
-                      controller: annualRevenueController,
-                      hintText: 'Approximate last fiscal year',
-                      keyboardType: TextInputType.number,
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 20),
+                      const SizedBox(height: 8),
+                      AppText(
+                        text:
+                            'This information is used for your classification, capability score, and any bank guarantees you apply for.',
+                        textSize: 13,
+                        textColor: colors.onSurfaceVariant,
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(height: 18),
 
-                    // ── Banking Basics ───────────────────────────────
-                    _SectionHeader('BANKING BASICS'),
-                    _Label('Primary Bank Name'),
-                    InputField(
-                      controller: primaryBankNameController,
-                      hintText: 'Select your bank',
-                      readOnly: true,
-                      onTap: onPickBank,
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('Bank Account Number (IBAN)'),
-                    InputField(
-                      controller: ibanNumberController,
-                      hintText: 'e.g. JO94 ARAB 1234 5678',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
-                    _Label('SWIFT / BIC Code'),
-                    InputField(controller: swiftBicCodeController, hintText: 'e.g. ARABJOAX', validator: _required),
-                    const SizedBox(height: 16),
-                    _Label('Bank Branch Name / City'),
-                    InputField(
-                      controller: bankBranchNameCityController,
-                      hintText: 'e.g. Abdali Branch, Amman',
-                      validator: _required,
-                    ),
-                    const SizedBox(height: 16),
+                      // ── Company Legal Info ──────────────────────────
+                      _SectionHeader('COMPANY LEGAL INFO'),
+                      _Label('Legal Company Name'),
+                      InputField(
+                        controller: legalCompanyNameController,
+                        hintText: 'e.g. Al-Fahad Contracting LLC',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Trading Name (DBA)'),
+                      InputField(controller: tradingNameController, hintText: 'e.g. Al-Fahad Contracting'),
+                      const SizedBox(height: 16),
+                      _Label('Company Registration Number (CR)'),
+                      InputField(
+                        controller: registrationNumberController,
+                        hintText: 'e.g. JO-CR-118820',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Tax / VAT Number'),
+                      InputField(
+                        controller: taxVatNumberController,
+                        hintText: 'e.g. JO-TAX-994512',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Company Legal Structure'),
+                      InputField(
+                        controller: legalStructureController,
+                        hintText: 'e.g. Limited Liability Company (LLC)',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Year of Establishment'),
+                      InputField(
+                        controller: yearOfEstablishmentController,
+                        hintText: 'e.g. 2015',
+                        keyboardType: TextInputType.number,
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Registered Address'),
+                      InputField(
+                        controller: registeredAddressController,
+                        hintText: 'e.g. Wadi Saqra, Amman, Jordan',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Country of Registration'),
+                      InputField(
+                        controller: countryOfRegistrationController,
+                        hintText: 'e.g. Jordan',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 20),
 
-                    AppText(
-                      text:
-                          'Your Trova classification (e.g. Class A – Large Enterprise) is calculated separately from this data and your Capability Score.',
-                      textSize: 11,
-                      textColor: colors.onSurfaceVariant,
-                      textAlign: TextAlign.start,
-                    ),
+                      // ── Contact Information ─────────────────────────
+                      _SectionHeader('CONTACT INFORMATION'),
+                      _Label('Primary Contact Person Name'),
+                      InputField(
+                        controller: primaryContactNameController,
+                        hintText: 'e.g. Ahmad Khalil',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Position / Title'),
+                      InputField(
+                        controller: positionTitleController,
+                        hintText: 'e.g. Operations Director',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Primary Email'),
+                      InputField(
+                        controller: primaryEmailController,
+                        hintText: 'e.g. ahmad.khalil@company.jo',
+                        keyboardType: TextInputType.emailAddress,
+                        validator: _email,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Primary Phone Number'),
+                      InputField(
+                        controller: primaryPhoneNumberController,
+                        hintText: 'e.g. +962 79 123 4567',
+                        keyboardType: TextInputType.phone,
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 20),
+
+                      // ── Business Qualifications ─────────────────────
+                      _SectionHeader('BUSINESS QUALIFICATIONS'),
+                      _Label('Business / Commercial License Number'),
+                      InputField(
+                        controller: businessLicenseNumberController,
+                        hintText: 'e.g. JO-LIC-55291',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      // Label-only rename for now — still backed by
+                      // contractorClassificationGrade underneath (same
+                      // controller, same submission key, same validation).
+                      // Not a real semantic swap to a website field yet.
+                      _Label('Company Official Website'),
+                      InputField(
+                        controller: contractorClassificationGradeController,
+                        hintText: 'e.g. Grade A (Ministry of Public Works)',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Main Areas of Expertise'),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: kAllowedSectors.map((sector) {
+                          final isSelected = selectedSectors.contains(sector);
+                          return FilterChip(
+                            label: Text(sector),
+                            selected: isSelected,
+                            showCheckmark: false,
+                            selectedColor: colors.primary.withValues(alpha: 0.15),
+                            backgroundColor: colors.surface,
+                            side: BorderSide(color: isSelected ? colors.primary : colors.surfaceBright, width: 1),
+                            labelStyle: TextStyle(
+                              color: isSelected ? colors.primary : colors.onSurfaceVariant,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            onSelected: (selected) {
+                              final updated = List<String>.from(selectedSectors);
+                              if (selected) {
+                                updated.add(sector);
+                              } else {
+                                updated.remove(sector);
+                              }
+                              onSectorsChanged(updated);
+                            },
+                          );
+                        }).toList(),
+                      ),
+                      if (sectorsErrorText != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: AppText(
+                            text: sectorsErrorText!,
+                            textSize: 12,
+                            textColor: colors.error,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                      const SizedBox(height: 16),
+                      _Label('Years of Experience'),
+                      InputField(
+                        controller: yearsOfExperienceController,
+                        hintText: 'e.g. 11',
+                        keyboardType: TextInputType.number,
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Team Size'),
+                      InputField(
+                        controller: teamSizeController,
+                        hintText: 'Number of employees',
+                        keyboardType: TextInputType.number,
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Annual Revenue (JOD)'),
+                      InputField(
+                        controller: annualRevenueController,
+                        hintText: 'Approximate last fiscal year',
+                        keyboardType: TextInputType.number,
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 20),
+
+                      // ── Banking Basics ───────────────────────────────
+                      _SectionHeader('BANKING BASICS'),
+                      _Label('Primary Bank Name'),
+                      InputField(
+                        controller: primaryBankNameController,
+                        hintText: 'Select your bank',
+                        readOnly: true,
+                        onTap: onPickBank,
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('Bank Account Number (IBAN)'),
+                      InputField(
+                        controller: ibanNumberController,
+                        hintText: 'e.g. JO94 ARAB 1234 5678',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+                      _Label('SWIFT / BIC Code'),
+                      InputField(controller: swiftBicCodeController, hintText: 'e.g. ARABJOAX', validator: _required),
+                      const SizedBox(height: 16),
+                      _Label('Bank Branch Name / City'),
+                      InputField(
+                        controller: bankBranchNameCityController,
+                        hintText: 'e.g. Abdali Branch, Amman',
+                        validator: _required,
+                      ),
+                      const SizedBox(height: 16),
+
+                      AppText(
+                        text:
+                            'Your Trova classification (e.g. Class A – Large Enterprise) is calculated separately from this data and your Capability Score.',
+                        textSize: 11,
+                        textColor: colors.onSurfaceVariant,
+                        textAlign: TextAlign.start,
+                      ),
                     ],
                   ),
                 ),
