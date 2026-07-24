@@ -8,6 +8,8 @@ class AppText extends StatelessWidget {
   final FontWeight? fontWeight;
   final Color? textColor;
   final TextAlign? textAlign;
+  final int? maxLines;
+  final TextOverflow? overflow;
 
   const AppText(  {
     super.key,
@@ -16,6 +18,8 @@ class AppText extends StatelessWidget {
     this.textSize,
     this.textColor,
     this.textAlign,
+    this.maxLines,
+    this.overflow,
   });
 
   @override
@@ -24,6 +28,8 @@ class AppText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign ?? TextAlign.center,
+      maxLines: maxLines,
+      overflow: overflow,
       style: GoogleFonts.inter(
         fontSize: textSize,
         fontWeight: fontWeight,

@@ -33,16 +33,27 @@ class HomeDashboardLayout extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppText(text: summary.greeting, textSize: 13, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
-                  const SizedBox(height: 2),
-                  AppText(text: summary.userName, textSize: 20, fontWeight: FontWeight.w700, textColor: colors.onSurface, textAlign: TextAlign.start),
-                  const SizedBox(height: 6),
-                  StatusPill(text: summary.classification.display, fontSize: 11),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppText(text: summary.greeting, textSize: 13, textColor: colors.onSurfaceVariant, textAlign: TextAlign.start),
+                    const SizedBox(height: 2),
+                    AppText(
+                      text: summary.userName,
+                      textSize: 20,
+                      fontWeight: FontWeight.w700,
+                      textColor: colors.onSurface,
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    StatusPill(text: summary.classification.display, fontSize: 11),
+                  ],
+                ),
               ),
+              const SizedBox(width: 12),
               GestureDetector(
                 onTap: onNotifications,
                 child: Container(

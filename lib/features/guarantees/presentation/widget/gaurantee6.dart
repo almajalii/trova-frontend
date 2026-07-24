@@ -60,7 +60,7 @@ class GuaranteeStep6DeclarationsLayout extends StatelessWidget {
           onChanged: (v) => onChanged(model.copyWith(acceptTerms: v)),
         ),
         const SizedBox(height: 20),
-        const GuaranteeLabel('Digital Signature'),
+        const GuaranteeLabel('Enter you full ID name'),
         GestureDetector(
           onTap: () async {
             // TODO: replace with a proper signature capture flow if needed;
@@ -95,8 +95,8 @@ class GuaranteeStep6DeclarationsLayout extends StatelessWidget {
             alignment: Alignment.center,
             child: AppText(
               text: model.signatureName == null
-                  ? 'Tap to sign'
-                  : 'Tap to sign — ${model.signatureName}',
+                  ? 'Tap to enter'
+                  : 'Tap to enter — ${model.signatureName}',
               textSize: 14,
               fontWeight: model.signatureName == null ? FontWeight.w500 : FontWeight.w600,
               textColor: model.signatureName == null ? colors.surfaceBright : colors.onSurface,

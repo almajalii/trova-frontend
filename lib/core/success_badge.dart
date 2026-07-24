@@ -35,7 +35,7 @@ class TrovaBottomNav extends StatelessWidget {
   static const _tabs = [
     (Icons.home_rounded, 'Home'),
     (Icons.assignment_outlined, 'Projects'),
-    (Icons.verified_outlined, 'Guarantees'),
+    (Icons.verified_outlined, 'Bids'),
     (Icons.person_outline, 'Profile'),
   ];
 

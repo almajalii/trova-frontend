@@ -74,6 +74,8 @@ flutter:
     - assets/images/auth/Mail_Badge.svg
     - assets/images/auth/Sanad.svg
     - assets/images/auth/Scan_Icon.svg
+    - assets/images/auth/auction.png
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

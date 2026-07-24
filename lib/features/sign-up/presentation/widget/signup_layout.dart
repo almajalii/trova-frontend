@@ -194,7 +194,11 @@ class SignupLayout extends StatelessWidget {
                   isPassword: true,
                   validator: FormBuilderValidators.compose([
                     FormBuilderValidators.required(errorText: 'Please enter a password'),
-                    FormBuilderValidators.minLength(6, errorText: 'Password must be at least 6 characters'),
+                    FormBuilderValidators.minLength(8, errorText: 'Password must be at least 8 characters'),
+                    FormBuilderValidators.hasUppercaseChars(atLeast: 1, errorText: 'Include at least 1 uppercase letter'),
+                    FormBuilderValidators.hasLowercaseChars(atLeast: 1, errorText: 'Include at least 1 lowercase letter'),
+                    FormBuilderValidators.hasNumericChars(atLeast: 1, errorText: 'Include at least 1 number'),
+                    FormBuilderValidators.hasSpecialChars(atLeast: 1, errorText: 'Include at least 1 special character'),
                   ]),
                 ),
 
